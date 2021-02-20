@@ -1,0 +1,6 @@
+include __pkginfo__.py
+include LICENSE
+include requirements.txt
+prune **/__pycache__
+recursive-include whey *.pyi
+include whey/py.typed

@@ -1,0 +1,33 @@
+# Configuration for 'repo_helper' (https://github.com/domdfcoding/repo_helper)
+---
+modname: 'whey'
+copyright_years: '2021'
+author: 'Dominic Davis-Foster'
+email: 'dominic@davis-foster.co.uk'
+username: 'repo-helper'
+assignee: 'domdfcoding'
+primary_conda_channel: "domdfcoding"
+version: '0.0.0'
+license: 'MIT'
+short_desc: 'A simple Python wheel builder for simple projects.'
+
+conda_channels:
+ - conda-forge
+
+python_deploy_version: 3.6
+
+# Versions to run tests for
+python_versions:
+ - '3.6'
+ - '3.7'
+ - '3.8'
+ - '3.9'
+ - 3.10-dev
+ - pypy3.6
+ - pypy3.7
+
+sphinx_conf_epilogue:
+ - nitpicky = True
+
+docs_fail_on_warning: true
+sphinx_html_theme: furo

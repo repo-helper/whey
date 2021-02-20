@@ -1,0 +1,54 @@
+# This file is managed by 'repo_helper'. Don't edit it directly.
+---
+name: macOS
+
+on:
+  push:
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  tests:
+    name: "macos-latest / Python ${{ matrix.config.python-version }}"
+    runs-on: "macos-latest"
+    continue-on-error: ${{ matrix.config.experimental }}
+    env:
+      USING_COVERAGE: '3.6,3.7,3.8,3.9,3.10.0-alpha.5,pypy-3.6,pypy-3.7'
+
+    strategy:
+      fail-fast: False
+      matrix:
+        config:
+          - {python-version: "3.6", testenvs: "py36,build", experimental: False}
+          - {python-version: "3.7", testenvs: "py37,build", experimental: False}
+          - {python-version: "3.8", testenvs: "py38,build", experimental: False}
+          - {python-version: "3.9", testenvs: "py39,build", experimental: False}
+          - {python-version: "3.10.0-alpha.5", testenvs: "py310-dev,build", experimental: True}
+          - {python-version: "pypy-3.6", testenvs: "pypy36,build", experimental: False}
+          - {python-version: "pypy-3.7", testenvs: "pypy37,build", experimental: False}
+
+    steps:
+      - name: Checkout 🛎️
+        uses: "actions/checkout@v2"
+
+      - name: Setup Python 🐍
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "${{ matrix.config.python-version }}"
+
+      - name: Install dependencies 🔧
+        run: |
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --upgrade tox virtualenv
+
+      - name: "Run Tests for Python ${{ matrix.config.python-version }}"
+        run: python -m tox -e "${{ matrix.config.testenvs }}"
+
+      - name: "Upload Coverage 🚀"
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: "coverage-${{ matrix.config.python-version }}"
+          path: .coverage

@@ -210,7 +210,7 @@ additional-files = [
 
 
 @pytest.mark.parametrize(
-		"config",
+		"toml_config",
 		[
 				pytest.param(MINIMAL_CONFIG, id="minimal"),
 				pytest.param(f'{MINIMAL_CONFIG}\ndescription = "Lovely Spam! Wonderful Spam!"', id="description"),
@@ -233,11 +233,11 @@ additional-files = [
 				]
 		)
 def test_parse_valid_config(
-		config: str,
+		toml_config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
-	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	config = load_toml(tmp_pathplus / "pyproject.toml")
 
 	config["version"] = str(config["version"])
@@ -257,15 +257,17 @@ def test_parse_valid_config(
 
 @pytest.mark.parametrize("filename", ["README.rst", "README.md", "INTRODUCTION.md", "readme.txt"])
 def test_parse_valid_config_readme(
-		filename: str, tmp_pathplus: PathPlus, advanced_data_regression: AdvancedDataRegressionFixture
+		filename: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
-	config = dedent(f"""
-[project]
-name = "spam"
-version = "2020.0.0"
-readme = "{filename}"
-""")
-	(tmp_pathplus / "pyproject.toml").write_clean(config)
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			"[project]",
+			'name = "spam"',
+			'version = "2020.0.0"',
+			f'readme = "{filename}"',
+			])
 	(tmp_pathplus / filename).write_text("This is the readme.")
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")
@@ -276,11 +278,11 @@ readme = "{filename}"
 
 
 def test_parse_dynamic_requirements(
-		tmp_pathplus: PathPlus, advanced_data_regression: AdvancedDataRegressionFixture
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
-	config = dedent(
+	toml_config = dedent(
 			"""
-
 [project]
 name = "whey"
 version = "2021.0.0"
@@ -297,7 +299,7 @@ license-key = "MIT"
 
 """
 			)
-	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	(tmp_pathplus / "requirements.txt").write_lines([
 			"apeye>=0.7.0",
 			"click>=7.1.2",
@@ -325,15 +327,17 @@ license-key = "MIT"
 
 @pytest.mark.parametrize("filename", ["LICENSE.rst", "LICENSE.md", "LICENSE.txt", "LICENSE"])
 def test_parse_valid_config_license(
-		filename: str, tmp_pathplus: PathPlus, advanced_data_regression: AdvancedDataRegressionFixture
+		filename: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
-	config = dedent(f"""
-[project]
-name = "spam"
-version = "2020.0.0"
-license = {{file = "{filename}"}}
-""")
-	(tmp_pathplus / "pyproject.toml").write_clean(config)
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			f'[project]',
+			f'name = "spam"',
+			f'version = "2020.0.0"',
+			f'license = {{file = "{filename}"}}',
+			])
 	(tmp_pathplus / filename).write_text("This is the license.")
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")

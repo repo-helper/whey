@@ -1,13 +1,13 @@
 sdist_content:
-- requirements.txt
 - LICENSE
 - PKG-INFO
-- pyproject.toml
 - README.rst
-- whey/style.css
+- pyproject.toml
+- requirements.txt
 - whey/__init__.py
-- whey/static/foo.py
 - whey/static/foo.c
+- whey/static/foo.py
+- whey/style.css
 stderr: ''
 stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 
@@ -73,13 +73,13 @@ stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 
   '
 wheel_content:
-- whey/style.css
-- whey/__init__.py
-- whey/static/foo.py
-- whey/static/foo.c
-- whey-2021.0.0.dist-info/entry_points.txt
-- whey-2021.0.0.dist-info/WHEEL
-- whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/LICENSE
-- whey-2021.0.0.dist-info/top_level.txt
+- whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/RECORD
+- whey-2021.0.0.dist-info/WHEEL
+- whey-2021.0.0.dist-info/entry_points.txt
+- whey-2021.0.0.dist-info/top_level.txt
+- whey/__init__.py
+- whey/static/foo.c
+- whey/static/foo.py
+- whey/style.css

@@ -248,24 +248,34 @@ def test_build_success(
 	data = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = WheelBuilder(project_dir=tmp_pathplus, build_dir=tmpdir, out_dir=tmp_pathplus, verbose=True)
-		wheel = builder.build_wheel()
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				)
+		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = zip.namelist()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip.open("spam/__init__.py", mode='r') as fp:
+		with zip_file.open("spam/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = SDistBuilder(project_dir=tmp_pathplus, build_dir=tmpdir, out_dir=tmp_pathplus, verbose=True)
-		sdist = builder.build_sdist()
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				)
+		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
 		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = tar.getnames()
+		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("spam/__init__.py") as fp:
+		with tar.extractfile("spam/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 	outerr = capsys.readouterr()
@@ -299,30 +309,40 @@ def test_build_complete(
 	data = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = WheelBuilder(project_dir=tmp_pathplus, build_dir=tmpdir, out_dir=tmp_pathplus, verbose=True)
-		wheel = builder.build_wheel()
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				)
+		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = zip.namelist()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip.open("whey/__init__.py", mode='r') as fp:
+		with zip_file.open("whey/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = SDistBuilder(project_dir=tmp_pathplus, build_dir=tmpdir, out_dir=tmp_pathplus, verbose=True)
-		sdist = builder.build_sdist()
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				)
+		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
 		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = tar.getnames()
+		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey/__init__.py") as fp:
+		with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("README.rst") as fp:
+		with tar.extractfile("README.rst") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("LICENSE") as fp:
+		with tar.extractfile("LICENSE") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("requirements.txt") as fp:
+		with tar.extractfile("requirements.txt") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
@@ -363,32 +383,42 @@ def test_build_additional_files(
 	data = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = WheelBuilder(project_dir=tmp_pathplus, build_dir=tmpdir, out_dir=tmp_pathplus, verbose=True)
-		wheel = builder.build_wheel()
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				)
+		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = zip.namelist()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip.open("whey/__init__.py", mode='r') as fp:
+		with zip_file.open("whey/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = SDistBuilder(project_dir=tmp_pathplus, build_dir=tmpdir, out_dir=tmp_pathplus, verbose=True)
-		sdist = builder.build_sdist()
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				)
+		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
 		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = tar.getnames()
+		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey/__init__.py") as fp:
+		with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("whey/style.css") as fp:
+		with tar.extractfile("whey/style.css") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-		with tar.extractfile("README.rst") as fp:
+		with tar.extractfile("README.rst") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("LICENSE") as fp:
+		with tar.extractfile("LICENSE") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("requirements.txt") as fp:
+		with tar.extractfile("requirements.txt") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()

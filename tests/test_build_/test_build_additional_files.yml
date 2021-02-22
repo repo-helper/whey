@@ -19,11 +19,11 @@ stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 
   Copying .../whey/style.css -> whey/style.css
 
+  Copying .../whey/static/foo.c -> whey/static/foo.c
+
   Copying .../whey/static/foo.py -> whey/static/foo.py
 
   Copying .../whey/static/foo.txt -> whey/static/foo.txt
-
-  Copying .../whey/static/foo.c -> whey/static/foo.c
 
   Removing whey/static/foo.txt
 
@@ -51,11 +51,11 @@ stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 
   Copying .../whey/style.css -> whey/style.css
 
+  Copying .../whey/static/foo.c -> whey/static/foo.c
+
   Copying .../whey/static/foo.py -> whey/static/foo.py
 
   Copying .../whey/static/foo.txt -> whey/static/foo.txt
-
-  Copying .../whey/static/foo.c -> whey/static/foo.c
 
   Removing whey/static/foo.txt
 

@@ -45,7 +45,7 @@ from zipfile import ZipFile
 # 3rd party
 import click
 from consolekit.terminal_colours import Fore, resolve_color_default
-from domdf_python_tools.paths import PathPlus, traverse_to_file
+from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.stringlist import StringList
 from domdf_python_tools.typing import PathLike
 from domdf_python_tools.words import word_join
@@ -228,24 +228,24 @@ class AbstractBuilder(ABC):
 
 			if parts[0] == "include":
 				for include_pat in parts[1:]:
-					for include_file in self.project_dir.glob(include_pat):
+					for include_file in sorted(self.project_dir.glob(include_pat)):
 						if include_file.is_file():
 							copy_file(filename=include_file)
 
 			elif parts[0] == "exclude":
 				for exclude_pat in parts[1:]:
-					for exclude_file in self.build_dir.glob(exclude_pat):
+					for exclude_file in sorted(self.build_dir.glob(exclude_pat)):
 						if exclude_file.is_file():
 							exclude_file.unlink()
 							self.report_removed(exclude_file)
 
 			elif parts[0] == "recursive-include":
-				for include_file in (self.project_dir / parts[1]).rglob(parts[2]):
+				for include_file in sort_paths(*(self.project_dir / parts[1]).rglob(parts[2])):
 					if include_file.is_file():
 						copy_file(filename=include_file)
 
 			elif parts[0] == "recursive-exclude":
-				for exclude_file in (self.build_dir / parts[1]).rglob(parts[2]):
+				for exclude_file in sort_paths(*(self.build_dir / parts[1]).rglob(parts[2])):
 					if exclude_file.is_file():
 						exclude_file.unlink()
 						self.report_removed(exclude_file)

@@ -6,6 +6,7 @@ from typing import Iterable, Type
 # 3rd party
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
+from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus
 
 # this package
@@ -433,13 +434,29 @@ def test_parse_valid_config_license(
 						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
 						FileNotFoundError,
 						"No such file or directory: 'README.rst'",
-						id="missing_readme_file"
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
 						FileNotFoundError,
 						"No such file or directory: 'LICENSE.txt'",
-						id="missing_license_file"
+						id="missing_license_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
+						FileNotFoundError,
+						r"No such file or directory: .*PathPlus\('README.rst'\)",
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
+						FileNotFoundError,
+						r"No such file or directory: .*PathPlus\('LICENSE.txt'\)",
+						id="missing_license_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\ndynamic = ["dependencies"]',

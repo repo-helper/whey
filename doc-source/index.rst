@@ -136,10 +136,21 @@ Installation
 
 .. end installation
 
+Contents
+-----------
+
 .. toctree::
 	:hidden:
 
 	Home<self>
+
+.. toctree::
+	:maxdepth: 3
+	:caption: Documentation
+	:glob:
+
+	configuration
+	cli
 
 .. toctree::
 	:maxdepth: 3

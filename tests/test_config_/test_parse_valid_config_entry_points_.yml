@@ -1,0 +1,26 @@
+additional-files: []
+authors: []
+classifiers: []
+dependencies: []
+description: null
+dynamic: []
+entry-points:
+  spam.magical:
+    tomatoes: spam:main_tomatoes
+gui-scripts:
+  spam-gui: spam:main_gui
+keywords: []
+license-key: null
+maintainers: []
+name: spam
+optional-dependencies: {}
+package: spam
+platforms: null
+python-implementations: null
+python-versions: null
+readme: null
+requires-python: None
+scripts:
+  spam-cli: spam:main_cli
+urls: {}
+version: 2020.0.0

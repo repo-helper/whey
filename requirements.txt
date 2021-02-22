@@ -1,0 +1,11 @@
+apeye>=0.7.0
+click>=7.1.2
+consolekit>=1.0.1
+domdf-python-tools>=2.5.2
+email-validator>=1.1.2
+first>=2.0.2
+natsort>=7.1.1
+packaging>=20.9
+readme-renderer[md]>=28.0
+shippinglabel>=0.10.0
+toml>=0.10.2

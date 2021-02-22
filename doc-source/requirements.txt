@@ -1,3 +1,4 @@
+git+https://github.com/domdfcoding/sphinx-click.git
 autodocsumm>=0.2.0
 default-values>=0.4.2
 extras-require>=0.2.0

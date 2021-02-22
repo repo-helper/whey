@@ -32,13 +32,23 @@ use_parentheses = true
 remove_redundant_aliases = true
 default_section = "THIRDPARTY"
 known_third_party = [
+    "apeye",
+    "click",
     "coincidence",
+    "consolekit",
     "coverage",
     "coverage_pyver_pragma",
     "domdf_python_tools",
+    "email_validator",
+    "first",
+    "natsort",
+    "packaging",
     "pytest",
     "pytest_cov",
     "pytest_randomly",
     "pytest_timeout",
+    "readme_renderer",
+    "shippinglabel",
+    "toml",
 ]
 known_first_party = "whey"

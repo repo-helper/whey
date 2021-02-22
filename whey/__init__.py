@@ -26,8 +26,54 @@ A simple Python wheel builder for simple projects.
 #  OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+# stdlib
+import tempfile
+
+# 3rd party
+from domdf_python_tools.paths import PathPlus
+
+# this package
+from whey.builder import SDistBuilder, WheelBuilder
+
+__all__ = ["build_sdist", "build_wheel", "SDistBuilder", "WheelBuilder"]
+
 __author__: str = "Dominic Davis-Foster"
 __copyright__: str = "2021 Dominic Davis-Foster"
 __license__: str = "MIT License"
 __version__: str = "0.0.0"
 __email__: str = "dominic@davis-foster.co.uk"
+
+
+def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
+	"""
+	:pep:`517` hook to build a wheel binary distribution.
+
+	.. seealso:: https://www.python.org/dev/peps/pep-0517/#build-wheel
+
+	:param wheel_directory:
+	:param config_settings:
+	:param metadata_directory:
+	"""
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		builder = WheelBuilder(project_dir=PathPlus.cwd(), build_dir=tmpdir, out_dir=wheel_directory, verbose=True)
+		return builder.build_wheel()
+
+
+def build_sdist(sdist_directory, config_settings=None):
+	"""
+	:pep:`517` hook to build a source distribution.
+
+	.. seealso:: https://www.python.org/dev/peps/pep-0517/#build-sdist
+
+	:param sdist_directory:
+	:param config_settings:
+	"""
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		builder = SDistBuilder(project_dir=PathPlus.cwd(), build_dir=tmpdir, out_dir=sdist_directory, verbose=True)
+		return builder.build_sdist()
+
+
+def get_requires_for_build_sdist(config_settings=None):
+	return []

@@ -1,5 +1,0 @@
-=====
-whey
-=====
-
-.. automodule:: whey

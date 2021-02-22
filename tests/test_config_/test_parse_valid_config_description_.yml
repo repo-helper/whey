@@ -1,0 +1,22 @@
+additional-files: []
+authors: []
+classifiers: []
+dependencies: []
+description: Lovely Spam! Wonderful Spam!
+dynamic: []
+entry-points: {}
+gui-scripts: {}
+keywords: []
+license-key: null
+maintainers: []
+name: spam
+optional-dependencies: {}
+package: spam
+platforms: null
+python-implementations: null
+python-versions: null
+readme: null
+requires-python: None
+scripts: {}
+urls: {}
+version: 2020.0.0

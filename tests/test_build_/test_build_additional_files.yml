@@ -1,0 +1,85 @@
+sdist_content:
+- requirements.txt
+- LICENSE
+- PKG-INFO
+- pyproject.toml
+- README.rst
+- whey/style.css
+- whey/__init__.py
+- whey/static/foo.py
+- whey/static/foo.c
+stderr: ''
+stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
+
+  Copying .../whey/static/foo.py -> whey/static/foo.py
+
+  Copying .../whey/style.css -> whey/style.css
+
+  Removing whey/style.css
+
+  Copying .../whey/style.css -> whey/style.css
+
+  Copying .../whey/static/foo.py -> whey/static/foo.py
+
+  Copying .../whey/static/foo.txt -> whey/static/foo.txt
+
+  Copying .../whey/static/foo.c -> whey/static/foo.c
+
+  Removing whey/static/foo.txt
+
+  Writing whey-2021.0.0.dist-info/LICENSE
+
+  Writing whey-2021.0.0.dist-info/entry_points.txt
+
+  Writing whey-2021.0.0.dist-info/METADATA
+
+  Writing whey-2021.0.0.dist-info/WHEEL
+
+  Writing whey-2021.0.0.dist-info/top_level.txt
+
+  Writing whey-2021.0.0.dist-info/RECORD
+
+  🎡 Wheel created at .../whey-2021.0.0-py3-none-any.whl
+
+  Copying .../whey/__init__.py -> whey/__init__.py
+
+  Copying .../whey/static/foo.py -> whey/static/foo.py
+
+  Copying .../whey/style.css -> whey/style.css
+
+  Removing whey/style.css
+
+  Copying .../whey/style.css -> whey/style.css
+
+  Copying .../whey/static/foo.py -> whey/static/foo.py
+
+  Copying .../whey/static/foo.txt -> whey/static/foo.txt
+
+  Copying .../whey/static/foo.c -> whey/static/foo.c
+
+  Removing whey/static/foo.txt
+
+  Writing LICENSE
+
+  Copying .../pyproject.toml -> pyproject.toml
+
+  Copying .../requirements.txt -> requirements.txt
+
+  Writing README.rst
+
+  Writing PKG-INFO
+
+  Source distribution created at .../whey-2021.0.0.tar.gz
+
+  '
+wheel_content:
+- whey/style.css
+- whey/__init__.py
+- whey/static/foo.py
+- whey/static/foo.c
+- whey-2021.0.0.dist-info/entry_points.txt
+- whey-2021.0.0.dist-info/WHEEL
+- whey-2021.0.0.dist-info/METADATA
+- whey-2021.0.0.dist-info/LICENSE
+- whey-2021.0.0.dist-info/top_level.txt
+- whey-2021.0.0.dist-info/RECORD

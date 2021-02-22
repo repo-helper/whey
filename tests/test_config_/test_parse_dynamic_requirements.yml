@@ -1,0 +1,61 @@
+additional-files: []
+authors: []
+classifiers:
+- 'Development Status :: 4 - Beta'
+- 'License :: OSI Approved :: MIT License'
+- 'Programming Language :: Python'
+- 'Programming Language :: Python :: 3 :: Only'
+- 'Programming Language :: Python :: 3.6'
+- 'Programming Language :: Python :: 3.7'
+- 'Programming Language :: Python :: 3.8'
+- 'Programming Language :: Python :: 3.9'
+- 'Programming Language :: Python :: 3.10'
+- 'Programming Language :: Python :: Implementation :: CPython'
+- 'Programming Language :: Python :: Implementation :: PyPy'
+dependencies:
+- apeye>=0.7.0
+- click>=7.1.2
+- consolekit>=1.0.1
+- domdf-python-tools>=2.5.2
+- email-validator>=1.1.2
+- first>=2.0.2
+- natsort>=7.1.1
+- packaging>=20.9
+- readme-renderer[md]>=28.0
+- shippinglabel>=0.10.0
+- toml>=0.10.2
+description: A simple Python wheel builder for simple projects.
+dynamic:
+- classifiers
+- requires-python
+- dependencies
+entry-points: {}
+gui-scripts: {}
+keywords:
+- build
+- distribution
+- packaging
+- pep517
+- pep621
+- sdist
+- wheel
+license-key: MIT
+maintainers: []
+name: whey
+optional-dependencies: {}
+package: whey
+platforms: null
+python-implementations:
+- CPython
+- PyPy
+python-versions:
+- '3.6'
+- '3.7'
+- '3.8'
+- '3.9'
+- '3.10'
+readme: null
+requires-python: '>=3.6'
+scripts: {}
+urls: {}
+version: 2021.0.0

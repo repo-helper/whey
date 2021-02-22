@@ -1,0 +1,24 @@
+additional-files: []
+authors: []
+classifiers: []
+dependencies: []
+description: null
+dynamic: []
+entry-points: {}
+gui-scripts: {}
+keywords: []
+license-key: null
+maintainers: []
+name: spam
+optional-dependencies: {}
+package: spam
+platforms: null
+python-implementations: null
+python-versions: null
+readme:
+  content-type: text/plain
+  text: This is the readme.
+requires-python: null
+scripts: {}
+urls: {}
+version: 2020.0.0

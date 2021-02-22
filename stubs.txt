@@ -1,0 +1,4 @@
+git+https://github.com/domdfcoding/pytest-regressions-stubs
+git+https://github.com/domdfcoding/natsort-stubs
+git+https://github.com/repo-helper/appdirs-stubs
+git+https://github.com/repo-helper/toml@py.typed

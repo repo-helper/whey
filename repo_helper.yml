@@ -31,3 +31,21 @@ sphinx_conf_epilogue:
 
 docs_fail_on_warning: true
 sphinx_html_theme: furo
+
+console_scripts:
+ - whey = whey.__main__:main
+
+extra_sphinx_extensions:
+ - sphinx_click
+
+classifiers:
+ - 'Environment :: Console'
+
+keywords:
+ - pep517
+ - pep621
+ - build
+ - sdist
+ - wheel
+ - packaging
+ - distribution

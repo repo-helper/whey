@@ -33,18 +33,20 @@ from typing import Optional
 # 3rd party
 import click
 from consolekit import click_command
-from consolekit.options import flag_option
+from consolekit.options import colour_option, flag_option
+from consolekit.terminal_colours import ColourTrilean
 from domdf_python_tools.typing import PathLike
 
 __all__ = ["main"]
 
 
-@click.argument("project", type=click.STRING, default='.')
-@click.option("--build-dir", type=click.STRING, default=None, help="The temporary build directory.")
-@click.option("-o", "--out-dir", type=click.STRING, default=None, help="The output directory.")
+@colour_option()
 @flag_option("-v", "--verbose", help="Enable verbose output.")
+@click.option("-o", "--out-dir", type=click.STRING, default=None, help="The output directory.")
+@click.option("--build-dir", type=click.STRING, default=None, help="The temporary build directory.")
 @flag_option("-b", "--binary", help="Build a binary wheel.")
 @flag_option("-s", "--source", help="Build a source distribution.")
+@click.argument("project", type=click.STRING, default='.')
 @click_command()
 def main(
 		project: PathLike = '.',
@@ -53,6 +55,7 @@ def main(
 		binary: bool = False,
 		source: bool = False,
 		verbose: bool = False,
+		colour: ColourTrilean = None,
 		):
 	"""
 	Build a wheel for the given project.
@@ -68,10 +71,7 @@ def main(
 		binary = True
 		source = True
 
-	if project == '.':
-		project = PathPlus.cwd()
-	else:
-		project = PathPlus(project)
+	project = PathPlus(project)
 
 	if binary:
 		wheel_builder = WheelBuilder(
@@ -79,6 +79,7 @@ def main(
 				build_dir=build_dir,
 				out_dir=out_dir,
 				verbose=verbose,
+				colour=colour,
 				)
 		wheel_builder.build_wheel()
 
@@ -88,6 +89,7 @@ def main(
 				build_dir=build_dir,
 				out_dir=out_dir,
 				verbose=verbose,
+				colour=colour,
 				)
 		sdist_builder.build_sdist()
 

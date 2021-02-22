@@ -57,6 +57,11 @@ from whey.config import load_toml
 
 __all__ = ["AbstractBuilder", "SDistBuilder", "WheelBuilder"]
 
+archive_name_sub_re = re.compile(
+		r"[^\w\d.]+",
+		re.UNICODE,
+		)
+
 
 class AbstractBuilder(ABC):
 	"""
@@ -78,7 +83,7 @@ class AbstractBuilder(ABC):
 			out_dir: Optional[PathLike] = None,
 			*,
 			verbose: bool = False,
-			colour: bool = True,
+			colour: bool = None,
 			):
 
 		# Walk up the tree until a "pyproject.toml" file is found.
@@ -89,39 +94,29 @@ class AbstractBuilder(ABC):
 		self.config = load_toml(self.project_dir / "pyproject.toml")
 
 		#: The archive name, without the tag
-		self.archive_name = re.sub(
-				r"[^\w\d.]+",
+		self.archive_name = archive_name_sub_re.sub(
 				'_',
 				self.config["name"],
-				re.UNICODE,
 				) + f"-{self.config['version']}"
 
 		#: The (temporary) build directory.
-		self.build_dir = PathPlus(build_dir) or self.default_build_dir
+		self.build_dir = PathPlus(build_dir or self.default_build_dir)
 		self.clear_build_dir()
 
 		#: The output directory.
-		self.out_dir = PathPlus(out_dir) or self.default_out_dir
+		self.out_dir = PathPlus(out_dir or self.default_out_dir)
 		self.out_dir.maybe_make(parents=True)
 
 		#: Whether to enable verbose output.
 		self.verbose = verbose
 
 		#: Whether to use coloured output.
-		self.colour = colour
+		self.colour = resolve_color_default(colour)
 
-		self._echo = partial(click.echo, color=resolve_color_default(colour))
-
-	@property
-	def tag(self) -> str:
-		"""
-		The tag for the wheel.
-		"""
-
-		return "py3-none-any"
+		self._echo = partial(click.echo, color=self.colour)
 
 	@property
-	def default_build_dir(self) -> PathPlus:
+	def default_build_dir(self) -> PathPlus:  # pragma: no cover
 		"""
 		Provides a default for the ``build_dir`` argument.
 		"""
@@ -129,7 +124,7 @@ class AbstractBuilder(ABC):
 		return self.project_dir / "build"
 
 	@property
-	def default_out_dir(self) -> PathPlus:
+	def default_out_dir(self) -> PathPlus:  # pragma: no cover
 		"""
 		Provides a default for the ``out_dir`` argument.
 		"""
@@ -395,7 +390,7 @@ class SDistBuilder(AbstractBuilder):
 	"""
 
 	@property
-	def default_build_dir(self) -> PathPlus:
+	def default_build_dir(self) -> PathPlus:  # pragma: no cover
 		"""
 		Provides a default for the ``build_dir`` argument.
 		"""
@@ -439,6 +434,7 @@ class SDistBuilder(AbstractBuilder):
 				"pyproject.toml",
 				"requirements.txt",
 				]:
+			# TODO: ensure the build backend is set to whey (must be configurable to account for subclasses)
 			source = self.project_dir / filename
 			if source.is_file():
 				dest = self.build_dir / filename
@@ -482,7 +478,7 @@ class WheelBuilder(AbstractBuilder):
 	"""
 
 	@property
-	def default_build_dir(self) -> PathPlus:
+	def default_build_dir(self) -> PathPlus:  # pragma: no cover
 		"""
 		Provides a default for the ``build_dir`` argument.
 		"""
@@ -498,6 +494,14 @@ class WheelBuilder(AbstractBuilder):
 		dist_info = self.build_dir / f"{self.archive_name}.dist-info"
 		dist_info.maybe_make(parents=True)
 		return dist_info
+
+	@property
+	def tag(self) -> str:
+		"""
+		The tag for the wheel.
+		"""
+
+		return "py3-none-any"
 
 	def write_entry_points(self) -> None:
 		"""
@@ -586,7 +590,7 @@ class WheelBuilder(AbstractBuilder):
 					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
 					self.report_written(file)
 
-		emoji = "🎡 " if self.colour and sys.platform != "win32" else ''
+		emoji = '' if self.colour is False or sys.platform == "win32" else "🎡 "
 		self._echo(Fore.GREEN(f"{emoji}Wheel created at {wheel_filename.resolve().as_posix()}"))
 
 		return wheel_filename.name

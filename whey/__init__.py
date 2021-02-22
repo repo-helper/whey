@@ -75,5 +75,5 @@ def build_sdist(sdist_directory, config_settings=None):
 		return builder.build_sdist()
 
 
-def get_requires_for_build_sdist(config_settings=None):
+def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover
 	return []

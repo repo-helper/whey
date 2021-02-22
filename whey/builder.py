@@ -417,7 +417,7 @@ class SDistBuilder(AbstractBuilder):
 				if file.is_file():
 					sdist_archive.add(str(file), arcname=file.relative_to(self.build_dir).as_posix())
 
-		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve()}"))
+		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve().as_posix()}"))
 		return os.path.basename(sdist_filename)
 
 	def build_sdist(self) -> str:
@@ -587,7 +587,7 @@ class WheelBuilder(AbstractBuilder):
 					self.report_written(file)
 
 		emoji = "🎡 " if sys.platform != "win32" else ''
-		self._echo(Fore.GREEN(f"{emoji}Wheel created at {wheel_filename.resolve()}"))
+		self._echo(Fore.GREEN(f"{emoji}Wheel created at {wheel_filename.resolve().as_posix()}"))
 
 		return wheel_filename.name
 

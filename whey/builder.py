@@ -182,7 +182,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		if self.verbose:
-			self._echo(f"Copying {source.resolve()} -> {target.relative_to(self.build_dir)}")
+			self._echo(f"Copying {source.resolve().as_posix()} -> {target.relative_to(self.build_dir).as_posix()}")
 
 	def report_removed(self, removed_file: pathlib.Path) -> None:
 		"""
@@ -196,7 +196,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		if self.verbose:
-			self._echo(f"Removing {removed_file.relative_to(self.build_dir)}")
+			self._echo(f"Removing {removed_file.relative_to(self.build_dir).as_posix()}")
 
 	def report_written(self, written_file: pathlib.Path) -> None:
 		"""
@@ -210,7 +210,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		if self.verbose:
-			self._echo(f"Writing {written_file.relative_to(self.build_dir)}")
+			self._echo(f"Writing {written_file.relative_to(self.build_dir).as_posix()}")
 
 	def copy_additional_files(self) -> None:  # pylint: disable=useless-return
 		"""

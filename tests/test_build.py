@@ -253,6 +253,7 @@ def test_build_success(
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
+				colour=False,
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
@@ -268,6 +269,7 @@ def test_build_success(
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
+				colour=False,
 				)
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
@@ -314,6 +316,7 @@ def test_build_complete(
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
+				colour=False,
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
@@ -329,6 +332,7 @@ def test_build_complete(
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
+				colour=False,
 				)
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
@@ -388,6 +392,7 @@ def test_build_additional_files(
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
+				colour=False,
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
@@ -403,6 +408,7 @@ def test_build_additional_files(
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
+				colour=False,
 				)
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()

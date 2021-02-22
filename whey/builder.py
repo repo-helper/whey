@@ -78,7 +78,7 @@ class AbstractBuilder(ABC):
 			out_dir: Optional[PathLike] = None,
 			*,
 			verbose: bool = False,
-			colour: bool = False,
+			colour: bool = True,
 			):
 
 		# Walk up the tree until a "pyproject.toml" file is found.
@@ -586,7 +586,7 @@ class WheelBuilder(AbstractBuilder):
 					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
 					self.report_written(file)
 
-		emoji = "🎡 " if sys.platform != "win32" else ''
+		emoji = "🎡 " if self.colour and sys.platform != "win32" else ''
 		self._echo(Fore.GREEN(f"{emoji}Wheel created at {wheel_filename.resolve().as_posix()}"))
 
 		return wheel_filename.name

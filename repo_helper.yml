@@ -39,7 +39,11 @@ extra_sphinx_extensions:
  - sphinx_click
 
 classifiers:
+ - 'Development Status :: 3 - Alpha'
  - 'Environment :: Console'
+ - 'Intended Audience :: Developers'
+ - 'Topic :: Software Development :: Libraries :: Python Modules'
+ - "Topic :: Software Development :: Build Tools"
 
 keywords:
  - pep517
@@ -49,3 +53,5 @@ keywords:
  - wheel
  - packaging
  - distribution
+
+min_coverage: 90

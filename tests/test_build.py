@@ -279,7 +279,7 @@ def test_build_success(
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 	outerr = capsys.readouterr()
-	data["stdout"] = outerr.out.replace(str(tmp_pathplus), "...")
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
 	data["stderr"] = outerr.err
 
 	advanced_data_regression.check(data)
@@ -346,7 +346,7 @@ def test_build_complete(
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
-	data["stdout"] = outerr.out.replace(str(tmp_pathplus), "...")
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
 	data["stderr"] = outerr.err
 
 	advanced_data_regression.check(data)
@@ -422,7 +422,7 @@ def test_build_additional_files(
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
-	data["stdout"] = outerr.out.replace(str(tmp_pathplus), "...")
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
 	data["stderr"] = outerr.err
 
 	advanced_data_regression.check(data)

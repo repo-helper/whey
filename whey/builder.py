@@ -590,8 +590,7 @@ class WheelBuilder(AbstractBuilder):
 					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
 					self.report_written(file)
 
-		emoji = '' if self.colour is False or sys.platform == "win32" else "🎡 "
-		self._echo(Fore.GREEN(f"{emoji}Wheel created at {wheel_filename.resolve().as_posix()}"))
+		self._echo(Fore.GREEN(f"Wheel created at {wheel_filename.resolve().as_posix()}"))
 
 		return wheel_filename.name
 

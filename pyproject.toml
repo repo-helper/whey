@@ -9,7 +9,6 @@ description = "A simple Python wheel builder for simple projects."
 readme = "README.rst"
 keywords = [ "pep517", "pep621", "build", "sdist", "wheel", "packaging", "distribution",]
 dynamic = [ "classifiers", "requires-python", "dependencies",]
-
 [[project.authors]]
 email = "dominic@davis-foster.co.uk"
 name = "Dominic Davis-Foster"

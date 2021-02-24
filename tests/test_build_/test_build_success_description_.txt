@@ -1,0 +1,4 @@
+Metadata-Version: 2.1
+Name: spam
+Version: 2020.0.0
+Summary: Lovely Spam! Wonderful Spam!

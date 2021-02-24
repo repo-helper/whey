@@ -310,29 +310,32 @@ class AbstractBuilder(ABC):
 		maintainer_email = []
 
 		for entry in self.config["authors"]:
-			if "name" in entry and "email" in entry:
+			if entry["name"] and entry["email"]:
 				author_email.append("{name} <{email}>".format_map(entry))
-			elif "email" in entry:
+			elif entry["email"]:
 				author_email.append(entry["email"])
-			elif "name" in entry:
+			elif entry["name"]:
 				author.append(entry["name"])
 
 		for entry in self.config["maintainers"]:
-			if "name" in entry and "email" in entry:
+			if entry["name"] and entry["email"]:
 				maintainer_email.append("{name} <{email}>".format_map(entry))
-			elif "email" in entry:
+			elif entry["email"]:
 				maintainer_email.append(entry["email"])
-			elif "name" in entry:
+			elif entry["name"]:
 				maintainer.append(entry["name"])
 
-		if author:
-			metadata["Author"] = word_join(author)
+		# TODO: I'm not quite sure how PEP621 expects a name for one author and the email for another to be handled.
+
 		if author_email:
 			metadata["Author-email"] = ", ".join(author_email)
-		if maintainer:
-			metadata["Author"] = word_join(maintainer)
+		elif author:
+			metadata["Author"] = word_join(author)
+
 		if maintainer_email:
 			metadata["Author-email"] = ", ".join(maintainer_email)
+		elif maintainer:
+			metadata["Author"] = word_join(maintainer)
 
 		if self.config["license-key"] is not None:
 			metadata["License"] = self.config["license-key"]
@@ -352,7 +355,8 @@ class AbstractBuilder(ABC):
 		for classifier in self.config["classifiers"]:
 			metadata["Classifier"] = classifier
 
-		metadata["Requires-Python"] = str(self.config["requires-python"])
+		if self.config["requires-python"]:
+			metadata["Requires-Python"] = str(self.config["requires-python"])
 
 		for requirement in self.config["dependencies"]:
 			metadata["Requires-Dist"] = str(requirement)

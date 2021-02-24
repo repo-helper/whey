@@ -5,8 +5,9 @@ import zipfile
 
 # 3rd party
 import pytest
-from coincidence.regressions import AdvancedDataRegressionFixture
+from coincidence.regressions import AdvancedDataRegressionFixture, check_file_regression
 from domdf_python_tools.paths import PathPlus
+from pytest_regressions.file_regression import FileRegressionFixture
 
 # this package
 from tests.example_configs import (
@@ -176,6 +177,7 @@ def test_build_success(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
+		file_regression: FileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -199,6 +201,9 @@ def test_build_success(
 
 		with zip_file.open("spam/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+		with zip_file.open("spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -236,6 +241,7 @@ def test_build_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
+		file_regression: FileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -262,6 +268,9 @@ def test_build_complete(
 
 		with zip_file.open("whey/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -296,6 +305,7 @@ def test_build_complete(
 def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
+		file_regression: FileRegressionFixture,
 		capsys,
 		):
 
@@ -338,6 +348,9 @@ def test_build_additional_files(
 
 		with zip_file.open("whey/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(

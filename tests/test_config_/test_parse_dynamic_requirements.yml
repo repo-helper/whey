@@ -3,6 +3,7 @@ authors: []
 classifiers:
 - 'Development Status :: 4 - Beta'
 - 'License :: OSI Approved :: MIT License'
+- 'Operating System :: OS Independent'
 - 'Programming Language :: Python'
 - 'Programming Language :: Python :: 3 :: Only'
 - 'Programming Language :: Python :: 3.6'
@@ -44,7 +45,10 @@ maintainers: []
 name: whey
 optional-dependencies: {}
 package: whey
-platforms: null
+platforms:
+- Windows
+- macOS
+- Linux
 python-implementations:
 - CPython
 - PyPy

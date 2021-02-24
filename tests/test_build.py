@@ -106,7 +106,7 @@ Documentation = "https://whey.readthedocs.io/en/latest"
 base-classifiers = [ "Development Status :: 4 - Beta",]
 python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
 python-implementations = [ "CPython", "PyPy",]
-platform = [ "Windows", "macOS", "Linux",]
+platforms = [ "Windows", "macOS", "Linux",]
 license-key = "MIT"
 """
 

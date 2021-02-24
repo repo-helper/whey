@@ -786,6 +786,8 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	:param config: The parsed config from ``pyproject.toml``.
 	"""  # noqa: D400
 
+	# TODO: Typing :: Typed
+
 	parsed_classifiers = set(config["base-classifiers"])
 
 	platforms = config["platforms"]
@@ -866,7 +868,7 @@ def load_toml(filename: PathLike):
 	parsed_config.setdefault("readme", None)
 
 	# tool.whey
-	parsed_config.setdefault("package", parsed_config.get("name").translate({46: '/', 45: '_'}))
+	parsed_config.setdefault("package", parsed_config["name"].translate({46: '/', 45: '_'}))
 	parsed_config.setdefault("additional-files", [])
 	parsed_config.setdefault("license-key", None)
 	parsed_config.setdefault("base-classifiers", [])

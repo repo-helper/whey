@@ -44,6 +44,7 @@ from zipfile import ZipFile
 
 # 3rd party
 import click
+import toml
 from consolekit.terminal_colours import Fore, resolve_color_default
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.stringlist import StringList
@@ -51,6 +52,7 @@ from domdf_python_tools.typing import PathLike
 from domdf_python_tools.words import word_join
 from first import first
 from shippinglabel.checksum import get_record_entry
+from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
 # this package
 from whey.config import load_toml
@@ -419,6 +421,22 @@ class SDistBuilder(AbstractBuilder):
 		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve().as_posix()}"))
 		return os.path.basename(sdist_filename)
 
+	def write_pyproject_toml(self):
+		"""
+		Write the ``pyproject.toml`` file.
+		"""
+
+		# Copy pyproject.toml
+		pp_toml = toml.loads((self.project_dir / "pyproject.toml").read_text())
+		pp_toml.setdefault("build-system", {})
+		current_requires = map(ComparableRequirement, pp_toml["build-system"].get("requires", ()))
+		new_requirements = combine_requirements(ComparableRequirement("whey"), *current_requires)
+		pp_toml["build-system"]["requires"] = list(map(str, sorted(new_requirements)))
+		pp_toml["build-system"]["build-backend"] = "whey"
+		(self.build_dir / "pyproject.toml").write_clean(toml.dumps(pp_toml))
+		self.report_copied(self.project_dir / "pyproject.toml", self.build_dir / "pyproject.toml")
+		# TODO: perhaps make some of the dynamic fields static?
+
 	def build_sdist(self) -> str:
 		"""
 		Build the source distribution.
@@ -434,11 +452,9 @@ class SDistBuilder(AbstractBuilder):
 		self.copy_additional_files()
 		self.write_license(self.build_dir)
 
-		for filename in [
-				"pyproject.toml",
-				"requirements.txt",
-				]:
-			# TODO: ensure the build backend is set to whey (must be configurable to account for subclasses)
+		self.write_pyproject_toml()
+
+		for filename in ["requirements.txt"]:
 			source = self.project_dir / filename
 			if source.is_file():
 				dest = self.build_dir / filename

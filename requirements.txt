@@ -6,6 +6,6 @@ email-validator>=1.1.2
 first>=2.0.2
 natsort>=7.1.1
 packaging>=20.9
-readme-renderer[md]>=28.0
+readme-renderer[md]>=27.0
 shippinglabel>=0.10.0
 toml>=0.10.2

@@ -8,7 +8,9 @@ sdist_content:
 - whey/static/foo.c
 - whey/static/foo.py
 - whey/style.css
-stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
+stdout: 'Building ...
+
+  Copying .../whey/__init__.py -> whey/__init__.py
 
   Copying .../whey/static/foo.py -> whey/static/foo.py
 

@@ -71,7 +71,8 @@ def main(
 		binary = True
 		source = True
 
-	project = PathPlus(project)
+	project = PathPlus(project).resolve()
+	print(f"Building {project}")
 
 	if binary:
 		wheel_builder = WheelBuilder(

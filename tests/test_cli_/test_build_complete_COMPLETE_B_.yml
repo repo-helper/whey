@@ -5,7 +5,9 @@ sdist_content:
 - pyproject.toml
 - requirements.txt
 - whey/__init__.py
-stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
+stdout: 'Building ...
+
+  Copying .../whey/__init__.py -> whey/__init__.py
 
   Writing whey-2021.0.0.dist-info/LICENSE
 

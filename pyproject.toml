@@ -25,6 +25,8 @@ Documentation = "https://whey.readthedocs.io/en/latest"
 [project.scripts]
 whey = "whey.__main__:main"
 
+[project.entry-points]
+
 [tool.whey]
 base-classifiers = [
     "Development Status :: 3 - Alpha",

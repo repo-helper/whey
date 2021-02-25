@@ -651,7 +651,7 @@ class WheyParser(AbstractConfigParser):
 		"""
 		Parse the ``package`` key, giving the name of the importable package.
 
-		This defaults to `[project.name] <https://www.python.org/dev/peps/pep-0621/#name>`_ if unspecified.
+		This defaults to `project.name <https://www.python.org/dev/peps/pep-0621/#name>`_ if unspecified.
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""
@@ -678,8 +678,8 @@ class WheyParser(AbstractConfigParser):
 	def parse_additional_files(self, config: Dict[str, TOML_TYPES]) -> List[str]:
 		"""
 		Parse the ``additional-files`` key,
-		giving `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_
-		style entries for additional files to include in distributions.
+		giving `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_-style
+		entries for additional files to include in distributions.
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""  # noqa: D400

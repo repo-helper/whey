@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "whey"
-version = "2021.0.0"
+version = "0.0.1"
 description = "A simple Python wheel builder for simple projects."
 readme = "README.rst"
 keywords = [ "pep517", "pep621", "build", "sdist", "wheel", "packaging", "distribution",]
-dynamic = [ "classifiers", "requires-python", "dependencies",]
+dynamic = [ "requires-python", "classifiers", "dependencies",]
 [[project.authors]]
 email = "dominic@davis-foster.co.uk"
 name = "Dominic Davis-Foster"
@@ -17,14 +17,24 @@ name = "Dominic Davis-Foster"
 file = "LICENSE"
 
 [project.urls]
-Homepage = "https://whey.readthedocs.io/en/latest"
-Documentation = "https://whey.readthedocs.io/en/latest"
+Homepage = "https://github.com/repo-helper/whey"
 "Issue Tracker" = "https://github.com/repo-helper/whey/issues"
 "Source Code" = "https://github.com/repo-helper/whey"
+Documentation = "https://whey.readthedocs.io/en/latest"
+
+[project.scripts]
+whey = "whey.__main__:main"
 
 [tool.whey]
-base-classifiers = [ "Development Status :: 4 - Beta",]
-python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
+base-classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+python-versions = [ "3.6", "3.7", "3.8", "3.9",]
 python-implementations = [ "CPython", "PyPy",]
-platform = [ "Windows", "macOS", "Linux",]
+platforms = [ "Windows", "macOS", "Linux",]
 license-key = "MIT"

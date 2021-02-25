@@ -72,7 +72,7 @@ def main(
 		source = True
 
 	project = PathPlus(project).resolve()
-	print(f"Building {project}")
+	print(f"Building {project.as_posix()}")
 
 	if binary:
 		wheel_builder = WheelBuilder(

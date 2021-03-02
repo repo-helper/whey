@@ -33,9 +33,9 @@ import pathlib
 import posixpath
 import re
 import shutil
-import sys
 import tarfile
 from abc import ABC
+from email.headerregistry import Address
 from email.message import EmailMessage
 from functools import partial
 from io import StringIO
@@ -313,7 +313,8 @@ class AbstractBuilder(ABC):
 
 		for entry in self.config["authors"]:
 			if entry["name"] and entry["email"]:
-				author_email.append("{name} <{email}>".format_map(entry))
+				address = Address(entry["name"], addr_spec=entry["email"])
+				author_email.append(str(address))
 			elif entry["email"]:
 				author_email.append(entry["email"])
 			elif entry["name"]:

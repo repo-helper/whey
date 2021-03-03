@@ -868,7 +868,7 @@ def load_toml(filename: PathLike):
 	parsed_config.setdefault("readme", None)
 
 	# tool.whey
-	parsed_config.setdefault("package", parsed_config["name"].translate({46: '/', 45: '_'}))
+	parsed_config.setdefault("package", config["project"]["name"].replace('.', '/'))
 	parsed_config.setdefault("additional-files", [])
 	parsed_config.setdefault("license-key", None)
 	parsed_config.setdefault("base-classifiers", [])

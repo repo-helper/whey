@@ -150,10 +150,19 @@ class AbstractBuilder(ABC):
 
 		pkgdir = self.project_dir / self.config["package"]
 
+		if not pkgdir.is_dir():
+			raise FileNotFoundError(f"Package directory '{self.config['package']}' not found.")
+
+		found_file = False
+
 		for py_pattern in {"**/*.py", "**/*.pyi", "**/*.pyx", "**/py.typed"}:
 			for py_file in pkgdir.rglob(py_pattern):
 				if "__pycache__" not in py_file.parts:
+					found_file = True
 					yield py_file
+
+		if not found_file:
+			raise FileNotFoundError(f"No Python source files found in {pkgdir}")
 
 	def copy_source(self) -> None:
 		"""

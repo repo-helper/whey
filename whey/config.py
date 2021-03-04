@@ -370,7 +370,7 @@ class PEP621Parser(AbstractConfigParser):
 		:param config: The unparsed TOML config for the ``[project]`` table.
 		"""
 
-		license = config["license"]  # noqa: A001
+		license = config["license"]  # noqa: A001  # pylint: disable=redefined-builtin
 
 		if "text" in license and "file" in license:
 			raise BadConfigError(

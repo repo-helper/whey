@@ -9,6 +9,18 @@ whey
 .. end short_desc
 
 
+``whey``:
+
+* supports `PEP 621 <https://www.python.org/dev/peps/pep-0621/>`_ metadata.
+* can be used as a `PEP 517 <https://www.python.org/dev/peps/pep-0517/>`_ build backend.
+* creates `PEP 427 <https://www.python.org/dev/peps/pep-0427/>`_ `wheels <https://realpython.com/python-wheels/>`_.
+* handles type hint files
+  (`py.typed <https://www.python.org/dev/peps/pep-0561/>`_ and ``*.pyi`` stubs).
+* is distributed under the `MIT License <https://choosealicense.com/licenses/mit/>`_.
+* `is the liquid remaining after milk has been curdled and strained <https://en.wikipedia.org/wiki/Whey>`_.
+  It is a byproduct of the manufacture of cheese and has several commercial uses.
+
+
 .. start shields
 
 .. list-table::

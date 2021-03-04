@@ -82,6 +82,8 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 	:samp:`recursive-exclude {dir-pattern} {pat1} {pat2} ...`  Remove all files under directories matching ``dir-pattern`` that match any of the listed patterns
 	=========================================================  ==================================================================================================
 
+	``whey`` was built with type hints in mind, and so it will automatically include any ``py.typed`` files and ``*.pyi`` stub files automatically.
+
 	**Example**:
 
 	.. code-block:: TOML

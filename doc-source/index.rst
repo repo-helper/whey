@@ -2,11 +2,39 @@
 whey
 #####
 
+.. figure:: Little_Miss_Muffet_-_Sir_John_Everett_Millais.png
+	:figwidth: 30%
+	:align: right
+
+	Miss Muffet sitting on a tuffet, by :wikipedia:`John Everett Millais`, 1884
+
 .. start short_desc
 
 **A simple Python wheel builder for simple projects.**
 
 .. end short_desc
+
+
+..
+
+	| Little Miss Muffet
+	| She sat on a tuffet,
+	| Eating of curds and whey;
+	| There came a little spider,
+	| Who sat down beside her,
+	| And frighten'd Miss Muffet away.
+
+
+``whey``:
+
+* supports :pep:`621` metadata.
+* can be used as a :pep:`517` build backend.
+* creates :pep:`427` `wheels <https://realpython.com/python-wheels/>`_.
+* handles type hint files
+  (`py.typed <https://www.python.org/dev/peps/pep-0561/>`_ and ``*.pyi`` stubs).
+* is distributed under the `MIT License <https://choosealicense.com/licenses/mit/>`_.
+* :wikipedia:`is the liquid remaining after milk has been curdled and strained <Whey>`.
+  It is a byproduct of the manufacture of cheese and has several commercial uses.
 
 .. start shields
 

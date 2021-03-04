@@ -113,7 +113,7 @@ whey
 .. |language| image:: https://img.shields.io/github/languages/top/repo-helper/whey
 	:alt: GitHub top language
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/repo-helper/whey/v0.0.1
+.. |commits-since| image:: https://img.shields.io/github/commits-since/repo-helper/whey/v0.0.2
 	:target: https://github.com/repo-helper/whey/pulse
 	:alt: GitHub commits since tagged version
 

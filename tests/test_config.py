@@ -19,6 +19,7 @@ from tests.example_configs import (
 		MAINTAINERS,
 		MINIMAL_CONFIG,
 		OPTIONAL_DEPENDENCIES,
+		UNICODE,
 		URLS
 		)
 from whey.config import AbstractConfigParser, BadConfigError, construct_path, load_toml
@@ -166,6 +167,7 @@ additional-files = [
 				pytest.param(OPTIONAL_DEPENDENCIES, id="optional-dependencies"),
 				pytest.param(URLS, id="urls"),
 				pytest.param(ENTRY_POINTS, id="entry_points"),
+				pytest.param(UNICODE, id="unicode"),
 				pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),

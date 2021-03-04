@@ -13,6 +13,12 @@ authors = [
 ]
 """
 
+UNICODE = f"""\
+{MINIMAL_CONFIG}
+description = "Factory ⸻ A code generator 🏭"
+authors = [{{name = "Łukasz Langa"}}]
+"""
+
 MAINTAINERS = f"""\
 {MINIMAL_CONFIG}
 maintainers = [

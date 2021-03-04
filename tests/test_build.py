@@ -20,6 +20,7 @@ from tests.example_configs import (
 		MAINTAINERS,
 		MINIMAL_CONFIG,
 		OPTIONAL_DEPENDENCIES,
+		UNICODE,
 		URLS
 		)
 from whey import SDistBuilder, WheelBuilder
@@ -172,6 +173,7 @@ package = "whey"
 				pytest.param(OPTIONAL_DEPENDENCIES, id="optional-dependencies"),
 				pytest.param(URLS, id="urls"),
 				pytest.param(ENTRY_POINTS, id="entry_points"),
+				pytest.param(UNICODE, id="unicode"),
 				]
 		)
 def test_build_success(

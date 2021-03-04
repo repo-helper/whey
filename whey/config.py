@@ -40,6 +40,7 @@ from apeye import URL
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
 from domdf_python_tools.typing import PathLike
+from domdf_python_tools.words import word_join
 from email_validator import EmailSyntaxError, validate_email  # type: ignore
 from natsort import natsorted, ns
 from packaging.specifiers import InvalidSpecifier, Specifier, SpecifierSet
@@ -618,11 +619,13 @@ class PEP621Parser(AbstractConfigParser):
 			raise BadConfigError("The 'project.name' field must be provided.")
 
 		if dynamic_fields:
-			# TODO
-			if any(f not in {"classifiers", "requires-python", "dependencies"} for f in dynamic_fields):
-				raise BadConfigError(
-						"whey only supports 'classifiers', 'dependencies', and 'requires-python' as dynamic fields."
-						)
+			# TODO: Support the remaining fields as dynamic
+
+			supported_dynamic = ("classifiers", "requires-python", "dependencies")
+
+			if any(f not in supported_dynamic for f in dynamic_fields):
+				supported = word_join(supported_dynamic, oxford=True, use_repr=True)
+				raise BadConfigError(f"whey only supports {supported} as dynamic fields.")
 
 		if "version" not in config:
 			raise BadConfigError("The 'project.version' field must be provided.")

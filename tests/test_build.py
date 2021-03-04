@@ -387,11 +387,6 @@ def test_build_additional_files(
 	advanced_data_regression.check(data)
 
 
-# TODO: test some bad configurations
-# TODO: test building a wheel from an sdist
-# TODO: reducibility, including building wheel from sdist
-
-
 def test_build_missing_dir(tmp_pathplus: PathPlus):
 	(tmp_pathplus / "pyproject.toml").write_clean(MINIMAL_CONFIG)
 
@@ -695,3 +690,6 @@ def test_build_stubs_name(
 	data["stderr"] = outerr.err
 
 	advanced_data_regression.check(data)
+
+
+# TODO: test some bad configurations

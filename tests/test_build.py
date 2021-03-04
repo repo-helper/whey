@@ -1,6 +1,4 @@
 # stdlib
-import filecmp
-import os
 import shutil
 import tarfile
 import tempfile
@@ -9,7 +7,7 @@ import zipfile
 # 3rd party
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, check_file_regression
-from domdf_python_tools.paths import PathPlus
+from domdf_python_tools.paths import PathPlus, compare_dirs
 from pytest_regressions.file_regression import FileRegressionFixture
 
 # this package
@@ -396,25 +394,27 @@ def test_build_missing_dir(tmp_pathplus: PathPlus):
 	(tmp_pathplus / "pyproject.toml").write_clean(MINIMAL_CONFIG)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
 		with pytest.raises(FileNotFoundError, match="Package directory 'spam' not found."):
-			wheel_builder = WheelBuilder(
-					project_dir=tmp_pathplus,
-					build_dir=tmpdir,
-					out_dir=tmp_pathplus,
-					verbose=True,
-					colour=False,
-					)
 			wheel_builder.build_wheel()
 
 	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
 		with pytest.raises(FileNotFoundError, match="Package directory 'spam' not found."):
-			sdist_builder = SDistBuilder(
-					project_dir=tmp_pathplus,
-					build_dir=tmpdir,
-					out_dir=tmp_pathplus,
-					verbose=True,
-					colour=False,
-					)
 			sdist_builder.build_sdist()
 
 
@@ -423,25 +423,27 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 	(tmp_pathplus / "spam").mkdir()
 
 	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
 		with pytest.raises(FileNotFoundError, match="No Python source files found in"):
-			wheel_builder = WheelBuilder(
-					project_dir=tmp_pathplus,
-					build_dir=tmpdir,
-					out_dir=tmp_pathplus,
-					verbose=True,
-					colour=False,
-					)
 			wheel_builder.build_wheel()
 
 	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
 		with pytest.raises(FileNotFoundError, match="No Python source files found in"):
-			sdist_builder = SDistBuilder(
-					project_dir=tmp_pathplus,
-					build_dir=tmpdir,
-					out_dir=tmp_pathplus,
-					verbose=True,
-					colour=False,
-					)
 			sdist_builder.build_sdist()
 
 
@@ -558,81 +560,21 @@ def test_build_wheel_reproducible(
 	# extract both
 
 	shutil.unpack_archive(
-			tmp_pathplus / "wheel1" / wheel, extract_dir=tmp_pathplus / "wheel1" / "unpack", format="zip"
+			str(tmp_pathplus / "wheel1" / wheel),
+			extract_dir=tmp_pathplus / "wheel1" / "unpack",
+			format="zip",
 			)
 	shutil.unpack_archive(
-			tmp_pathplus / "wheel1" / wheel, extract_dir=tmp_pathplus / "wheel2" / "unpack", format="zip"
+			str(tmp_pathplus / "wheel1" / wheel),
+			extract_dir=tmp_pathplus / "wheel2" / "unpack",
+			format="zip",
 			)
 	# (tmp_pathplus / "wheel2" / "unpack" / "foo.txt").touch()
 
-	assert is_same(
+	assert compare_dirs(
 			tmp_pathplus / "wheel1" / "unpack",
 			tmp_pathplus / "wheel2" / "unpack",
 			)
-
-
-class DirComparator(filecmp.dircmp):
-	"""
-	Compare the content of dir1 and dir2. In contrast with filecmp.dircmp, this
-	subclass compares the content of files with the same path.
-	"""
-
-	# From https://stackoverflow.com/a/24860799, public domain.
-	# Thanks Philippe
-
-	def phase3(self):
-		"""
-		Find out differences between common files.
-		Ensure we are using content comparison with shallow=False.
-		"""
-
-		fcomp = filecmp.cmpfiles(self.left, self.right, self.common_files, shallow=False)
-		self.same_files, self.diff_files, self.funny_files = fcomp
-
-	def phase4(self):  # Find out differences between common subdirectories
-		# A new dircmp (or MyDirCmp if dircmp was subclassed) object is created
-		# for each common subdirectory,
-		# these are stored in a dictionary indexed by filename.
-		# The hide and ignore properties are inherited from the parent
-		self.subdirs = {}
-		for x in self.common_dirs:
-			a_x = os.path.join(self.left, x)
-			b_x = os.path.join(self.right, x)
-			self.subdirs[x] = self.__class__(a_x, b_x, self.ignore, self.hide)
-
-	methodmap = dict(
-			subdirs=phase4,
-			same_files=phase3,
-			diff_files=phase3,
-			funny_files=phase3,
-			common_dirs=filecmp.dircmp.phase2,
-			common_files=filecmp.dircmp.phase2,
-			common_funny=filecmp.dircmp.phase2,
-			common=filecmp.dircmp.phase1,
-			left_only=filecmp.dircmp.phase1,
-			right_only=filecmp.dircmp.phase1,
-			left_list=filecmp.dircmp.phase0,
-			right_list=filecmp.dircmp.phase0
-			)
-
-
-def is_same(dir1, dir2):
-	"""
-	Compare two directory trees content.
-	Return False if they differ, True is they are the same.
-	"""
-
-	compared = DirComparator(dir1, dir2)
-	print(compared.subdirs)
-
-	if compared.left_only or compared.right_only or compared.diff_files or compared.funny_files:
-		return False
-
-	for subdir in compared.common_dirs:
-		if not is_same(os.path.join(dir1, subdir), os.path.join(dir2, subdir)):
-			return False
-
-	return True
 
 
 def test_build_underscore_name(

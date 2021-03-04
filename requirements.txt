@@ -1,7 +1,7 @@
 apeye>=0.7.0
 click>=7.1.2
 consolekit>=1.0.1
-domdf-python-tools>=2.6.0
+domdf-python-tools>=2.7.0
 email-validator>=1.1.2
 first>=2.0.2
 natsort>=7.1.1

@@ -27,7 +27,6 @@ __copyright__ = """
 """
 
 __version__ = "0.0.1"
-
 repo_root = pathlib.Path(__file__).parent
 install_requires = (repo_root / "requirements.txt").read_text(encoding="utf-8").split('\n')
 extras_require = {"all": []}

@@ -633,3 +633,121 @@ def is_same(dir1, dir2):
 			return False
 
 	return True
+
+
+def test_build_underscore_name(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		file_regression: FileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			"[project]",
+			'name = "spam_spam"',
+			'version = "2020.0.0"',
+			])
+	(tmp_pathplus / "spam_spam").mkdir()
+	(tmp_pathplus / "spam_spam" / "__init__.py").write_clean("print('hello world)")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+		wheel = wheel_builder.build_wheel()
+		assert (tmp_pathplus / wheel).is_file()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		data["wheel_content"] = sorted(zip_file.namelist())
+
+		with zip_file.open("spam_spam/__init__.py", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+		with zip_file.open("spam_spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+		tar = tarfile.open(tmp_pathplus / sdist)
+		data["sdist_content"] = sorted(tar.getnames())
+
+		with tar.extractfile("spam_spam/__init__.py") as fp:  # type: ignore
+			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+def test_build_stubs_name(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		file_regression: FileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			"[project]",
+			'name = "spam_spam-stubs"',
+			'version = "2020.0.0"',
+			])
+	(tmp_pathplus / "spam_spam-stubs").mkdir()
+	(tmp_pathplus / "spam_spam-stubs" / "__init__.pyi").write_clean("print('hello world)")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+		wheel = wheel_builder.build_wheel()
+		assert (tmp_pathplus / wheel).is_file()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		data["wheel_content"] = sorted(zip_file.namelist())
+
+		with zip_file.open("spam_spam-stubs/__init__.pyi", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+		with zip_file.open("spam_spam_stubs-2020.0.0.dist-info/METADATA", mode='r') as fp:
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+		tar = tarfile.open(tmp_pathplus / sdist)
+		data["sdist_content"] = sorted(tar.getnames())
+
+		with tar.extractfile("spam_spam-stubs/__init__.pyi") as fp:  # type: ignore
+			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)

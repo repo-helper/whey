@@ -154,6 +154,38 @@ license-key = "MIT"
 package = "whey"
 """
 
+LONG_REQUIREMENTS = """\
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"
+
+[project]
+name = "Whey"
+version = "2021.0.0"
+description = "A simple Python wheel builder for simple projects."
+readme = "README.rst"
+dynamic = [ "classifiers", "requires-python",]
+dependencies = [
+  "httpx",
+  "gidgethub[httpx]>4.0.0",
+  "django>2.1; os_name != 'nt'",
+  "django>2.0; os_name == 'nt'",
+  "typed-ast>=1.4.2; python_version < '3.8' and platform_python_implementation == 'CPython'"
+]
+
+[project.license]
+file = "LICENSE"
+
+[[project.authors]]
+email = "dominic@davis-foster.co.uk"
+name = "Dominic Davis-Foster"
+
+[tool.whey]
+base-classifiers = [ "Development Status :: 4 - Beta",]
+license-key = "MIT"
+package = "whey"
+"""
+
 
 @pytest.mark.parametrize(
 		"config",
@@ -238,6 +270,7 @@ def test_build_success(
 				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
 				]
 		)
 def test_build_complete(
@@ -448,6 +481,7 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 		"config", [
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
 				]
 		)
 def test_build_wheel_from_sdist(

@@ -337,7 +337,7 @@ class AbstractBuilder(ABC):
 			elif entry["name"]:
 				maintainer.append(entry["name"])
 
-		# TODO: I'm not quite sure how PEP621 expects a name for one author and the email for another to be handled.
+		# TODO: I'm not quite sure how PEP 621 expects a name for one author and the email for another to be handled.
 
 		if author_email:
 			metadata["Author-email"] = ", ".join(author_email)
@@ -389,7 +389,12 @@ class AbstractBuilder(ABC):
 			metadata["Description-Content-Type"] = self.config["readme"]["content-type"]
 			description = self.config["readme"]["text"]
 
-		metadata_file.write_lines([str(metadata), description])
+		metadata_file.write_lines([
+				# TODO: https://github.com/python/typeshed/issues/5094
+				metadata.as_string(maxheaderlen=2048, policy=metadata.policy.clone(utf8=True)),  # type: ignore
+				description,
+				])
+
 		self.report_written(metadata_file)
 
 

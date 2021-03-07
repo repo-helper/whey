@@ -478,7 +478,8 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 
 
 @pytest.mark.parametrize(
-		"config", [
+		"config",
+		[
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),

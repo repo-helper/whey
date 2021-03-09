@@ -665,6 +665,23 @@ class WheyParser(AbstractConfigParser):
 
 		return package
 
+	def parse_source_dir(self, config: Dict[str, TOML_TYPES]) -> str:
+		"""
+		Parse the ``source-dir`` key, giving the name of the directory containing the project's source.
+
+		This defaults to ``'.'`` if unspecified.
+
+		.. versionadded:: 0.0.4
+
+		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
+		"""
+
+		source_dir = config["source-dir"]
+
+		self.assert_type(source_dir, str, ["tool", "whey", "source-dir"])
+
+		return source_dir
+
 	def parse_license_key(self, config: Dict[str, TOML_TYPES]) -> str:
 		"""
 		Parse the ``license-key`` key, giving the identifier of the project's license. Optional.
@@ -772,6 +789,7 @@ class WheyParser(AbstractConfigParser):
 
 		return [
 				"package",
+				"source-dir",
 				"additional-files",
 				"license-key",
 				"base-classifiers",
@@ -871,7 +889,8 @@ def load_toml(filename: PathLike):
 	parsed_config.setdefault("readme", None)
 
 	# tool.whey
-	parsed_config.setdefault("package", config["project"]["name"].replace('.', '/'))
+	parsed_config.setdefault("package", config["project"]["name"].split('.', 1)[0])
+	parsed_config.setdefault("source-dir", '.')
 	parsed_config.setdefault("additional-files", [])
 	parsed_config.setdefault("license-key", None)
 	parsed_config.setdefault("base-classifiers", [])

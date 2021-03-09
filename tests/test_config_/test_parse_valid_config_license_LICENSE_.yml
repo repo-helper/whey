@@ -19,5 +19,6 @@ python-versions: null
 readme: null
 requires-python: null
 scripts: {}
+source-dir: .
 urls: {}
 version: 2020.0.0

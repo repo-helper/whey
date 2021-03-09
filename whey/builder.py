@@ -148,7 +148,7 @@ class AbstractBuilder(ABC):
 		Iterate over the files in the source directory.
 		"""
 
-		pkgdir = self.project_dir / self.config["package"]
+		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
 
 		if not pkgdir.is_dir():
 			raise FileNotFoundError(f"Package directory '{self.config['package']}' not found.")
@@ -170,7 +170,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		for py_file in self.iter_source_files():
-			target = self.build_dir / py_file.relative_to(self.project_dir)
+			target = self.build_dir / py_file.relative_to(self.project_dir / self.config["source-dir"])
 			target.parent.maybe_make(parents=True)
 			target.write_clean(py_file.read_text())
 			self.report_copied(py_file, target)

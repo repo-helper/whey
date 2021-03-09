@@ -55,6 +55,7 @@ python-versions:
 readme: null
 requires-python: '>=3.6'
 scripts: {}
+source-dir: .
 urls:
   Documentation: https://whey.readthedocs.io/en/latest
   Homepage: https://whey.readthedocs.io/en/latest

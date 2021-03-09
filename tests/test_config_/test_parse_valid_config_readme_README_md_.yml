@@ -20,5 +20,6 @@ readme:
   text: This is the readme.
 requires-python: null
 scripts: {}
+source-dir: .
 urls: {}
 version: 2020.0.0

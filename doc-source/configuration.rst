@@ -45,15 +45,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 	The path to the package to distribute, relative to the directory containing ``pyproject.toml``.
 	This defaults to `project.name <https://www.python.org/dev/peps/pep-0621/#name>`_ if unspecified.
 
-	**Examples**:
-
-	.. code-block:: TOML
-
-		[project]
-		name = "flake8"
-
-		[tool.whey]
-		package = "src/flake8"
+	**Example**:
 
 	.. code-block:: TOML
 
@@ -62,6 +54,30 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 		[tool.whey]
 		package = "domdf_python_tools"
+
+
+.. conf:: source-dir
+
+	**Type**: :class:`str`
+
+	The name of the directory containing the project's source.
+	This defaults to ``'.'`` if unspecified.
+
+	.. versionadded:: 0.0.4
+
+	.. attention::
+
+		:conf:`source-dir` does not currently work correctly with :conf:`additional-files`
+
+	**Example**:
+
+	.. code-block:: TOML
+
+		[project]
+		name = "flake8"
+
+		[tool.whey]
+		source_dir = "src/flake8"
 
 
 .. conf:: additional-files

@@ -18,6 +18,7 @@ python-versions: null
 readme: null
 requires-python: None
 scripts: {}
+source-dir: .
 urls:
   changelog: github.com/me/spam/blob/master/CHANGELOG.md
   documentation: readthedocs.org

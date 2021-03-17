@@ -24,7 +24,6 @@ from tests.example_configs import (
 		)
 from whey import Foreman
 
-
 COMPLETE_PROJECT_A = """\
 [project]
 name = "spam"

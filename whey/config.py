@@ -148,7 +148,7 @@ def read_readme(readme_file: PathLike, encoding="UTF-8") -> Tuple[str, str]:
 	elif readme_file.suffix.lower() == ".txt":
 		return readme_file.read_text(encoding=encoding), "text/plain"
 	else:
-		raise ValueError(f"Unrecognised filetype for '{readme_file!s}'")
+		raise BadConfigError(f"Unrecognised filetype for '{readme_file!s}'")
 
 
 class AbstractConfigParser(ABC):
@@ -807,7 +807,7 @@ class WheyParser(AbstractConfigParser):
 			if builder_type in builders:
 				entry_point_name = builders[builder_type]
 				if entry_point_name not in entry_points:
-					raise ValueError(
+					raise BadConfigError(
 							f"Unknown {builder_type} builder {entry_point_name}. \n"
 							f"Is it registered as an entry point under 'whey.builder'?"
 							)

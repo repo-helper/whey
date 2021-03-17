@@ -401,7 +401,7 @@ class AbstractBuilder(ABC):
 
 		For example, the wheel builder calls this as the final step before adding files to the archive,
 		giving an opportunity for subclasses of :class:`~.WheelBuilder` to include additional steps
-		without having to override the entire :meth:`~.build_wheel` method.
+		without having to override the entire :meth:`~.WheelBuilder.build_wheel` method.
 		"""
 
 	@abstractmethod

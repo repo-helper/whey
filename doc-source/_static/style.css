@@ -1,6 +1,10 @@
 /* This file is managed by 'repo_helper'. Don't edit it directly. */
 
 div.highlight {
-    -moz-tab-size: 4; /* Firefox */
-    tab-size: 4;
+	-moz-tab-size: 4;
+	tab-size: 4;
+}
+
+.field-list dt, dl.simple dt {
+	margin-top: 0.5rem;
 }

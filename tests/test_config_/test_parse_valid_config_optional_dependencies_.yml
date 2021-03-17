@@ -19,7 +19,7 @@ platforms: null
 python-implementations: null
 python-versions: null
 readme: null
-requires-python: None
+requires-python: null
 scripts: {}
 source-dir: .
 urls: {}

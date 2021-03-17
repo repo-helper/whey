@@ -24,6 +24,7 @@ from tests.example_configs import (
 		URLS
 		)
 from whey import SDistBuilder, WheelBuilder
+from whey.config import load_toml
 
 COMPLETE_PROJECT_A = """\
 [project]
@@ -224,6 +225,7 @@ def test_build_success(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -243,6 +245,7 @@ def test_build_success(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -292,6 +295,7 @@ def test_build_complete(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -311,6 +315,7 @@ def test_build_complete(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -372,6 +377,7 @@ def test_build_additional_files(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -395,6 +401,7 @@ def test_build_additional_files(
 				out_dir=tmp_pathplus,
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
@@ -426,6 +433,7 @@ def test_build_missing_dir(tmp_pathplus: PathPlus):
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -438,6 +446,7 @@ def test_build_missing_dir(tmp_pathplus: PathPlus):
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -455,6 +464,7 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -467,6 +477,7 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -504,6 +515,7 @@ def test_build_wheel_from_sdist(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
 				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -525,6 +537,7 @@ def test_build_wheel_from_sdist(
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
 				project_dir=tmp_pathplus / "sdist_unpacked",
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
 				verbose=True,
@@ -574,6 +587,7 @@ def test_build_wheel_reproducible(
 				out_dir=tmp_pathplus / "wheel1",
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / "wheel1" / wheel).is_file()
@@ -585,6 +599,7 @@ def test_build_wheel_reproducible(
 				out_dir=tmp_pathplus / "wheel2",
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / "wheel2" / wheel).is_file()
@@ -632,6 +647,7 @@ def test_build_underscore_name(
 				out_dir=tmp_pathplus,
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
@@ -651,6 +667,7 @@ def test_build_underscore_name(
 				out_dir=tmp_pathplus,
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
@@ -691,6 +708,7 @@ def test_build_stubs_name(
 				out_dir=tmp_pathplus,
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
@@ -710,6 +728,7 @@ def test_build_stubs_name(
 				out_dir=tmp_pathplus,
 				verbose=True,
 				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				)
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()

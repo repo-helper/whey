@@ -34,12 +34,12 @@ import posixpath
 import re
 import shutil
 import tarfile
-from abc import ABC
+from abc import ABC, abstractmethod
 from email.headerregistry import Address
 from email.message import EmailMessage
 from functools import partial
 from io import StringIO
-from typing import Iterator, Optional
+from typing import Any, Dict, Iterator, Mapping, Optional
 from zipfile import ZipFile
 
 # 3rd party
@@ -53,9 +53,6 @@ from domdf_python_tools.words import word_join
 from first import first
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
-
-# this package
-from whey.config import load_toml
 
 __all__ = ["AbstractBuilder", "SDistBuilder", "WheelBuilder"]
 
@@ -80,7 +77,8 @@ class AbstractBuilder(ABC):
 
 	def __init__(
 			self,
-			project_dir: pathlib.Path,
+			project_dir: PathPlus,
+			config: Mapping[str, Any],
 			build_dir: Optional[PathLike] = None,
 			out_dir: Optional[PathLike] = None,
 			*,
@@ -93,7 +91,7 @@ class AbstractBuilder(ABC):
 		self.project_dir: PathPlus = traverse_to_file(PathPlus(project_dir), "pyproject.toml")
 
 		#: Configuration parsed from "pyproject.toml".
-		self.config = load_toml(self.project_dir / "pyproject.toml")
+		self.config: Dict[str, Any] = dict(config)
 
 		#: The archive name, without the tag
 		self.archive_name = archive_name_sub_re.sub(
@@ -397,6 +395,25 @@ class AbstractBuilder(ABC):
 
 		self.report_written(metadata_file)
 
+	def call_additional_hooks(self):
+		"""
+		Subclasses may call this method to give *their* subclasses an opportunity to run custom code.
+
+		For example, the wheel builder calls this as the final step before adding files to the archive,
+		giving an opportunity for subclasses of :class:`~.WheelBuilder` to include additional steps
+		without having to override the entire :meth:`~.build_wheel` method.
+		"""
+
+	@abstractmethod
+	def build(self):
+		"""
+		Build the distribution.
+
+		:returns: The filename of the created archive.
+		"""
+
+		raise NotImplementedError
+
 
 class SDistBuilder(AbstractBuilder):
 	"""
@@ -478,6 +495,8 @@ class SDistBuilder(AbstractBuilder):
 
 		self.write_readme()
 		self.write_metadata(self.build_dir / "PKG-INFO")
+		self.call_additional_hooks()
+
 		return self.create_sdist_archive()
 
 	def write_readme(self):
@@ -498,6 +517,8 @@ class SDistBuilder(AbstractBuilder):
 		target.parent.maybe_make(parents=True)
 		target.write_clean(self.config["readme"]["text"])
 		self.report_written(target)
+
+	build = build_sdist
 
 
 class WheelBuilder(AbstractBuilder):
@@ -604,13 +625,7 @@ class WheelBuilder(AbstractBuilder):
 
 		with ZipFile(wheel_filename, mode='w') as wheel_archive:
 			with (self.dist_info / "RECORD").open('w') as fp:
-				for file in (self.build_dir / self.config["package"]).rglob('*'):
-					if file.is_file():
-						fp.write(get_record_entry(file, relative_to=self.build_dir))
-						fp.write('\n')
-						wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
-
-				for file in self.dist_info.rglob('*'):
+				for file in self.build_dir.rglob('*'):
 					if "RECORD" in file.name and self.dist_info.name in file.parts:
 						continue
 					if not file.is_file():
@@ -647,9 +662,12 @@ class WheelBuilder(AbstractBuilder):
 		self.write_entry_points()
 		self.write_metadata(self.dist_info / "METADATA")
 		self.write_wheel()
+		self.call_additional_hooks()
 
 		top_level = first(posixpath.split(self.config["package"]), default=self.config["package"])
 		(self.dist_info / "top_level.txt").write_clean(top_level)
 		self.report_written(self.dist_info / "top_level.txt")
 
 		return self.create_wheel_archive()
+
+	build = build_wheel

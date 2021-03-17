@@ -1,0 +1,54 @@
+additional-files: []
+authors: []
+classifiers:
+- 'Development Status :: 4 - Beta'
+- 'License :: OSI Approved :: MIT License'
+- 'Operating System :: OS Independent'
+- 'Programming Language :: Python'
+- 'Programming Language :: Python :: 3 :: Only'
+- 'Programming Language :: Python :: 3.6'
+- 'Programming Language :: Python :: 3.7'
+- 'Programming Language :: Python :: 3.8'
+- 'Programming Language :: Python :: 3.9'
+- 'Programming Language :: Python :: 3.10'
+- 'Programming Language :: Python :: Implementation :: CPython'
+- 'Programming Language :: Python :: Implementation :: PyPy'
+dependencies: []
+description: A simple Python wheel builder for simple projects.
+dynamic:
+- classifiers
+- requires-python
+entry-points: {}
+gui-scripts: {}
+keywords:
+- build
+- distribution
+- packaging
+- pep517
+- pep621
+- sdist
+- wheel
+license-key: MIT
+maintainers: []
+name: whey
+optional-dependencies: {}
+package: whey
+platforms:
+- Windows
+- macOS
+- Linux
+python-implementations:
+- CPython
+- PyPy
+python-versions:
+- '3.6'
+- '3.7'
+- '3.8'
+- '3.9'
+- '3.10'
+readme: null
+requires-python: '>=3.6'
+scripts: {}
+source-dir: .
+urls: {}
+version: 2021.0.0

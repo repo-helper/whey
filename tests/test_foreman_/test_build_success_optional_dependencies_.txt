@@ -1,0 +1,6 @@
+Metadata-Version: 2.1
+Name: spam
+Version: 2020.0.0
+Provides-Extra: test
+Requires-Dist: pytest<5.0.0 ; extra == 'test'
+Requires-Dist: pytest-cov[all] ; extra == 'test'

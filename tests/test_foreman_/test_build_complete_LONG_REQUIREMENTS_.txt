@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: whey
+Version: 2021.0.0
+Summary: A simple Python wheel builder for simple projects.
+Author-email: Dominic Davis-Foster <dominic@davis-foster.co.uk>
+License: MIT
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Requires-Dist: django>2.1; os_name != "nt"
+Requires-Dist: django>2.0; os_name == "nt"
+Requires-Dist: gidgethub[httpx]>4.0.0
+Requires-Dist: httpx
+Requires-Dist: typed-ast>=1.4.2; python_version < "3.8" and platform_python_implementation == "CPython"
+Description-Content-Type: text/x-rst
+
+
+Spam Spam Spam Spam

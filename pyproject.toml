@@ -25,8 +25,6 @@ Documentation = "https://whey.readthedocs.io/en/latest"
 [project.scripts]
 whey = "whey.__main__:main"
 
-[project.entry-points]
-
 [tool.whey]
 base-classifiers = [
     "Development Status :: 3 - Alpha",
@@ -40,3 +38,7 @@ python-versions = [ "3.6", "3.7", "3.8", "3.9",]
 python-implementations = [ "CPython", "PyPy",]
 platforms = [ "Windows", "macOS", "Linux",]
 license-key = "MIT"
+
+[project.entry-points."whey.builder"]
+whey_sdist = "whey.builder:SDistBuilder"
+whey_wheel = "whey.builder:WheelBuilder"

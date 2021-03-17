@@ -27,6 +27,7 @@
 #
 
 # stdlib
+import itertools
 import re
 from abc import ABC, abstractmethod
 from collections import defaultdict
@@ -37,6 +38,7 @@ import readme_renderer.markdown  # type: ignore
 import readme_renderer.rst  # type: ignore
 import toml
 from apeye import URL
+from domdf_python_tools.compat import importlib_metadata
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
 from domdf_python_tools.typing import PathLike
@@ -48,6 +50,9 @@ from packaging.version import InvalidVersion, Version
 from shippinglabel import normalize
 from shippinglabel.classifiers import validate_classifiers
 from shippinglabel.requirements import ComparableRequirement, combine_requirements, read_requirements
+
+# this package
+from whey.builder import AbstractBuilder, SDistBuilder, WheelBuilder
 
 __all__ = [
 		"AbstractConfigParser",
@@ -620,6 +625,7 @@ class PEP621Parser(AbstractConfigParser):
 
 		if dynamic_fields:
 			# TODO: Support the remaining fields as dynamic
+			# TODO: dynamic version numbers by parsing AST for __version__ in __init__.py
 
 			supported_dynamic = ("classifiers", "requires-python", "dependencies")
 
@@ -781,6 +787,35 @@ class WheyParser(AbstractConfigParser):
 
 		return parsed_classifiers
 
+	def parse_builders(self, config: Dict[str, TOML_TYPES]) -> Dict[str, Type[AbstractBuilder]]:
+		"""
+		Parse the ``builders`` table, which lists gives the entry points to use for the sdist and wheel builders.
+
+		This allows the user to select a custom builder with additional functionality.
+
+		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
+		"""
+
+		parsed_builders = get_default_builders()
+		builders = config["builders"]
+
+		entry_points: Dict[str, importlib_metadata.EntryPoint] = dict(get_entry_points())  # type: ignore
+
+		self.assert_type(builders, dict, ["tool", "whey", "builders"])
+
+		for builder_type in ["binary", "sdist", "wheel"]:
+			if builder_type in builders:
+				entry_point_name = builders[builder_type]
+				if entry_point_name not in entry_points:
+					raise ValueError(
+							f"Unknown {builder_type} builder {entry_point_name}. \n"
+							f"Is it registered as an entry point under 'whey.builder'?"
+							)
+
+				parsed_builders[builder_type] = entry_points[entry_point_name].load()
+
+		return parsed_builders
+
 	@property
 	def keys(self) -> List[str]:
 		"""
@@ -796,6 +831,7 @@ class WheyParser(AbstractConfigParser):
 				"platforms",
 				"python-versions",
 				"python-implementations",
+				"builders",
 				]
 
 
@@ -848,7 +884,7 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	return natsorted(parsed_classifiers)
 
 
-def load_toml(filename: PathLike):
+def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 	"""
 	Load the ``whey`` configuration mapping from the given TOML file.
 
@@ -897,6 +933,7 @@ def load_toml(filename: PathLike):
 	parsed_config.setdefault("platforms", None)
 	parsed_config.setdefault("python-versions", None)
 	parsed_config.setdefault("python-implementations", None)
+	parsed_config.setdefault("builders", get_default_builders())
 
 	dynamic_fields = parsed_config.get("dynamic", [])
 
@@ -920,3 +957,15 @@ def load_toml(filename: PathLike):
 		del parsed_config["base-classifiers"]
 
 	return parsed_config
+
+
+def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
+	eps = itertools.chain.from_iterable(dist.entry_points for dist in importlib_metadata.distributions())
+
+	for entry_point in eps:
+		if entry_point.group == "whey.builder":
+			yield entry_point
+
+
+def get_default_builders() -> Dict[str, Type[AbstractBuilder]]:
+	return {"sdist": SDistBuilder, "binary": WheelBuilder, "wheel": WheelBuilder}

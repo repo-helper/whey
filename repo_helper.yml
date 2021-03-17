@@ -56,3 +56,8 @@ keywords:
  - distribution
 
 min_coverage: 90
+
+entry_points:
+ whey.builder:
+  - "whey_sdist = whey.builder:SDistBuilder"
+  - "whey_wheel = whey.builder:WheelBuilder"

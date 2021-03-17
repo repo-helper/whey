@@ -5,37 +5,15 @@ sdist_content:
 - pyproject.toml
 - requirements.txt
 - whey/__init__.py
-stdout: 'Building ...
-
-  Copying .../whey/__init__.py -> whey/__init__.py
-
-  Writing whey-2021.0.0.dist-info/LICENSE
-
-  Writing whey-2021.0.0.dist-info/entry_points.txt
-
-  Writing whey-2021.0.0.dist-info/METADATA
-
-  Writing whey-2021.0.0.dist-info/WHEEL
-
-  Writing whey-2021.0.0.dist-info/top_level.txt
-
-  Writing whey-2021.0.0.dist-info/RECORD
-
-  Wheel created at .../whey-2021.0.0-py3-none-any.whl
-
-  Copying .../whey/__init__.py -> whey/__init__.py
-
-  Writing LICENSE
-
-  Copying .../pyproject.toml -> pyproject.toml
-
-  Copying .../requirements.txt -> requirements.txt
-
-  Writing README.rst
-
-  Writing PKG-INFO
-
-  Source distribution created at .../whey-2021.0.0.tar.gz'
+stdout: "Using the following builders:\n    sdist: whey.builder.SDistBuilder\n   \
+  \ binary: whey.builder.WheelBuilder\n    wheel: whey.builder.WheelBuilder\n\nBuilding\
+  \ ...\nCopying .../whey/__init__.py -> whey/__init__.py\nWriting whey-2021.0.0.dist-info/LICENSE\n\
+  Writing whey-2021.0.0.dist-info/entry_points.txt\nWriting whey-2021.0.0.dist-info/METADATA\n\
+  Writing whey-2021.0.0.dist-info/WHEEL\nWriting whey-2021.0.0.dist-info/top_level.txt\n\
+  Writing whey-2021.0.0.dist-info/RECORD\nWheel created at .../whey-2021.0.0-py3-none-any.whl\n\
+  Copying .../whey/__init__.py -> whey/__init__.py\nWriting LICENSE\nCopying .../pyproject.toml\
+  \ -> pyproject.toml\nCopying .../requirements.txt -> requirements.txt\nWriting README.rst\n\
+  Writing PKG-INFO\nSource distribution created at .../whey-2021.0.0.tar.gz"
 wheel_content:
 - whey-2021.0.0.dist-info/LICENSE
 - whey-2021.0.0.dist-info/METADATA

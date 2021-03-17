@@ -186,6 +186,7 @@ Contents
 	:glob:
 
 	api/*
+	extending
 
 .. toctree::
 	:maxdepth: 3

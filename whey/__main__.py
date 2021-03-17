@@ -44,16 +44,18 @@ __all__ = ["main"]
 @flag_option("-v", "--verbose", help="Enable verbose output.")
 @click.option("-o", "--out-dir", type=click.STRING, default=None, help="The output directory.")
 @click.option("--build-dir", type=click.STRING, default=None, help="The temporary build directory.")
-@flag_option("-b", "--binary", help="Build a binary wheel.")
-@flag_option("-s", "--source", help="Build a source distribution.")
+@flag_option("-b", "--binary", help="Build a binary distribution.")
+@flag_option("-b", "--wheel", help="Build a wheel.")
+@flag_option("-s", "--sdist", help="Build a sdist distribution.")
 @click.argument("project", type=click.STRING, default='.')
 @click_command()
 def main(
 		project: PathLike = '.',
 		build_dir: Optional[str] = None,
 		out_dir: Optional[str] = None,
+		sdist: bool = False,
+		wheel: bool = False,
 		binary: bool = False,
-		source: bool = False,
 		verbose: bool = False,
 		colour: ColourTrilean = None,
 		):
@@ -65,34 +67,48 @@ def main(
 	from domdf_python_tools.paths import PathPlus
 
 	# this package
-	from whey.builder import SDistBuilder, WheelBuilder
+	from whey.foreman import Foreman
 
-	if not binary and not source:
-		binary = True
-		source = True
+	if not binary and not sdist and not wheel:
+		wheel = True
+		sdist = True
 
 	project = PathPlus(project).resolve()
-	print(f"Building {project.as_posix()}")
+	foreman = Foreman(project_dir=project)
+
+	if verbose:
+		click.echo("Using the following builders:")
+
+		for builder_name, builder_obj in foreman.config["builders"].items():
+			click.echo(f"    {builder_name}: {builder_obj.__module__}.{builder_obj.__qualname__}")
+
+		click.echo()
+
+	click.echo(f"Building {foreman.project_dir.as_posix()}")
+
+	if wheel:
+		foreman.build_wheel(
+				build_dir=build_dir,
+				out_dir=out_dir,
+				verbose=verbose,
+				colour=colour,
+				)
+
+	if sdist:
+		foreman.build_sdist(
+				build_dir=build_dir,
+				out_dir=out_dir,
+				verbose=verbose,
+				colour=colour,
+				)
 
 	if binary:
-		wheel_builder = WheelBuilder(
-				project_dir=project,
+		foreman.build_binary(
 				build_dir=build_dir,
 				out_dir=out_dir,
 				verbose=verbose,
 				colour=colour,
 				)
-		wheel_builder.build_wheel()
-
-	if source:
-		sdist_builder = SDistBuilder(
-				project_dir=project,
-				build_dir=build_dir,
-				out_dir=out_dir,
-				verbose=verbose,
-				colour=colour,
-				)
-		sdist_builder.build_sdist()
 
 
 if __name__ == "__main__":

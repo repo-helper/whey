@@ -22,6 +22,7 @@ from tests.example_configs import (
 		UNICODE,
 		URLS
 		)
+from whey.builder import AbstractBuilder
 from whey.config import AbstractConfigParser, BadConfigError, construct_path, load_toml
 
 COMPLETE_PROJECT_A = """\
@@ -149,6 +150,20 @@ additional-files = [
 """
 
 
+def check_config(config, data_regression: AdvancedDataRegressionFixture):
+	assert "builders" in config
+	builders = config.pop("builders")
+	assert all(isinstance(name, str) for name in builders)
+	assert all(issubclass(name, AbstractBuilder) for name in builders.values())
+
+	if "requires-python" in config and config["requires-python"] is not None:
+		config["requires-python"] = str(config["requires-python"])
+	if "version" in config and config["version"] is not None:
+		config["version"] = str(config["version"])
+
+	data_regression.check(config)
+
+
 @pytest.mark.parametrize(
 		"toml_config",
 		[
@@ -181,10 +196,6 @@ def test_parse_valid_config(
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	config = load_toml(tmp_pathplus / "pyproject.toml")
 
-	config["version"] = str(config["version"])
-
-	if "requires-python" in config:
-		config["requires-python"] = str(config["requires-python"])
 	if "dependencies" in config:
 		config["dependencies"] = list(map(str, config["dependencies"]))
 	if "optional-dependencies" in config:
@@ -193,7 +204,7 @@ def test_parse_valid_config(
 				for k, v in config["optional-dependencies"].items()
 				}
 
-	advanced_data_regression.check(config)
+	check_config(config, advanced_data_regression)
 
 
 @pytest.mark.parametrize("filename", ["README.rst", "README.md", "INTRODUCTION.md", "readme.txt"])
@@ -213,9 +224,39 @@ def test_parse_valid_config_readme(
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")
 
-	config["version"] = str(config["version"])
+	check_config(config, advanced_data_regression)
 
-	advanced_data_regression.check(config)
+
+def test_parse_builders(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		):
+	toml_config = dedent(
+			"""
+[project]
+name = "whey"
+version = "2021.0.0"
+description = "A simple Python wheel builder for simple projects."
+keywords = [ "pep517", "pep621", "build", "sdist", "wheel", "packaging", "distribution",]
+dynamic = [ "classifiers", "requires-python",]
+
+[tool.whey]
+base-classifiers = [ "Development Status :: 4 - Beta",]
+python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
+python-implementations = [ "CPython", "PyPy",]
+platforms = [ "Windows", "macOS", "Linux",]
+license-key = "MIT"
+
+[tool.whey.builders]
+sdist = "whey_sdist"
+wheel = "whey_wheel"
+
+"""
+			)
+	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
+	config = load_toml(tmp_pathplus / "pyproject.toml")
+
+	check_config(config, advanced_data_regression)
 
 
 def test_parse_dynamic_requirements(
@@ -237,7 +278,6 @@ python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
 python-implementations = [ "CPython", "PyPy",]
 platforms = [ "Windows", "macOS", "Linux",]
 license-key = "MIT"
-
 """
 			)
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
@@ -257,13 +297,10 @@ license-key = "MIT"
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")
 
-	config["version"] = str(config["version"])
-	if "requires-python" in config:
-		config["requires-python"] = str(config["requires-python"])
 	if "dependencies" in config:
 		config["dependencies"] = list(map(str, config["dependencies"]))
 
-	advanced_data_regression.check(config)
+	check_config(config, advanced_data_regression)
 
 
 @pytest.mark.parametrize("filename", ["LICENSE.rst", "LICENSE.md", "LICENSE.txt", "LICENSE"])
@@ -282,10 +319,7 @@ def test_parse_valid_config_license(
 	(tmp_pathplus / filename).write_text("This is the license.")
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")
-
-	config["version"] = str(config["version"])
-
-	advanced_data_regression.check(config)
+	check_config(config, advanced_data_regression)
 
 
 @pytest.mark.parametrize(

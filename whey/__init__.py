@@ -34,8 +34,9 @@ from domdf_python_tools.paths import PathPlus
 
 # this package
 from whey.builder import SDistBuilder, WheelBuilder
+from whey.foreman import Foreman
 
-__all__ = ["build_sdist", "build_wheel", "SDistBuilder", "WheelBuilder"]
+__all__ = ["build_sdist", "build_wheel", "SDistBuilder", "WheelBuilder", "Foreman"]
 
 __author__: str = "Dominic Davis-Foster"
 __copyright__: str = "2021 Dominic Davis-Foster"
@@ -56,8 +57,8 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 	"""
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = WheelBuilder(project_dir=PathPlus.cwd(), build_dir=tmpdir, out_dir=wheel_directory, verbose=True)
-		return builder.build_wheel()
+		foreman = Foreman(project_dir=PathPlus.cwd())
+		return foreman.build_wheel(build_dir=tmpdir, out_dir=wheel_directory, verbose=True)
 
 
 def build_sdist(sdist_directory, config_settings=None):
@@ -71,8 +72,8 @@ def build_sdist(sdist_directory, config_settings=None):
 	"""
 
 	with tempfile.TemporaryDirectory() as tmpdir:
-		builder = SDistBuilder(project_dir=PathPlus.cwd(), build_dir=tmpdir, out_dir=sdist_directory, verbose=True)
-		return builder.build_sdist()
+		foreman = Foreman(project_dir=PathPlus.cwd())
+		return foreman.build_sdist(build_dir=tmpdir, out_dir=sdist_directory, verbose=True)
 
 
 def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover

@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: spam
+Version: 2020.0.0
+Home-page: example.com
+Project-URL: documentation, readthedocs.org
+Project-URL: repository, github.com
+Project-URL: changelog, github.com/me/spam/blob/master/CHANGELOG.md

@@ -218,8 +218,18 @@ class AbstractBuilder(ABC):
 
 	def copy_additional_files(self) -> None:  # pylint: disable=useless-return
 		"""
-		Copy additional files to the build directory, as specified in the ``additional_files`` key.
+		Copy additional files to the build directory, as specified in the ``additional-files`` key.
 		"""
+
+		self.parse_additional_files(*self.config["additional-files"])
+
+	def parse_additional_files(self, *entries: str) -> None:  # pylint: disable=useless-return
+		r"""
+		Copy additional files to the build directory,
+		by parsing `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_-style entries.
+
+		:param \*entries:
+		"""  # noqa: D400
 
 		def copy_file(filename):
 			target = self.build_dir / filename.relative_to(self.project_dir)
@@ -227,7 +237,7 @@ class AbstractBuilder(ABC):
 			shutil.copy2(src=filename, dst=target)
 			self.report_copied(filename, target)
 
-		for entry in self.config["additional-files"]:
+		for entry in entries:
 			parts = entry.split(' ')
 
 			if parts[0] == "include":

@@ -575,8 +575,6 @@ class WheelBuilder(AbstractBuilder):
 		``[project.scripts]``, ``[project.gui-scripts]`` and ``[project.entry-points]``
 		"""  # noqa: D400
 
-		cfg_parser = configparser.ConfigParser()
-
 		buf = StringList()
 		if self.config["scripts"]:
 			buf.append("[console_scripts]")
@@ -597,6 +595,8 @@ class WheelBuilder(AbstractBuilder):
 			for name, func in entry_points.items():
 				buf.append(f"{name} = {func}")
 
+		cfg_parser = configparser.ConfigParser()
+		cfg_parser.optionxform = str  # type: ignore  # preserve case
 		cfg_parser.read_string(str(buf))
 		cfg_io = StringIO()
 		cfg_parser.write(cfg_io)

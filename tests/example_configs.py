@@ -75,6 +75,9 @@ spam-gui = "spam:main_gui"
 
 [project.entry-points."spam.magical"]
 tomatoes = "spam:main_tomatoes"
+
+[project.entry-points."flake8.extension"]
+SXL = "flake8_sphinx_links:Plugin"
 """
 
 COMPLETE_PROJECT_A = """\

@@ -2,7 +2,7 @@
 Configuration
 =====================
 
-``whey`` is configured in the ``pyproject.toml`` file defined in :pep:`517` and :pep:`517`.
+``whey`` is configured in the ``pyproject.toml`` file defined in :pep:`517` and :pep:`518`.
 
 
 ``[build-system]``

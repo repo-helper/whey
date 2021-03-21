@@ -450,7 +450,7 @@ def test_parse_valid_config_license_text(
 
 
 @pytest.mark.parametrize(
-		"license, expected",
+		"license_key, expected",
 		[
 				pytest.param(
 						"license = {}",
@@ -465,7 +465,7 @@ def test_parse_valid_config_license_text(
 				]
 		)
 def test_bad_config_license(
-		license: str,
+		license_key: str,
 		expected: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
@@ -475,7 +475,7 @@ def test_bad_config_license(
 			f'[project]',
 			f'name = "spam"',
 			f'version = "2020.0.0"',
-			license,
+			license_key,
 			])
 
 	with pytest.raises(BadConfigError, match=expected):

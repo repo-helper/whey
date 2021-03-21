@@ -88,6 +88,33 @@ def test_cli_build_success(
 	advanced_data_regression.check(data)
 
 
+def check_built_wheel(filename: PathPlus):
+	assert (filename).is_file()
+	zip_file = zipfile.ZipFile(filename)
+
+	with zip_file.open("whey/__init__.py", mode='r') as fp:
+		assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+	return sorted(zip_file.namelist())
+
+
+def check_built_sdist(filename: PathPlus):
+	assert (filename).is_file()
+
+	tar = tarfile.open(filename)
+
+	with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+		assert fp.read().decode("UTF-8") == "print('hello world)\n"
+	with tar.extractfile("README.rst") as fp:  # type: ignore
+		assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
+	with tar.extractfile("LICENSE") as fp:  # type: ignore
+		assert fp.read().decode("UTF-8") == "This is the license\n"
+	with tar.extractfile("requirements.txt") as fp:  # type: ignore
+		assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+
+	return sorted(tar.getnames())
+
+
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -118,28 +145,124 @@ def test_build_complete(
 	assert result.exit_code == 0
 
 	wheel = "whey-2021.0.0-py3-none-any.whl"
-	assert (tmp_pathplus / wheel).is_file()
-	zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-
-	data["wheel_content"] = sorted(zip_file.namelist())
-
-	with zip_file.open("whey/__init__.py", mode='r') as fp:
-		assert fp.read().decode("UTF-8") == "print('hello world)\n"
+	data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel)
 
 	sdist = "whey-2021.0.0.tar.gz"
-	assert (tmp_pathplus / sdist).is_file()
+	data["sdist_content"] = check_built_sdist(tmp_pathplus / sdist)
 
-	tar = tarfile.open(tmp_pathplus / sdist)
-	data["sdist_content"] = sorted(tar.getnames())
+	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
 
-	with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "print('hello world)\n"
-	with tar.extractfile("README.rst") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-	with tar.extractfile("LICENSE") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "This is the license\n"
-	with tar.extractfile("requirements.txt") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config", [
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				]
+		)
+def test_build_sdist_complete(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data: Dict[str, Any] = {}
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main, args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				)
+
+	assert result.exit_code == 0
+
+	sdist = "whey-2021.0.0.tar.gz"
+	data["sdist_content"] = check_built_sdist(tmp_pathplus / sdist)
+
+	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config", [
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				]
+		)
+def test_build_wheel_complete(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data: Dict[str, Any] = {}
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main, args=["--wheel", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				)
+
+	assert result.exit_code == 0
+
+	wheel = "whey-2021.0.0-py3-none-any.whl"
+	data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel)
+
+	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config", [
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				]
+		)
+def test_build_binary_complete(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		capsys,
+		):
+
+	# TODO: e.g. conda, RPM, DEB
+
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data: Dict[str, Any] = {}
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main, args=["--binary", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				)
+
+	assert result.exit_code == 0
+
+	wheel = "whey-2021.0.0-py3-none-any.whl"
+	data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel)
 
 	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
 
@@ -190,6 +313,8 @@ def test_build_additional_files(
 
 	with zip_file.open("whey/__init__.py", mode='r') as fp:
 		assert fp.read().decode("UTF-8") == "print('hello world)\n"
+	with zip_file.open("whey/style.css", mode='r') as fp:
+		assert fp.read().decode("UTF-8") == "This is the style.css file\n"
 
 	sdist = "whey-2021.0.0.tar.gz"
 

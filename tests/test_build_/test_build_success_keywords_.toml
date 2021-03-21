@@ -1,0 +1,9 @@
+[project]
+name = "spam"
+version = "2020.0.0"
+keywords = [ "egg", "bacon", "sausage", "tomatoes", "Lobster Thermidor",]
+dynamic = []
+
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"

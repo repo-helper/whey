@@ -1,0 +1,9 @@
+[project]
+name = "spam"
+version = "2020.0.0"
+requires-python = ">=3.8"
+dynamic = []
+
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"

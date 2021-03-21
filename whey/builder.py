@@ -44,6 +44,7 @@ from zipfile import ZipFile
 
 # 3rd party
 import click
+import dom_toml
 import toml
 from consolekit.terminal_colours import Fore, resolve_color_default
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
@@ -316,6 +317,9 @@ class AbstractBuilder(ABC):
 		"""  # noqa: D400
 
 		metadata = EmailMessage()
+
+		# TODO: metadata 2.2
+		# Need to translate pep621 dynamic into core metadata field names
 		metadata["Metadata-Version"] = "2.1"
 		metadata["Name"] = self.config["name"]
 		metadata["Version"] = str(self.config["version"])
@@ -470,14 +474,39 @@ class SDistBuilder(AbstractBuilder):
 
 		# Copy pyproject.toml
 		pp_toml = toml.loads((self.project_dir / "pyproject.toml").read_text())
+
+		# Ensure whey is the build backend and a requirement
 		pp_toml.setdefault("build-system", {})
 		current_requires = map(ComparableRequirement, pp_toml["build-system"].get("requires", ()))
 		new_requirements = combine_requirements(ComparableRequirement("whey"), *current_requires)
 		pp_toml["build-system"]["requires"] = list(map(str, sorted(new_requirements)))
 		pp_toml["build-system"]["build-backend"] = "whey"
-		(self.build_dir / "pyproject.toml").write_clean(toml.dumps(pp_toml))
+
+		dynamic = set(pp_toml["project"].get("dynamic", ()))
+
+		# Make the "dependencies" static
+		if "dependencies" in dynamic:
+			dynamic.remove("dependencies")
+
+			pp_toml["project"]["dependencies"] = list(map(str, sorted(self.config["dependencies"])))
+
+		# Make the "classifiers" static
+		if "classifiers" in dynamic:
+			dynamic.remove("classifiers")
+
+			pp_toml["project"]["classifiers"] = list(map(str, sorted(self.config["classifiers"])))
+
+		# Make "requires-python" static
+		if "requires-python" in dynamic:
+			dynamic.remove("requires-python")
+
+			pp_toml["project"]["requires-python"] = str(self.config["requires-python"])
+
+		# Set the new value for "dynamic"
+		pp_toml["project"]["dynamic"] = dynamic
+
+		(self.build_dir / "pyproject.toml").write_clean(toml.dumps(pp_toml, encoder=dom_toml.TomlEncoder()))
 		self.report_copied(self.project_dir / "pyproject.toml", self.build_dir / "pyproject.toml")
-		# TODO: perhaps make some of the dynamic fields static?
 
 	def build_sdist(self) -> str:
 		"""

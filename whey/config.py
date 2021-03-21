@@ -323,16 +323,31 @@ class PEP621Parser(AbstractConfigParser):
 			return {"text": readme_text, "content-type": readme_content_type}
 
 		elif isinstance(readme, dict):
+			if not readme:
+				raise BadConfigError("The 'project.readme' table cannot be empty.")
+
 			if "file" in readme and "text" in readme:
 				raise BadConfigError(
 						"The 'project.readme.file' and 'project.readme.text' keys "
 						"are mutually exclusive."
 						)
 
-			elif "file" in readme:
+			elif set(readme.keys()) == {"file"}:
 				readme_encoding = readme.get("charset", "UTF-8")
 				readme_text, readme_content_type = read_readme(readme["file"], readme_encoding)
 				return {"text": readme_text, "content-type": readme_content_type}
+
+			elif "content-type" in readme and "text" not in readme:
+				raise BadConfigError(
+						"The 'project.readme.content-type' key cannot be provided on its own; "
+						"Please provide the 'project.readme.text' key too."
+						)
+
+			elif "charset" in readme and "text" not in readme:
+				raise BadConfigError(
+						"The 'project.readme.charset' key cannot be provided on its own; "
+						"Please provide the 'project.readme.text' key too."
+						)
 
 			elif "text" in readme:
 				if "content-type" not in readme:
@@ -341,7 +356,9 @@ class PEP621Parser(AbstractConfigParser):
 							"when 'project.readme.text' is given."
 							)
 				elif readme["content-type"] not in {"text/markdown", "text/x-rst", "text/plain"}:
-					raise BadConfigError(f"Unrecognised value for 'content-type': {readme['content-type']!r}")
+					raise BadConfigError(
+							f"Unrecognised value for 'project.readme.content-type': {readme['content-type']!r}"
+							)
 
 				readme_encoding = readme.get("charset", "UTF-8")
 				return {
@@ -349,8 +366,10 @@ class PEP621Parser(AbstractConfigParser):
 						"content-type": readme["content-type"]
 						}
 
+			else:
+				raise BadConfigError(f"Unknown format for 'project.readme': {readme!r}")
+
 		raise TypeError(f"Unsupported type for 'project.readme': {type(readme)!r}")
-		# return {"text": '', "content-type": "text/plain"}
 
 	@staticmethod
 	def parse_requires_python(config: Dict[str, TOML_TYPES]) -> Specifier:
@@ -564,21 +583,22 @@ class PEP621Parser(AbstractConfigParser):
 
 		parsed_optional_dependencies = defaultdict(set)
 
+		err_template = (
+				f"Invalid type for 'project.optional-dependencies{{idx_string}}': "
+				f"expected {dict!r}, got {{actual_type!r}}"
+				)
+
 		optional_dependencies = config["optional-dependencies"]
 
 		if not isinstance(optional_dependencies, dict):
-			raise TypeError(
-					f"Invalid type for 'project.optional-dependencies': expected {dict!r}, got {type(optional_dependencies)!r}"
-					)
+			raise TypeError(err_template.format('', type(optional_dependencies)))
 
 		for extra, dependencies in optional_dependencies.items():
-			for idx, keyword in enumerate(dependencies):
-				if not isinstance(keyword, str):
-					raise TypeError(
-							f"Invalid type for 'project.optional-dependencies.{extra}[{idx}]': expected {str!r}, got {type(keyword)!r}"
-							)
+			for idx, dep in enumerate(dependencies):
+				if isinstance(dep, str):
+					parsed_optional_dependencies[extra].add(ComparableRequirement(dep))
 				else:
-					parsed_optional_dependencies[extra].add(ComparableRequirement(keyword))
+					raise TypeError(err_template.format(f'{extra}[{idx}]', type(dep)))
 
 		return {e: sorted(combine_requirements(d)) for e, d in parsed_optional_dependencies.items()}
 

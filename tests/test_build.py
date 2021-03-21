@@ -17,6 +17,7 @@ from tests.example_configs import (
 		COMPLETE_A,
 		COMPLETE_B,
 		DEPENDENCIES,
+		DYNAMIC_REQUIREMENTS,
 		ENTRY_POINTS,
 		KEYWORDS,
 		LONG_REQUIREMENTS,
@@ -104,11 +105,29 @@ def test_build_success(
 		with tar.extractfile("spam/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
+		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+
+		with tar.extractfile("pyproject.toml") as fp:  # type: ignore
+			check_file_regression(fp.read().decode("UTF-8"), file_regression, extension=".toml")
+
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
 	data["stderr"] = outerr.err
 
 	advanced_data_regression.check(data)
+
+
+def check_built_wheel(filename: PathPlus, file_regression: FileRegressionFixture):
+	assert (filename).is_file()
+	zip_file = zipfile.ZipFile(filename)
+
+	with zip_file.open("whey/__init__.py", mode='r') as fp:
+		assert fp.read().decode("UTF-8") == "print('hello world)\n"
+	with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
+		check_file_regression(fp.read().decode("UTF-8"), file_regression)
+
+	return sorted(zip_file.namelist())
 
 
 @pytest.mark.parametrize(
@@ -147,15 +166,7 @@ def test_build_complete(
 				)
 
 		wheel = wheel_builder.build_wheel()
-		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
-
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -181,6 +192,10 @@ def test_build_complete(
 			assert fp.read().decode("UTF-8") == "This is the license\n"
 		with tar.extractfile("requirements.txt") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+		with tar.extractfile("pyproject.toml") as fp:  # type: ignore
+			check_file_regression(fp.read().decode("UTF-8"), file_regression, extension=".toml")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -274,6 +289,66 @@ def test_build_additional_files(
 	advanced_data_regression.check(data)
 
 
+def test_build_markdown_readme(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		file_regression: FileRegressionFixture,
+		capsys,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_clean(COMPLETE_B.replace(".rst", ".md"))
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
+	(tmp_pathplus / "README.md").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_wheel()
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, file_regression)
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				)
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+		tar = tarfile.open(tmp_pathplus / sdist)
+		data["sdist_content"] = sorted(tar.getnames())
+
+		with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+		with tar.extractfile("README.md") as fp:  # type: ignore
+			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
+		with tar.extractfile("LICENSE") as fp:  # type: ignore
+			assert fp.read().decode("UTF-8") == "This is the license\n"
+		with tar.extractfile("requirements.txt") as fp:  # type: ignore
+			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
 def test_build_missing_dir(tmp_pathplus: PathPlus):
 	(tmp_pathplus / "pyproject.toml").write_clean(MINIMAL_CONFIG)
 
@@ -340,6 +415,7 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 		[
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(DYNAMIC_REQUIREMENTS, id="DYNAMIC_REQUIREMENTS"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
 				]
 		)
@@ -355,7 +431,9 @@ def test_build_wheel_from_sdist(
 	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
 	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
-	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+	(tmp_pathplus / "requirements.txt").write_lines([
+			"httpx", "gidgethub[httpx]>4.0.0", "django>2.1; os_name != 'nt'", "django>2.0; os_name == 'nt'"
+			])
 
 	# Build the sdist
 
@@ -392,15 +470,7 @@ def test_build_wheel_from_sdist(
 				colour=False,
 				)
 		wheel = wheel_builder.build_wheel()
-		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
-
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, file_regression)
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -529,6 +599,9 @@ def test_build_underscore_name(
 		with tar.extractfile("spam_spam/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
+		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
 	data["stderr"] = outerr.err
@@ -591,6 +664,9 @@ def test_build_stubs_name(
 
 		with tar.extractfile("spam_spam-stubs/__init__.pyi") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+
+		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

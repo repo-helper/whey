@@ -218,13 +218,124 @@ def test_parse_valid_config_readme(
 			"[project]",
 			'name = "spam"',
 			'version = "2020.0.0"',
-			f'readme = "{filename}"',
+			f'readme = {filename!r}',
 			])
 	(tmp_pathplus / filename).write_text("This is the readme.")
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")
 
 	check_config(config, advanced_data_regression)
+
+
+@pytest.mark.parametrize(
+		"readme",
+		[
+				pytest.param('readme = {file = "README.rst"}', id="rst_file"),
+				pytest.param('readme = {file = "README.md"}', id="md_file"),
+				pytest.param('readme = {file = "README.txt"}', id="txt_file"),
+				pytest.param(
+						'readme = {text = "This is the inline README README.", content-type = "text/x-rst"}',
+						id="text_content_type_rst"
+						),
+				pytest.param(
+						'readme = {text = "This is the inline markdown README.", content-type = "text/markdown"}',
+						id="text_content_type_md"
+						),
+				pytest.param(
+						'readme = {text = "This is the inline README.", content-type = "text/plain"}',
+						id="text_content_type_plain"
+						),
+				]
+		)
+def test_parse_valid_config_readme_dict(
+		readme,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			"[project]",
+			'name = "spam"',
+			'version = "2020.0.0"',
+			readme,
+			])
+	(tmp_pathplus / "README.rst").write_text("This is the reStructuredText README.")
+	(tmp_pathplus / "README.md").write_text("This is the markdown README.")
+	(tmp_pathplus / "README.txt").write_text("This is the plaintext README.")
+	(tmp_pathplus / "README").write_text("This is the README.")
+
+	config = load_toml(tmp_pathplus / "pyproject.toml")
+	check_config(config, advanced_data_regression)
+
+
+@pytest.mark.parametrize(
+		"readme, expected",
+		[
+				pytest.param("readme = {}", "The 'project.readme' table cannot be empty.", id="empty"),
+				pytest.param(
+						"readme = {fil = 'README.md'}",
+						"Unknown format for 'project.readme': {'fil': 'README.md'}",
+						id="unknown_key",
+						),
+				pytest.param(
+						'readme = {text = "This is the inline README."}',
+						"The 'project.readme.content-type' key must be provided when 'project.readme.text' is given.",
+						id="text_only"
+						),
+				pytest.param(
+						'readme = {content-type = "text/x-rst"}',
+						"The 'project.readme.content-type' key cannot be provided on its own; "
+						"Please provide the 'project.readme.text' key too.",
+						id="content_type_only"
+						),
+				pytest.param(
+						'readme = {charset = "cp1252"}',
+						"The 'project.readme.charset' key cannot be provided on its own; "
+						"Please provide the 'project.readme.text' key too.",
+						id="charset_only"
+						),
+				pytest.param(
+						'readme = {charset = "cp1252", content-type = "text/x-rst"}',
+						"The 'project.readme.content-type' key cannot be provided on its own; "
+						"Please provide the 'project.readme.text' key too.",
+						id="content_type_charset"
+						),
+				pytest.param(
+						'readme = {text = "This is the inline README", content-type = "application/x-abiword"}',
+						"Unrecognised value for 'project.readme.content-type': 'application/x-abiword'",
+						id="bad_content_type"
+						),
+				pytest.param(
+						'readme = {file = "README"}', "Unrecognised filetype for 'README'", id="no_extension"
+						),
+				pytest.param(
+						'readme = {file = "README.doc"}',
+						"Unrecognised filetype for 'README.doc'",
+						id="bad_extension"
+						),
+				pytest.param(
+						'readme = {file = "README.doc", text = "This is the README"}',
+						"The 'project.readme.file' and 'project.readme.text' keys are mutually exclusive.",
+						id="file_and_readme"
+						),
+				]
+		)
+def test_bad_config_readme_dict(
+		readme: str,
+		expected: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			"[project]",
+			'name = "spam"',
+			'version = "2020.0.0"',
+			readme,
+			])
+
+	with pytest.raises(BadConfigError, match=expected):
+		load_toml(tmp_pathplus / "pyproject.toml")
 
 
 def test_parse_builders(
@@ -322,6 +433,55 @@ def test_parse_valid_config_license(
 	check_config(config, advanced_data_regression)
 
 
+def test_parse_valid_config_license_text(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			f'[project]',
+			f'name = "spam"',
+			f'version = "2020.0.0"',
+			f'license = {{text = "This is the MIT License"}}',
+			])
+
+	config = load_toml(tmp_pathplus / "pyproject.toml")
+	check_config(config, advanced_data_regression)
+
+
+@pytest.mark.parametrize(
+		"license, expected",
+		[
+				pytest.param(
+						"license = {}",
+						"The 'project.license' table should contain one of 'text' or 'file'.",
+						id="empty"
+						),
+				pytest.param(
+						'license = {text = "MIT", file = "LICENSE.txt"}',
+						"The 'project.license.file' and 'project.license.text' keys are mutually exclusive.",
+						id="double_license"
+						),
+				]
+		)
+def test_bad_config_license(
+		license: str,
+		expected: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			f'[project]',
+			f'name = "spam"',
+			f'version = "2020.0.0"',
+			license,
+			])
+
+	with pytest.raises(BadConfigError, match=expected):
+		load_toml(tmp_pathplus / "pyproject.toml")
+
+
 @pytest.mark.parametrize(
 		"config, expects, match",
 		[
@@ -361,18 +521,6 @@ def test_parse_valid_config_license(
 						BadConfigError,
 						re.escape("Invalid specifier: '???????12345=============☃'"),
 						id="bad_requires_python"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{text = "MIT", file = "LICENSE.txt"}}',
-						BadConfigError,
-						"The 'project.license.file' and 'project.license.text' keys are mutually exclusive.",
-						id="double_license"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{}}',
-						BadConfigError,
-						"The 'project.license' table should contain one of 'text' or 'file'.",
-						id="empty_license"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]',

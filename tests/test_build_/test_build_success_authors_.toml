@@ -1,0 +1,15 @@
+[project]
+name = "spam"
+version = "2020.0.0"
+dynamic = []
+
+[[project.authors]]
+email = "hi@pradyunsg.me"
+
+[[project.authors]]
+name = "Tzu-Ping Chung"
+
+
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"

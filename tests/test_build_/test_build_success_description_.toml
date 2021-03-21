@@ -1,0 +1,9 @@
+[project]
+name = "spam"
+version = "2020.0.0"
+description = "Lovely Spam! Wonderful Spam!"
+dynamic = []
+
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"

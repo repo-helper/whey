@@ -1,0 +1,13 @@
+[project]
+name = "spam"
+version = "2020.0.0"
+description = "Factory ⸻ A code generator 🏭"
+dynamic = []
+
+[[project.authors]]
+name = "Łukasz Langa"
+
+
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"

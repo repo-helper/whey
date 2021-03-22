@@ -119,7 +119,7 @@ def test_build_success(
 
 
 def check_built_wheel(filename: PathPlus, file_regression: FileRegressionFixture):
-	assert (filename).is_file()
+	assert filename.is_file()
 	zip_file = zipfile.ZipFile(filename)
 
 	with zip_file.open("whey/__init__.py", mode='r') as fp:
@@ -131,7 +131,7 @@ def check_built_wheel(filename: PathPlus, file_regression: FileRegressionFixture
 
 	with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
 		for line in fp.readlines():
-			entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(",")
+			entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
 			assert entry_filename in contents, entry_filename
 			contents.remove(entry_filename)
 

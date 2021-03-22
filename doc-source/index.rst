@@ -10,7 +10,7 @@ whey
 
 .. start short_desc
 
-**A simple Python wheel builder for simple projects.**
+.. documentation-summary::
 
 .. end short_desc
 

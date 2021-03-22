@@ -38,6 +38,7 @@ import readme_renderer.markdown  # type: ignore
 import readme_renderer.rst  # type: ignore
 import toml
 from apeye import URL
+from dom_toml.parser import AbstractConfigParser, BadConfigError, construct_path
 from domdf_python_tools.compat import importlib_metadata
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
@@ -111,22 +112,6 @@ license_lookup = {
 		}
 
 
-class BadConfigError(ValueError):
-	"""
-	Indicates an error in the ``pyproject.toml`` configuration.
-	"""
-
-
-def construct_path(path: Iterable[str]) -> str:
-	"""
-	Construct a dotted path to a key.
-
-	:param path: The path elements.
-	"""
-
-	return '.'.join([toml.dumps({elem: 0})[:-5] for elem in path])
-
-
 def read_readme(readme_file: PathLike, encoding="UTF-8") -> Tuple[str, str]:
 	"""
 	Reads the readme file and returns the content of the file and its content type.
@@ -149,113 +134,6 @@ def read_readme(readme_file: PathLike, encoding="UTF-8") -> Tuple[str, str]:
 		return readme_file.read_text(encoding=encoding), "text/plain"
 	else:
 		raise BadConfigError(f"Unrecognised filetype for '{readme_file!s}'")
-
-
-class AbstractConfigParser(ABC):
-	"""
-	Abstract base class for TOML configuration parsers.
-	"""
-
-	@staticmethod
-	def assert_type(
-			obj: Any,
-			expected_type: Type,
-			path: Iterable[str],
-			what: str = "type",
-			) -> None:
-		"""
-		Assert that ``obj`` is of type ``expected_type``, otherwise raise an error with a helpful message.
-
-		:param obj: The object to check the type of.
-		:param expected_type: The expected type.
-		:param path: The elements of the path to ``obj`` in the TOML mapping.
-		:param what: What ``obj`` is, e.g. ``'type'``, ``'key type'``, ``'value type'``.
-
-		.. seealso:: :meth:`~.assert_key_type` and :meth:`~.assert_value_type`
-		"""
-
-		if not isinstance(obj, expected_type):
-			name = construct_path(path)
-			raise TypeError(f"Invalid {what} for {name!r}: expected {expected_type!r}, got {type(obj)!r}")
-
-	@staticmethod
-	def assert_indexed_type(
-			obj: Any,
-			expected_type: Type,
-			path: Iterable[str],
-			idx: int = 0,
-			) -> None:
-		"""
-		Assert that ``obj`` is of type ``expected_type``, otherwise raise an error with a helpful message.
-
-		:param obj: The object to check the type of.
-		:param expected_type: The expected type.
-		:param path: The elements of the path to ``obj`` in the TOML mapping.
-		:param idx: The index of ``obj`` in the array.
-
-		.. seealso:: :meth:`~.assert_type`, :meth:`~.assert_key_type` and :meth:`~.assert_value_type`
-		"""
-
-		if not isinstance(obj, expected_type):
-			name = construct_path(path) + f"[{idx}]"
-			raise TypeError(f"Invalid type for {name!r}: expected {expected_type!r}, got {type(obj)!r}")
-
-	def assert_key_type(self, obj: Any, expected_type: Type, path: Iterable[str]):
-		"""
-		Assert that the key ``obj`` is of type ``expected_type``, otherwise raise an error with a helpful message.
-
-		:param obj: The object to check the type of.
-		:param expected_type: The expected type.
-		:param path: The elements of the path to ``obj`` in the TOML mapping.
-
-		.. seealso:: :meth:`~.assert_type` and :meth:`~.assert_value_type`
-		"""
-
-		self.assert_type(obj, expected_type, path, "key type")
-
-	def assert_value_type(self, obj: Any, expected_type: Type, path: Iterable[str]):
-		"""
-		Assert that the value ``obj`` is of type ``expected_type``, otherwise raise an error with a helpful message.
-
-		:param obj: The object to check the type of.
-		:param expected_type: The expected type.
-		:param path: The elements of the path to ``obj`` in the TOML mapping.
-
-		.. seealso:: :meth:`~.assert_type` and :meth:`~.assert_key_type`
-		"""
-
-		self.assert_type(obj, expected_type, path, "value type")
-
-	@property
-	@abstractmethod
-	def keys(self) -> List[str]:
-		"""
-		The keys to parse from the TOML file.
-		"""
-
-		raise NotImplementedError
-
-	def parse(self, config: Dict[str, TOML_TYPES]) -> Dict[str, TOML_TYPES]:
-		"""
-		Parse the TOML configuration.
-
-		:param config:
-		"""
-
-		parsed_config = {}
-
-		for key in self.keys:
-			if key not in config:
-				# Ignore absent values
-				pass
-
-			elif hasattr(self, f"parse_{key.replace('-', '_')}"):
-				parsed_config[key] = getattr(self, f"parse_{key.replace('-', '_')}")(config)
-
-			elif key in config:
-				parsed_config[key] = config[key]
-
-		return parsed_config
 
 
 class PEP621Parser(AbstractConfigParser):
@@ -493,7 +371,6 @@ class PEP621Parser(AbstractConfigParser):
 		self.assert_type(project_urls, dict, ["project", "urls"])
 
 		for category, url in project_urls.items():
-			self.assert_key_type(category, str, ["project", "urls", category])
 			self.assert_value_type(url, str, ["project", "urls", category])
 
 			parsed_urls[category] = str(URL(url))
@@ -512,7 +389,6 @@ class PEP621Parser(AbstractConfigParser):
 		self.assert_type(scripts, dict, ["project", "scripts"])
 
 		for name, func in scripts.items():
-			self.assert_key_type(name, str, ["project", "scripts", name])
 			self.assert_value_type(func, str, ["project", "scripts", name])
 
 		return scripts
@@ -529,7 +405,6 @@ class PEP621Parser(AbstractConfigParser):
 		self.assert_type(gui_scripts, dict, ["project", "gui-scripts"])
 
 		for name, func in gui_scripts.items():
-			self.assert_key_type(name, str, ["project", "gui-scripts", name])
 			self.assert_value_type(func, str, ["project", "gui-scripts", name])
 
 		return gui_scripts
@@ -547,11 +422,9 @@ class PEP621Parser(AbstractConfigParser):
 
 		for group, sub_table in entry_points.items():
 
-			self.assert_key_type(group, str, ["project", "entry-points", group])
 			self.assert_value_type(sub_table, dict, ["project", "entry-points", group])
 
 			for name, func in sub_table.items():
-				self.assert_key_type(name, str, ["project", "entry-points", group, name])
 				self.assert_value_type(func, str, ["project", "entry-points", group, name])
 
 		return entry_points

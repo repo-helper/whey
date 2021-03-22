@@ -674,6 +674,10 @@ class WheelBuilder(AbstractBuilder):
 					fp.write('\n')
 					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
 
+				for file in self.dist_info.rglob("RECORD*"):
+					if file.is_file():
+						fp.write(f"{file.relative_to(self.build_dir).as_posix()},,\n")
+
 			for file in self.dist_info.rglob("RECORD*"):
 				if file.is_file():
 					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))

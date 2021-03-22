@@ -127,6 +127,18 @@ def check_built_wheel(filename: PathPlus, file_regression: FileRegressionFixture
 	with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
 		check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
+	contents = sorted(zip_file.namelist())
+
+	with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
+		for line in fp.readlines():
+			entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(",")
+			assert entry_filename in contents, entry_filename
+			contents.remove(entry_filename)
+
+			if "RECORD" not in entry_filename:
+				assert zip_file.getinfo(entry_filename).file_size == int(size)
+				# TODO: check digest
+
 	return sorted(zip_file.namelist())
 
 

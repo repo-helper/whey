@@ -25,6 +25,10 @@ Documentation = "https://whey.readthedocs.io/en/latest"
 [project.scripts]
 whey = "whey.__main__:main"
 
+[project.optional-dependencies]
+readme = [ "readme-renderer[md]>=27.0",]
+all = [ "readme-renderer[md]>=27.0",]
+
 [tool.whey]
 base-classifiers = [
     "Development Status :: 3 - Alpha",

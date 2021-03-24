@@ -318,6 +318,10 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 
 
 def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
+	"""
+	Returns an iterable over :class:`~.EntryPoint` objects in the ``whey.builder`` group.
+	"""
+
 	eps = itertools.chain.from_iterable(dist.entry_points for dist in importlib_metadata.distributions())
 
 	for entry_point in eps:
@@ -326,4 +330,8 @@ def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
 
 
 def get_default_builders() -> Dict[str, Type[AbstractBuilder]]:
+	"""
+	Returns a mapping of builder categories to builder classes to use as the default builders.
+	"""
+
 	return {"sdist": SDistBuilder, "binary": WheelBuilder, "wheel": WheelBuilder}

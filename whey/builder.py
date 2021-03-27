@@ -45,7 +45,6 @@ from zipfile import ZipFile
 # 3rd party
 import click
 import dom_toml
-import toml
 from consolekit.terminal_colours import Fore, resolve_color_default
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.stringlist import StringList
@@ -473,7 +472,7 @@ class SDistBuilder(AbstractBuilder):
 		"""
 
 		# Copy pyproject.toml
-		pp_toml = toml.loads((self.project_dir / "pyproject.toml").read_text())
+		pp_toml = dom_toml.load(self.project_dir / "pyproject.toml")
 
 		# Ensure whey is the build backend and a requirement
 		pp_toml.setdefault("build-system", {})
@@ -505,7 +504,7 @@ class SDistBuilder(AbstractBuilder):
 		# Set the new value for "dynamic"
 		pp_toml["project"]["dynamic"] = dynamic
 
-		(self.build_dir / "pyproject.toml").write_clean(toml.dumps(pp_toml, encoder=dom_toml.TomlEncoder()))
+		dom_toml.dump(pp_toml, self.build_dir / "pyproject.toml", encoder=dom_toml.TomlEncoder)
 		self.report_copied(self.project_dir / "pyproject.toml", self.build_dir / "pyproject.toml")
 
 	def build_sdist(self) -> str:

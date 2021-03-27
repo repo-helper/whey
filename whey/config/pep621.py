@@ -103,6 +103,20 @@ class PEP621Parser(AbstractConfigParser):
 	Parser for :pep:`621` metadata from ``pyproject.toml``.
 	"""
 
+	defaults = {"description": None, "readme": None, "requires-python": None}
+	factories = {
+			"authors": list,
+			"maintainers": list,
+			"keywords": list,
+			"classifiers": list,
+			"urls": dict,
+			"scripts": dict,
+			"gui-scripts": dict,
+			"entry-points": dict,
+			"dependencies": list,
+			"optional-dependencies": dict,
+			}
+
 	@staticmethod
 	def parse_name(config: Dict[str, TOML_TYPES]) -> str:
 		"""
@@ -462,16 +476,51 @@ class PEP621Parser(AbstractConfigParser):
 				"optional-dependencies",
 				]
 
-	def parse(self, config: Dict[str, TOML_TYPES]) -> Dict[str, TOML_TYPES]:
+	def _parse(
+			self,
+			config: Dict[str, TOML_TYPES],
+			set_defaults: bool = False,
+			) -> Dict[str, TOML_TYPES]:
+
+		dynamic_fields = config.get("dynamic", [])
+		parsed_config = {"dynamic": dynamic_fields}
+
+		for key in self.keys:
+
+			if key in config and key in dynamic_fields:
+				raise BadConfigError(f"{key!r} was listed in 'project.dynamic-fields' but a value was given.")
+			elif key not in config:
+				# Ignore absent values
+				pass
+			elif hasattr(self, f"parse_{key.replace('-', '_')}"):
+				parsed_config[key] = getattr(self, f"parse_{key.replace('-', '_')}")(config)
+			elif key in config:
+				parsed_config[key] = config[key]
+
+		if set_defaults:
+			for key, value in self.defaults.items():
+				parsed_config.setdefault(key, value)
+
+			for key, factory in self.factories.items():
+				value = factory()
+				parsed_config.setdefault(key, value)
+
+		return parsed_config
+
+	def parse(
+			self,
+			config: Dict[str, TOML_TYPES],
+			set_defaults: bool = False,
+			) -> Dict[str, TOML_TYPES]:
 		"""
 		Parse the TOML configuration.
 
 		:param config:
+		:param set_defaults: If :py:obj:`True`, the values in :attr:`.AbstractConfigParser.defaults`
+			and :attr:`.AbstractConfigParser.factories` will be set as defaults for the returned mapping.
 		"""
 
 		dynamic_fields = config.get("dynamic", [])
-
-		parsed_config = {"dynamic": dynamic_fields}
 
 		if "name" in dynamic_fields:
 			raise BadConfigError("The 'project.name' field may not be dynamic.")
@@ -491,16 +540,4 @@ class PEP621Parser(AbstractConfigParser):
 		if "version" not in config:
 			raise BadConfigError("The 'project.version' field must be provided.")
 
-		for key in self.keys:
-
-			if key in config and key in dynamic_fields:
-				raise BadConfigError(f"{key!r} was listed in 'project.dynamic-fields' but a value was given.")
-			elif key not in config:
-				# Ignore absent values
-				pass
-			elif hasattr(self, f"parse_{key.replace('-', '_')}"):
-				parsed_config[key] = getattr(self, f"parse_{key.replace('-', '_')}")(config)
-			elif key in config:
-				parsed_config[key] = config[key]
-
-		return parsed_config
+		return self._parse(config, set_defaults)

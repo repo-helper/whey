@@ -84,10 +84,31 @@ license_lookup = {
 		}
 
 
+def get_default_builders() -> Dict[str, Type[AbstractBuilder]]:
+	"""
+	Returns a mapping of builder categories to builder classes to use as the default builders.
+	"""
+
+	return {"sdist": SDistBuilder, "binary": WheelBuilder, "wheel": WheelBuilder}
+
+
 class WheyParser(AbstractConfigParser):
 	"""
 	Parser for the ``[tool.whey]`` table from ``pyproject.toml``.
 	"""
+
+	defaults = {
+			"source-dir": '.',
+			"license-key": None,
+			"platforms": None,
+			"python-versions": None,
+			"python-implementations": None,
+			}
+	factories = {
+			"additional-files": list,
+			"base-classifiers": list,
+			"builders": get_default_builders,
+			}
 
 	def parse_package(self, config: Dict[str, TOML_TYPES]) -> str:
 		"""
@@ -109,8 +130,6 @@ class WheyParser(AbstractConfigParser):
 		Parse the ``source-dir`` key, giving the name of the directory containing the project's source.
 
 		This defaults to ``'.'`` if unspecified.
-
-		.. versionadded:: 0.0.4
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""
@@ -327,11 +346,3 @@ def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
 	for entry_point in eps:
 		if entry_point.group == "whey.builder":
 			yield entry_point
-
-
-def get_default_builders() -> Dict[str, Type[AbstractBuilder]]:
-	"""
-	Returns a mapping of builder categories to builder classes to use as the default builders.
-	"""
-
-	return {"sdist": SDistBuilder, "binary": WheelBuilder, "wheel": WheelBuilder}

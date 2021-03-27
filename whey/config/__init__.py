@@ -30,7 +30,7 @@
 from typing import Any, Dict
 
 # 3rd party
-import toml
+import dom_toml
 from dom_toml.parser import AbstractConfigParser, BadConfigError, construct_path
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
@@ -64,46 +64,22 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 	filename = PathPlus(filename)
 
 	project_dir = filename.parent
-	config = toml.loads(filename.read_text())
+	config = dom_toml.load(filename)
 
 	parsed_config = {}
+	tool_table = config.get("tool", {})
 
-	with in_directory(filename.parent):
+	with in_directory(project_dir):
 
-		if "whey" in config.get("tool", {}):
-			parsed_config.update(WheyParser().parse(config["tool"]["whey"]))
+		parsed_config.update(WheyParser().parse(tool_table.get("whey", {}), set_defaults=True))
 
 		if "project" in config:
-			parsed_config.update(PEP621Parser().parse(config["project"]))
+			parsed_config.update(PEP621Parser().parse(config["project"], set_defaults=True))
 		else:
 			raise KeyError(f"'project' table not found in '{filename!s}'")
 
 	# set defaults
-	# project
-	parsed_config.setdefault("authors", [])
-	parsed_config.setdefault("maintainers", [])
-	parsed_config.setdefault("keywords", [])
-	parsed_config.setdefault("classifiers", [])
-	parsed_config.setdefault("urls", {})
-	parsed_config.setdefault("scripts", {})
-	parsed_config.setdefault("gui-scripts", {})
-	parsed_config.setdefault("entry-points", {})
-	parsed_config.setdefault("dependencies", [])
-	parsed_config.setdefault("optional-dependencies", {})
-	parsed_config.setdefault("requires-python", None)
-	parsed_config.setdefault("description", None)
-	parsed_config.setdefault("readme", None)
-
-	# tool.whey
 	parsed_config.setdefault("package", config["project"]["name"].split('.', 1)[0])
-	parsed_config.setdefault("source-dir", '.')
-	parsed_config.setdefault("additional-files", [])
-	parsed_config.setdefault("license-key", None)
-	parsed_config.setdefault("base-classifiers", [])
-	parsed_config.setdefault("platforms", None)
-	parsed_config.setdefault("python-versions", None)
-	parsed_config.setdefault("python-implementations", None)
-	parsed_config.setdefault("builders", get_default_builders())
 
 	dynamic_fields = parsed_config.get("dynamic", [])
 

@@ -7,6 +7,7 @@ from typing import Iterable, Type
 import dom_toml
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
+from dom_toml.parser import AbstractConfigParser, BadConfigError, construct_path
 from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus, in_directory
 
@@ -24,7 +25,7 @@ from tests.example_configs import (
 		URLS
 		)
 from whey.builder import AbstractBuilder
-from whey.config import AbstractConfigParser, BadConfigError, PEP621Parser, construct_path, load_toml
+from whey.config import PEP621Parser, load_toml
 
 COMPLETE_PROJECT_A = """\
 [project]

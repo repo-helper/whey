@@ -31,7 +31,7 @@ from typing import Any, Dict
 
 # 3rd party
 import dom_toml
-from dom_toml.parser import AbstractConfigParser, BadConfigError, construct_path
+from dom_toml.parser import BadConfigError
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
 from domdf_python_tools.typing import PathLike
@@ -43,14 +43,12 @@ from whey.config.pep621 import PEP621Parser, read_readme
 from whey.config.whey import WheyParser, backfill_classifiers, get_default_builders
 
 __all__ = [
-		"AbstractConfigParser",
 		"BadConfigError",
 		"PEP621Parser",
 		"WheyParser",
 		"backfill_classifiers",
 		"load_toml",
 		"read_readme",
-		"construct_path",
 		]
 
 

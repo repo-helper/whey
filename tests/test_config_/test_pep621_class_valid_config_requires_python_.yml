@@ -1,0 +1,4 @@
+dynamic: []
+name: spam
+requires-python: '>=3.8'
+version: 2020.0.0

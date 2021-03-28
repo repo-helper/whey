@@ -1,0 +1,8 @@
+dynamic: []
+name: spam
+urls:
+  changelog: github.com/me/spam/blob/master/CHANGELOG.md
+  documentation: readthedocs.org
+  homepage: example.com
+  repository: github.com
+version: 2020.0.0

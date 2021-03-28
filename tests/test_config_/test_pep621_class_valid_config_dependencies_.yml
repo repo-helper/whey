@@ -1,0 +1,8 @@
+dependencies:
+- django>2.1; os_name != "nt"
+- django>2.0; os_name == "nt"
+- gidgethub[httpx]>4.0.0
+- httpx
+dynamic: []
+name: spam
+version: 2020.0.0

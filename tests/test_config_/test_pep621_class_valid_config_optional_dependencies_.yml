@@ -1,0 +1,7 @@
+dynamic: []
+name: spam
+optional-dependencies:
+  test:
+  - pytest<5.0.0
+  - pytest-cov[all]
+version: 2020.0.0

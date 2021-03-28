@@ -516,8 +516,10 @@ class PEP621Parser(AbstractConfigParser):
 		Parse the TOML configuration.
 
 		:param config:
-		:param set_defaults: If :py:obj:`True`, the values in :attr:`.AbstractConfigParser.defaults`
-			and :attr:`.AbstractConfigParser.factories` will be set as defaults for the returned mapping.
+		:param set_defaults: If :py:obj:`True`, the values in
+			:attr:`dom_toml.parser.AbstractConfigParser.defaults` and
+			:attr:`dom_toml.parser.AbstractConfigParser.factories`
+			will be set as defaults for the returned mapping.
 		"""
 
 		dynamic_fields = config.get("dynamic", [])

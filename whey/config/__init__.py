@@ -2,7 +2,7 @@
 #
 #  __init__.py
 """
-:pep:`621` configuration parser.
+``pyproject.toml`` configuration parsing.
 """
 #
 #  Copyright © 2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>

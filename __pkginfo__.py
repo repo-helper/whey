@@ -11,15 +11,10 @@
 # This script based on https://github.com/rocky/python-uncompyle6/blob/master/__pkginfo__.py
 #
 
-# stdlib
-import pathlib
-
 __all__ = [
 		"__version__",
-		"repo_root",
 		"extras_require",
 		]
 
 __version__ = "0.0.8"
-repo_root = pathlib.Path(__file__).parent
 extras_require = {"readme": ["readme-renderer[md]>=27.0"], "all": ["readme-renderer[md]>=27.0"]}

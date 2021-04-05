@@ -31,18 +31,9 @@ whey = "whey.__main__:main"
 readme = [ "readme-renderer[md]>=27.0",]
 all = [ "readme-renderer[md]>=27.0",]
 
-[tool.whey]
-base-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Environment :: Console",
-    "Intended Audience :: Developers",
-    "Topic :: Software Development :: Build Tools",
-    "Topic :: Software Development :: Libraries :: Python Modules",
-    "Typing :: Typed",
-]
-python-versions = [ "3.6", "3.7", "3.8", "3.9",]
-python-implementations = [ "CPython", "PyPy",]
-platforms = [ "Windows", "macOS", "Linux",]
+[tool.mkrecipe]
+conda-channels = [ "conda-forge", "domdfcoding",]
+extras = "all"
 license-key = "MIT"
 
 [project.entry-points."whey.builder"]

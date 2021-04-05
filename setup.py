@@ -13,6 +13,8 @@ sys.path.append('.')
 # this package
 from __pkginfo__ import *  # pylint: disable=wildcard-import
 
+install_requires = (repo_root / "requirements.txt").read_text(encoding="utf-8").split('\n')
+
 setup(
 		description="A simple Python wheel builder for simple projects.",
 		extras_require=extras_require,

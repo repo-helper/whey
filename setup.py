@@ -2,6 +2,7 @@
 # This file is managed by 'repo_helper'. Don't edit it directly.
 
 # stdlib
+import pathlib
 import shutil
 import sys
 
@@ -13,7 +14,8 @@ sys.path.append('.')
 # this package
 from __pkginfo__ import *  # pylint: disable=wildcard-import
 
-install_requires = (repo_root / "requirements.txt").read_text(encoding="utf-8").split('\n')
+repo_root = pathlib.Path(__file__).parent
+install_requires = (repo_root / "requirements.txt").read_text(encoding="UTF-8").split('\n')
 
 setup(
 		description="A simple Python wheel builder for simple projects.",

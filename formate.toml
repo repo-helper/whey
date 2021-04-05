@@ -33,6 +33,7 @@ remove_redundant_aliases = true
 default_section = "THIRDPARTY"
 known_third_party = [
     "apeye",
+    "backports_entry_points_selectable",
     "click",
     "coincidence",
     "consolekit",

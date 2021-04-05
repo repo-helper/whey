@@ -17,5 +17,3 @@
 ==========================
 
 .. automodule:: whey.config.whey
-
-

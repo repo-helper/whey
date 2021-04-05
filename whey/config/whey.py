@@ -338,9 +338,9 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 
 def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
 	r"""
-	Returns an iterable over `EntryPoint <https://docs.python.org/3/library/importlib.metadata.html#entry-points>`_ 
+	Returns an iterable over `EntryPoint <https://docs.python.org/3/library/importlib.metadata.html#entry-points>`_
 	objects in the ``whey.builder`` group.
-	
+
 	:rtype: :class:`Iterable <typing.Iterable>`\[`EntryPoint <https://docs.python.org/3/library/importlib.metadata.html#entry-points>`_\]
 	"""  # noqa: D400
 

@@ -387,7 +387,14 @@ class AbstractBuilder(ABC):
 		for extra, requirements in self.config["optional-dependencies"].items():
 			metadata["Provides-Extra"] = extra
 			for requirement in requirements:
-				metadata["Requires-Dist"] = f"{requirement!s} ; extra == {extra!r}"
+				requirement = ComparableRequirement(str(requirement))
+
+				if requirement.marker:
+					requirement.marker = f"({requirement.marker!s}) and extra == {extra!r}"
+				else:
+					requirement.marker = f"extra == {extra!r}"
+
+				metadata["Requires-Dist"] = str(requirement)
 
 		# TODO:
 		#  https://packaging.python.org/specifications/core-metadata/#requires-external-multiple-use

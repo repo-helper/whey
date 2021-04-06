@@ -50,7 +50,8 @@ OPTIONAL_DEPENDENCIES = f"""\
 [project.optional-dependencies]
 test = [
   "pytest < 5.0.0",
-  "pytest-cov[all]"
+  "pytest-cov[all]",
+  'matplotlib>=3.0.0; platform_machine != "aarch64" or python_version > "3.6"',
 ]
 """
 

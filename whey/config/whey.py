@@ -251,7 +251,7 @@ class WheyParser(AbstractConfigParser):
 		parsed_builders = get_default_builders()
 		builders = config["builders"]
 
-		entry_points: Dict[str, importlib_metadata.EntryPoint] = dict(get_entry_points())  # type: ignore
+		entry_points: Dict[str, importlib_metadata.EntryPoint] = {ep.name: ep for ep in get_entry_points()}
 
 		self.assert_type(builders, dict, ["tool", "whey", "builders"])
 

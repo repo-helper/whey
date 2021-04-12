@@ -43,6 +43,7 @@ known_third_party = [
     "domdf_python_tools",
     "email_validator",
     "first",
+    "importlib_metadata",
     "natsort",
     "packaging",
     "pytest",

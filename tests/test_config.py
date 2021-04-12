@@ -1,13 +1,13 @@
 # stdlib
 import re
 from textwrap import dedent
-from typing import Iterable, Type
+from typing import Type
 
 # 3rd party
 import dom_toml
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
-from dom_toml.parser import AbstractConfigParser, BadConfigError, construct_path
+from dom_toml.parser import BadConfigError
 from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus, in_directory
 
@@ -837,31 +837,3 @@ readme = "{filename}"
 
 	with pytest.raises(ValueError, match=f"Unrecognised filetype for '{filename}'"):
 		load_toml(tmp_pathplus / "pyproject.toml")
-
-
-@pytest.mark.parametrize(
-		"path, expected",
-		[
-				(["foo"], "foo"),
-				(iter(["foo"]), "foo"),
-				(("foo", ), "foo"),
-				(["foo", "bar"], "foo.bar"),
-				(iter(["foo", "bar"]), "foo.bar"),
-				(("foo", "bar"), "foo.bar"),
-				(["foo", "hello world"], 'foo."hello world"'),
-				(iter(["foo", "hello world"]), 'foo."hello world"'),
-				(("foo", "hello world"), 'foo."hello world"'),
-				]
-		)
-def test_construct_path(path: Iterable[str], expected: str):
-	assert construct_path(path) == expected
-
-
-@pytest.mark.parametrize("what", ["type", "key type", "value type"])
-@pytest.mark.parametrize("expected_type", [str, int, dict])
-def test_assert_type(what: str, expected_type: Type):
-	with pytest.raises(
-			TypeError,
-			match=f"Invalid {what} for 'foo.\"hello world\"': expected {expected_type!r}, got <class 'list'>"
-			):
-		AbstractConfigParser.assert_type([], expected_type, ["foo", "hello world"], what=what)

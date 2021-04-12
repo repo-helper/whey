@@ -385,7 +385,7 @@ class PEP621Parser(AbstractConfigParser):
 
 		return gui_scripts
 
-	def parse_entry_points(self, config: Dict[str, TOML_TYPES]) -> Dict[str, str]:
+	def parse_entry_points(self, config: Dict[str, TOML_TYPES]) -> Dict[str, Dict[str, str]]:
 		"""
 		Parse the `entry-points <https://www.python.org/dev/peps/pep-0621/#entry-points>`_ table.
 

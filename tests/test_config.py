@@ -1,7 +1,7 @@
 # stdlib
 import re
 from textwrap import dedent
-from typing import Dict, Type
+from typing import Any, Dict, Type
 
 # 3rd party
 import dom_toml
@@ -839,7 +839,7 @@ readme = "{filename}"
 		load_toml(tmp_pathplus / "pyproject.toml")
 
 
-_backfill_base_dict = {
+_backfill_base_dict: Dict[str, Any] = {
 		"base-classifiers": [],
 		"source-dir": '.',
 		"license-key": None,
@@ -857,25 +857,48 @@ _backfill_base_dict = {
 				pytest.param({**_backfill_base_dict, "platforms": ["macOS"]}, id="macOS"),
 				pytest.param({**_backfill_base_dict, "platforms": ["Linux"]}, id="Linux"),
 				pytest.param({**_backfill_base_dict, "platforms": ["BSD"]}, id="BSD"),
-				pytest.param({**_backfill_base_dict, "platforms": ["Windows", "Linux"]},
-								id="Multiple Platforms_1"),
-				pytest.param({**_backfill_base_dict, "platforms": ["macOS", "Linux"]}, id="Multiple Platforms_2"),
-				pytest.param({**_backfill_base_dict, "platforms": ["Windows", "macOS", "Linux"]},
-								id="All Platforms"),
+				pytest.param(
+						{**_backfill_base_dict, "platforms": ["Windows", "Linux"]},
+						id="Multiple Platforms_1",
+						),
+				pytest.param(
+						{**_backfill_base_dict, "platforms": ["macOS", "Linux"]},
+						id="Multiple Platforms_2",
+						),
+				pytest.param(
+						{**_backfill_base_dict, "platforms": ["Windows", "macOS", "Linux"]},
+						id="All Platforms",
+						),
 				pytest.param({**_backfill_base_dict, "python-versions": ["3.6"]}, id="py36"),
 				pytest.param({**_backfill_base_dict, "python-versions": ["3.7"]}, id="py37"),
 				pytest.param({**_backfill_base_dict, "python-versions": ["3.8"]}, id="py38"),
 				pytest.param({**_backfill_base_dict, "python-versions": ["3.9"]}, id="py39"),
-				pytest.param({**_backfill_base_dict, "python-versions": ["3.6", "3.8", "3.9"]},
-								id="multiple_py_versions"),
-				pytest.param({**_backfill_base_dict, "python-implementations": ["CPython"]}, id="CPython"),
-				pytest.param({**_backfill_base_dict, "python-implementations": ["PyPy"]}, id="PyPy"),
-				pytest.param({**_backfill_base_dict, "python-implementations": ["CPython", "PyPy"]},
-								id="Multiple Implementations"),
-				pytest.param({**_backfill_base_dict, "python-implementations": ["GraalPython"]}, id="GraalPython"),
+				pytest.param(
+						{**_backfill_base_dict, "python-versions": ["3.6", "3.8", "3.9"]},
+						id="multiple_py_versions",
+						),
+				pytest.param(
+						{**_backfill_base_dict, "python-implementations": ["CPython"]},
+						id="CPython",
+						),
+				pytest.param(
+						{**_backfill_base_dict, "python-implementations": ["PyPy"]},
+						id="PyPy",
+						),
+				pytest.param(
+						{**_backfill_base_dict, "python-implementations": ["CPython", "PyPy"]},
+						id="Multiple Implementations",
+						),
+				pytest.param(
+						{**_backfill_base_dict, "python-implementations": ["GraalPython"]},
+						id="GraalPython",
+						),
 				pytest.param({**_backfill_base_dict, "license-key": "MIT"}, id="MIT License"),
 				pytest.param({**_backfill_base_dict, "license-key": "GPLv2"}, id="GPLv2"),
-				pytest.param({**_backfill_base_dict, "license-key": "LGPL-3.0-or-later"}, id="LGPL-3.0-or-later"),
+				pytest.param(
+						{**_backfill_base_dict, "license-key": "LGPL-3.0-or-later"},
+						id="LGPL-3.0-or-later",
+						),
 				]
 		)
 def test_backfill_classifiers(config: Dict[str, str], advanced_data_regression: AdvancedDataRegressionFixture):

@@ -28,6 +28,7 @@
 
 # stdlib
 import re
+import sys
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple, Union
 
@@ -57,10 +58,16 @@ try:
 	import readme_renderer.rst  # type: ignore
 
 	def render_rst(content: str):
-		readme_renderer.rst.render(content)
+		rendering_result = readme_renderer.rst.render(content, stream=sys.stderr)
+
+		if rendering_result is None:
+			raise BadConfigError("Error rendering readme.")
 
 	def render_markdown(content: str):
-		readme_renderer.markdown.render(content)
+		rendering_result = readme_renderer.markdown.render(content, stream=sys.stderr)
+
+		if rendering_result is None:
+			raise BadConfigError("Error rendering readme.")
 
 except ImportError:  # pragma: no cover
 

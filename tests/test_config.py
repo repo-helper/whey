@@ -1,7 +1,7 @@
 # stdlib
 import re
 from textwrap import dedent
-from typing import Type
+from typing import Dict, Type
 
 # 3rd party
 import dom_toml
@@ -25,7 +25,7 @@ from tests.example_configs import (
 		URLS
 		)
 from whey.builder import AbstractBuilder
-from whey.config import PEP621Parser, load_toml
+from whey.config import PEP621Parser, backfill_classifiers, load_toml
 
 COMPLETE_PROJECT_A = """\
 [project]
@@ -837,3 +837,46 @@ readme = "{filename}"
 
 	with pytest.raises(ValueError, match=f"Unrecognised filetype for '{filename}'"):
 		load_toml(tmp_pathplus / "pyproject.toml")
+
+
+_backfill_base_dict = {
+		"base-classifiers": [],
+		"source-dir": '.',
+		"license-key": None,
+		"platforms": None,
+		"python-versions": None,
+		"python-implementations": None,
+		}
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				pytest.param(_backfill_base_dict, id="defaults"),
+				pytest.param({**_backfill_base_dict, "platforms": ["Windows"]}, id="Windows"),
+				pytest.param({**_backfill_base_dict, "platforms": ["macOS"]}, id="macOS"),
+				pytest.param({**_backfill_base_dict, "platforms": ["Linux"]}, id="Linux"),
+				pytest.param({**_backfill_base_dict, "platforms": ["BSD"]}, id="BSD"),
+				pytest.param({**_backfill_base_dict, "platforms": ["Windows", "Linux"]},
+								id="Multiple Platforms_1"),
+				pytest.param({**_backfill_base_dict, "platforms": ["macOS", "Linux"]}, id="Multiple Platforms_2"),
+				pytest.param({**_backfill_base_dict, "platforms": ["Windows", "macOS", "Linux"]},
+								id="All Platforms"),
+				pytest.param({**_backfill_base_dict, "python-versions": ["3.6"]}, id="py36"),
+				pytest.param({**_backfill_base_dict, "python-versions": ["3.7"]}, id="py37"),
+				pytest.param({**_backfill_base_dict, "python-versions": ["3.8"]}, id="py38"),
+				pytest.param({**_backfill_base_dict, "python-versions": ["3.9"]}, id="py39"),
+				pytest.param({**_backfill_base_dict, "python-versions": ["3.6", "3.8", "3.9"]},
+								id="multiple_py_versions"),
+				pytest.param({**_backfill_base_dict, "python-implementations": ["CPython"]}, id="CPython"),
+				pytest.param({**_backfill_base_dict, "python-implementations": ["PyPy"]}, id="PyPy"),
+				pytest.param({**_backfill_base_dict, "python-implementations": ["CPython", "PyPy"]},
+								id="Multiple Implementations"),
+				pytest.param({**_backfill_base_dict, "python-implementations": ["GraalPython"]}, id="GraalPython"),
+				pytest.param({**_backfill_base_dict, "license-key": "MIT"}, id="MIT License"),
+				pytest.param({**_backfill_base_dict, "license-key": "GPLv2"}, id="GPLv2"),
+				pytest.param({**_backfill_base_dict, "license-key": "LGPL-3.0-or-later"}, id="LGPL-3.0-or-later"),
+				]
+		)
+def test_backfill_classifiers(config: Dict[str, str], advanced_data_regression: AdvancedDataRegressionFixture):
+	advanced_data_regression.check(backfill_classifiers(config))

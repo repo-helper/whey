@@ -1,6 +1,5 @@
 # stdlib
 import tarfile
-import tempfile
 import zipfile
 from typing import Any, Dict
 
@@ -8,6 +7,7 @@ from typing import Any, Dict
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from consolekit.testing import CliRunner, Result
+from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus, in_directory
 
 # this package
@@ -337,3 +337,165 @@ def test_build_additional_files(
 	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
 
 	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config, match",
+		[
+				pytest.param(
+						'[project]\nname = "spam"',
+						"BadConfigError: The 'project.version' field must be provided.\nAborted!",
+						id="no_version"
+						),
+				pytest.param(
+						'[project]\n\nversion = "2020.0.0"',
+						"BadConfigError: The 'project.name' field must be provided.\nAborted!",
+						id="no_name"
+						),
+				pytest.param(
+						'[project]\ndynamic = ["name"]',
+						"BadConfigError: The 'project.name' field may not be dynamic.\nAborted!",
+						id="dynamic_name"
+						),
+				pytest.param(
+						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"',
+						"BadConfigError: The value for 'project.name' is invalid.\nAborted!",
+						id="bad_name"
+						),
+				pytest.param(
+						'[project]\nname = "spam"\nversion = "???????12345=============☃"',
+						"BadConfigError: Invalid version: '???????12345=============☃'\nAborted!",
+						id="bad_version"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
+						"BadConfigError: Invalid specifier: '???????12345=============☃'\nAborted!",
+						id="bad_requires_python"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]',
+						"BadConfigError: The 'project.authors[0].name' key cannot contain commas.\nAborted!",
+						id="author_comma"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]',
+						"BadConfigError: The 'project.maintainers[0].name' key cannot contain commas.\nAborted!",
+						id="maintainer_comma"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]',
+						"TypeError: Invalid type for 'project.keywords[0]': expected <class 'str'>, got <class 'int'>\nAborted!",
+						id="keywords_wrong_type"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]',
+						"TypeError: Invalid type for 'project.classifiers[0]': expected <class 'str'>, got <class 'int'>\nAborted!",
+						id="classifiers_wrong_type"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]',
+						"TypeError: Invalid type for 'project.dependencies[0]': expected <class 'str'>, got <class 'int'>\nAborted!",
+						id="dependencies_wrong_type"
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
+						"File Not Found: [Errno 2] No such file or directory: 'README.rst'\nAborted!",
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
+						"File Not Found: [Errno 2] No such file or directory: 'LICENSE.txt'\nAborted!",
+						id="missing_license_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
+						f"File Not Found: [Errno 2] No such file or directory: {PathPlus().__class__.__name__}('README.rst')\nAborted!",
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
+						f"File Not Found: [Errno 2] No such file or directory: {PathPlus().__class__.__name__}('LICENSE.txt')\nAborted!",
+						id="missing_license_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				]
+		)
+def test_bad_config(
+		config: str,
+		match: str,
+		tmp_pathplus: PathPlus,
+		advanced_file_regression: AdvancedDataRegressionFixture,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main,
+				args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
+				)
+	assert result.exit_code == 1
+
+	assert result.stdout.rstrip() == match
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				pytest.param('[project]\nname = "spam"', id="no_version"),
+				pytest.param('[project]\n\nversion = "2020.0.0"', id="no_name"),
+				pytest.param('[project]\ndynamic = ["name"]', id="dynamic_name"),
+				pytest.param(
+						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"', id="bad_name"
+						),
+				pytest.param('[project]\nname = "spam"\nversion = "???????12345=============☃"', id="bad_version"),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
+						id="bad_requires_python"
+						),
+				pytest.param(f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]', id="author_comma"),
+				pytest.param(f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]', id="maintainer_comma"),
+				pytest.param(f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]', id="keywords_wrong_type"),
+				pytest.param(f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]', id="classifiers_wrong_type"),
+				pytest.param(f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]', id="dependencies_wrong_type"),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
+						id="missing_license_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
+						id="missing_license_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				]
+		)
+def test_bad_config_show_traceback(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_file_regression: AdvancedDataRegressionFixture,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main,
+				args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
+				)
+	assert result.exit_code == 1
+
+	advanced_file_regression.check(result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "..."))

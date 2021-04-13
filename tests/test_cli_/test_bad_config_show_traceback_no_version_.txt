@@ -1,0 +1,2 @@
+BadConfigError: The 'project.version' field must be provided.
+Aborted!

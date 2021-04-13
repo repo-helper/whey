@@ -1,0 +1,2 @@
+TypeError: Invalid type for 'project.keywords[0]': expected <class 'str'>, got <class 'int'>
+Aborted!

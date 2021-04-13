@@ -35,12 +35,17 @@ import click
 from consolekit import click_command
 from consolekit.options import colour_option, flag_option
 from consolekit.terminal_colours import ColourTrilean
+from consolekit.tracebacks import handle_tracebacks, traceback_option
 from domdf_python_tools.typing import PathLike
 
 __all__ = ["main"]
 
+# this package
+from whey._traceback_handler import ConfigTracebackHandler
+
 
 @colour_option()
+@traceback_option()
 @flag_option("-v", "--verbose", help="Enable verbose output.")
 @click.option("-o", "--out-dir", type=click.STRING, default=None, help="The output directory.")
 @click.option("--build-dir", type=click.STRING, default=None, help="The temporary build directory.")
@@ -58,6 +63,7 @@ def main(
 		binary: bool = False,
 		verbose: bool = False,
 		colour: ColourTrilean = None,
+		show_traceback: bool = False,
 		):
 	"""
 	Build a wheel for the given project.
@@ -74,41 +80,43 @@ def main(
 		sdist = True
 
 	project = PathPlus(project).resolve()
-	foreman = Foreman(project_dir=project)
 
-	if verbose:
-		click.echo("Using the following builders:")
+	with handle_tracebacks(show_traceback, ConfigTracebackHandler):
+		foreman = Foreman(project_dir=project)
 
-		for builder_name, builder_obj in foreman.config["builders"].items():
-			click.echo(f"    {builder_name}: {builder_obj.__module__}.{builder_obj.__qualname__}")
+		if verbose:
+			click.echo("Using the following builders:")
 
-		click.echo()
+			for builder_name, builder_obj in foreman.config["builders"].items():
+				click.echo(f"    {builder_name}: {builder_obj.__module__}.{builder_obj.__qualname__}")
 
-	click.echo(f"Building {foreman.project_dir.as_posix()}")
+			click.echo()
 
-	if wheel:
-		foreman.build_wheel(
-				build_dir=build_dir,
-				out_dir=out_dir,
-				verbose=verbose,
-				colour=colour,
-				)
+		click.echo(f"Building {foreman.project_dir.as_posix()}")
 
-	if sdist:
-		foreman.build_sdist(
-				build_dir=build_dir,
-				out_dir=out_dir,
-				verbose=verbose,
-				colour=colour,
-				)
+		if wheel:
+			foreman.build_wheel(
+					build_dir=build_dir,
+					out_dir=out_dir,
+					verbose=verbose,
+					colour=colour,
+					)
 
-	if binary:
-		foreman.build_binary(
-				build_dir=build_dir,
-				out_dir=out_dir,
-				verbose=verbose,
-				colour=colour,
-				)
+		if sdist:
+			foreman.build_sdist(
+					build_dir=build_dir,
+					out_dir=out_dir,
+					verbose=verbose,
+					colour=colour,
+					)
+
+		if binary:
+			foreman.build_binary(
+					build_dir=build_dir,
+					out_dir=out_dir,
+					verbose=verbose,
+					colour=colour,
+					)
 
 
 if __name__ == "__main__":

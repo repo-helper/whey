@@ -41,7 +41,7 @@ __all__ = ["build_sdist", "build_wheel", "SDistBuilder", "WheelBuilder", "Forema
 __author__: str = "Dominic Davis-Foster"
 __copyright__: str = "2021 Dominic Davis-Foster"
 __license__: str = "MIT License"
-__version__: str = "0.0.10"
+__version__: str = "0.0.11"
 __email__: str = "dominic@davis-foster.co.uk"
 
 

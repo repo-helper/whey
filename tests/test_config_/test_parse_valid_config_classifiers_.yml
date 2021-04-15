@@ -9,6 +9,7 @@ dynamic: []
 entry-points: {}
 gui-scripts: {}
 keywords: []
+license: null
 license-key: null
 maintainers: []
 name: spam

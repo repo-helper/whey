@@ -12,6 +12,7 @@ entry-points:
 gui-scripts:
   spam-gui: spam:main_gui
 keywords: []
+license: null
 license-key: null
 maintainers: []
 name: spam

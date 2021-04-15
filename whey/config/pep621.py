@@ -110,7 +110,12 @@ class PEP621Parser(AbstractConfigParser):
 	Parser for :pep:`621` metadata from ``pyproject.toml``.
 	"""
 
-	defaults = {"description": None, "readme": None, "requires-python": None}
+	defaults = {
+			"description": None,
+			"readme": None,
+			"requires-python": None,
+			"license": None,
+			}
 	factories = {
 			"authors": list,
 			"maintainers": list,

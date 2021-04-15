@@ -301,7 +301,7 @@ class AbstractBuilder(ABC):
 		:param dest_dir: The directory to write the files into.
 		"""
 
-		if "license" in self.config:
+		if self.config.get("license", None) is not None:
 			target = dest_dir / "LICENSE"
 			target.parent.maybe_make(parents=True)
 			target.write_clean(self.config["license"])

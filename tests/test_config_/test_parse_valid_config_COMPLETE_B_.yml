@@ -35,6 +35,7 @@ keywords:
 - pep621
 - sdist
 - wheel
+license: null
 license-key: MIT
 maintainers: []
 name: whey

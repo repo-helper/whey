@@ -1,2 +1,0 @@
-BadConfigError: Invalid version: '???????12345=============☃'
-Aborted!

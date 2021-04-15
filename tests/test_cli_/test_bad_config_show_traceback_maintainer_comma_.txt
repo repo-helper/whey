@@ -1,2 +1,0 @@
-BadConfigError: The 'project.maintainers[0].name' key cannot contain commas.
-Aborted!

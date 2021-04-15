@@ -2,14 +2,15 @@
 import re
 import tarfile
 import zipfile
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # 3rd party
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from consolekit.testing import CliRunner, Result
-from domdf_python_tools.compat import PYPY37
+from dom_toml.parser import BadConfigError
 from domdf_python_tools.paths import PathPlus, in_directory
+from pyproject_examples import bad_pep621_config
 from pyproject_examples.example_configs import (
 		AUTHORS,
 		CLASSIFIERS,
@@ -430,53 +431,30 @@ def test_bad_config(
 
 
 @pytest.mark.parametrize(
-		"config",
+		"config, exception, match",
 		[
-				pytest.param('[project]\nname = "spam"', id="no_version"),
-				pytest.param('[project]\n\nversion = "2020.0.0"', id="no_name"),
-				pytest.param('[project]\ndynamic = ["name"]', id="dynamic_name"),
 				pytest.param(
-						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"', id="bad_name"
+						'[project]\nname = "spam"',
+						BadConfigError,
+						"The 'project.version' field must be provided.",
+						id="no_version"
 						),
-				pytest.param('[project]\nname = "spam"\nversion = "???????12345=============☃"', id="bad_version"),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
-						id="bad_requires_python"
-						),
-				pytest.param(f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]', id="author_comma"),
-				pytest.param(f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]', id="maintainer_comma"),
-				pytest.param(f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]', id="keywords_wrong_type"),
-				pytest.param(f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]', id="classifiers_wrong_type"),
-				pytest.param(f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]', id="dependencies_wrong_type"),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7"),
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						id="missing_license_file",
-						),
+				*bad_pep621_config,
 				]
 		)
 def test_bad_config_show_traceback(
 		config: str,
+		exception: Type[Exception],
+		match: str,
 		tmp_pathplus: PathPlus,
-		advanced_file_regression: AdvancedDataRegressionFixture,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 
 	with in_directory(tmp_pathplus):
 		runner = CliRunner()
-		result: Result = runner.invoke(
-				main,
-				args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
-				)
-	assert result.exit_code == 1
 
-	advanced_file_regression.check(result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "..."))
+		with pytest.raises(exception, match=match):
+			runner.invoke(
+					main,
+					args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus), "-T"],
+					)

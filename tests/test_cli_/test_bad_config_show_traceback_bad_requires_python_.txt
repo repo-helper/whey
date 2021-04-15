@@ -1,2 +1,0 @@
-BadConfigError: Invalid specifier: '???????12345=============☃'
-Aborted!

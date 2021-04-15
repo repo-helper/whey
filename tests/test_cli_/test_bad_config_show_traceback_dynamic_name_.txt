@@ -1,2 +1,0 @@
-BadConfigError: The 'project.name' field may not be dynamic.
-Aborted!

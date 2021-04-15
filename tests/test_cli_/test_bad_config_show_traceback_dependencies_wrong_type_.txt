@@ -1,2 +1,0 @@
-TypeError: Invalid type for 'project.dependencies[0]': expected <class 'str'>, got <class 'int'>
-Aborted!

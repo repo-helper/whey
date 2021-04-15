@@ -1,2 +1,0 @@
-BadConfigError: The value for 'project.name' is invalid.
-Aborted!

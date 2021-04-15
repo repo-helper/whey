@@ -1,2 +1,0 @@
-BadConfigError: The 'project.name' field must be provided.
-Aborted!

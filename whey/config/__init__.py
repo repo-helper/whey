@@ -39,7 +39,7 @@ from packaging.specifiers import Specifier
 from shippinglabel.requirements import combine_requirements, read_requirements
 
 # this package
-from whey.config.pep621 import PEP621Parser, read_readme
+from whey.config.pep621 import PEP621Parser
 from whey.config.whey import WheyParser, backfill_classifiers, get_default_builders
 
 __all__ = [
@@ -48,7 +48,6 @@ __all__ = [
 		"WheyParser",
 		"backfill_classifiers",
 		"load_toml",
-		"read_readme",
 		]
 
 
@@ -75,6 +74,12 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 			parsed_config.update(PEP621Parser().parse(config["project"], set_defaults=True))
 		else:
 			raise KeyError(f"'project' table not found in '{filename!s}'")
+
+		if parsed_config.get("readme", None) is not None:
+			parsed_config["readme"] = parsed_config["readme"].resolve()
+
+		if parsed_config.get("license", None) is not None:
+			parsed_config["license"] = parsed_config["license"].resolve()
 
 	# set defaults
 	parsed_config.setdefault("package", config["project"]["name"].split('.', 1)[0])

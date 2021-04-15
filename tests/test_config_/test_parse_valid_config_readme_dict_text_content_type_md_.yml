@@ -17,7 +17,7 @@ platforms: null
 python-implementations: null
 python-versions: null
 readme:
-  content-type: text/markdown
+  content_type: text/markdown
   text: This is the inline markdown README.
 requires-python: null
 scripts: {}

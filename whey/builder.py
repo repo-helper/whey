@@ -304,7 +304,7 @@ class AbstractBuilder(ABC):
 		if self.config.get("license", None) is not None:
 			target = dest_dir / "LICENSE"
 			target.parent.maybe_make(parents=True)
-			target.write_clean(self.config["license"])
+			target.write_clean(self.config["license"].text)
 			self.report_written(target)
 
 	def write_metadata(self, metadata_file: PathPlus):
@@ -404,8 +404,8 @@ class AbstractBuilder(ABC):
 		if self.config["readme"] is None:
 			description = ''
 		else:
-			metadata["Description-Content-Type"] = self.config["readme"]["content-type"]
-			description = self.config["readme"]["text"]
+			metadata["Description-Content-Type"] = self.config["readme"].content_type
+			description = self.config["readme"].text
 
 		metadata_file.write_lines([
 				# TODO: https://github.com/python/typeshed/issues/5094
@@ -552,15 +552,15 @@ class SDistBuilder(AbstractBuilder):
 		if self.config["readme"] is None:
 			return
 
-		if self.config["readme"]["content-type"] == "text/x-rst":
+		if self.config["readme"].content_type == "text/x-rst":
 			target = self.build_dir / "README.rst"
-		elif self.config["readme"]["content-type"] == "text/markdown":
+		elif self.config["readme"].content_type == "text/markdown":
 			target = self.build_dir / "README.md"
 		else:
 			target = self.build_dir / "README"
 
 		target.parent.maybe_make(parents=True)
-		target.write_clean(self.config["readme"]["text"])
+		target.write_clean(self.config["readme"].text)
 		self.report_written(target)
 
 	build = build_sdist

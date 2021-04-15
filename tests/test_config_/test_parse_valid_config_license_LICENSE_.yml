@@ -7,7 +7,9 @@ dynamic: []
 entry-points: {}
 gui-scripts: {}
 keywords: []
-license: This is the license.
+license:
+  file: LICENSE
+  text: This is the license.
 license-key: null
 maintainers: []
 name: spam

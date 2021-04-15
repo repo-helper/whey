@@ -17,7 +17,8 @@ platforms: null
 python-implementations: null
 python-versions: null
 readme:
-  content-type: text/x-rst
+  content_type: text/x-rst
+  file: README.rst
   text: This is the reStructuredText README.
 requires-python: null
 scripts: {}

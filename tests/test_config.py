@@ -245,17 +245,17 @@ def test_pep621_class_valid_config(
 		config = PEP621Parser().parse(dom_toml.load(tmp_pathplus / "pyproject.toml")["project"])
 
 	if "dependencies" in config:
-		config["dependencies"] = list(map(str, config["dependencies"]))
+		config["dependencies"] = list(map(str, config["dependencies"]))  # type: ignore
 	if "optional-dependencies" in config:
 		config["optional-dependencies"] = {
-				k: list(map(str, v))
+				k: list(map(str, v))  # type: ignore
 				for k, v in config["optional-dependencies"].items()
 				}
 
 	if "requires-python" in config and config["requires-python"] is not None:
-		config["requires-python"] = str(config["requires-python"])
+		config["requires-python"] = str(config["requires-python"])  # type: ignore
 	if "version" in config and config["version"] is not None:
-		config["version"] = str(config["version"])
+		config["version"] = str(config["version"])  # type: ignore
 
 	advanced_data_regression.check(config)
 
@@ -321,61 +321,78 @@ def test_parse_valid_config_readme_dict(
 	check_config(config, advanced_data_regression)
 
 
-@pytest.mark.parametrize(
-		"readme, expected",
+_bad_readmes = pytest.mark.parametrize(
+		"readme, expected, exception",
 		[
-				pytest.param("readme = {}", "The 'project.readme' table cannot be empty.", id="empty"),
+				pytest.param(
+						"readme = {}", "The 'project.readme' table cannot be empty.", BadConfigError, id="empty"
+						),
 				pytest.param(
 						"readme = {fil = 'README.md'}",
 						"Unknown format for 'project.readme': {'fil': 'README.md'}",
+						BadConfigError,
 						id="unknown_key",
 						),
 				pytest.param(
 						'readme = {text = "This is the inline README."}',
 						"The 'project.readme.content-type' key must be provided when 'project.readme.text' is given.",
+						BadConfigError,
 						id="text_only"
 						),
 				pytest.param(
 						'readme = {content-type = "text/x-rst"}',
 						"The 'project.readme.content-type' key cannot be provided on its own; "
 						"Please provide the 'project.readme.text' key too.",
+						BadConfigError,
 						id="content_type_only"
 						),
 				pytest.param(
 						'readme = {charset = "cp1252"}',
 						"The 'project.readme.charset' key cannot be provided on its own; "
 						"Please provide the 'project.readme.text' key too.",
+						BadConfigError,
 						id="charset_only"
 						),
 				pytest.param(
 						'readme = {charset = "cp1252", content-type = "text/x-rst"}',
 						"The 'project.readme.content-type' key cannot be provided on its own; "
 						"Please provide the 'project.readme.text' key too.",
+						BadConfigError,
 						id="content_type_charset"
 						),
 				pytest.param(
 						'readme = {text = "This is the inline README", content-type = "application/x-abiword"}',
 						"Unrecognised value for 'project.readme.content-type': 'application/x-abiword'",
+						BadConfigError,
 						id="bad_content_type"
 						),
 				pytest.param(
-						'readme = {file = "README"}', "Unrecognised filetype for 'README'", id="no_extension"
+						'readme = {file = "README"}',
+						"Unsupported extension for 'README'",
+						ValueError,
+						id="no_extension"
 						),
 				pytest.param(
 						'readme = {file = "README.doc"}',
-						"Unrecognised filetype for 'README.doc'",
+						"Unsupported extension for 'README.doc'",
+						ValueError,
 						id="bad_extension"
 						),
 				pytest.param(
 						'readme = {file = "README.doc", text = "This is the README"}',
 						"The 'project.readme.file' and 'project.readme.text' keys are mutually exclusive.",
+						BadConfigError,
 						id="file_and_readme"
 						),
 				]
 		)
+
+
+@_bad_readmes
 def test_bad_config_readme_dict(
 		readme: str,
 		expected: str,
+		exception: Type[Exception],
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
@@ -387,65 +404,15 @@ def test_bad_config_readme_dict(
 			readme,
 			])
 
-	with pytest.raises(BadConfigError, match=expected):
+	with pytest.raises(exception, match=expected):
 		load_toml(tmp_pathplus / "pyproject.toml")
 
 
-@pytest.mark.parametrize(
-		"readme, expected",
-		[
-				pytest.param("readme = {}", "The 'project.readme' table cannot be empty.", id="empty"),
-				pytest.param(
-						"readme = {fil = 'README.md'}",
-						"Unknown format for 'project.readme': {'fil': 'README.md'}",
-						id="unknown_key",
-						),
-				pytest.param(
-						'readme = {text = "This is the inline README."}',
-						"The 'project.readme.content-type' key must be provided when 'project.readme.text' is given.",
-						id="text_only"
-						),
-				pytest.param(
-						'readme = {content-type = "text/x-rst"}',
-						"The 'project.readme.content-type' key cannot be provided on its own; "
-						"Please provide the 'project.readme.text' key too.",
-						id="content_type_only"
-						),
-				pytest.param(
-						'readme = {charset = "cp1252"}',
-						"The 'project.readme.charset' key cannot be provided on its own; "
-						"Please provide the 'project.readme.text' key too.",
-						id="charset_only"
-						),
-				pytest.param(
-						'readme = {charset = "cp1252", content-type = "text/x-rst"}',
-						"The 'project.readme.content-type' key cannot be provided on its own; "
-						"Please provide the 'project.readme.text' key too.",
-						id="content_type_charset"
-						),
-				pytest.param(
-						'readme = {text = "This is the inline README", content-type = "application/x-abiword"}',
-						"Unrecognised value for 'project.readme.content-type': 'application/x-abiword'",
-						id="bad_content_type"
-						),
-				pytest.param(
-						'readme = {file = "README"}', "Unrecognised filetype for 'README'", id="no_extension"
-						),
-				pytest.param(
-						'readme = {file = "README.doc"}',
-						"Unrecognised filetype for 'README.doc'",
-						id="bad_extension"
-						),
-				pytest.param(
-						'readme = {file = "README.doc", text = "This is the README"}',
-						"The 'project.readme.file' and 'project.readme.text' keys are mutually exclusive.",
-						id="file_and_readme"
-						),
-				]
-		)
+@_bad_readmes
 def test_pep621parser_class_bad_config(
 		readme: str,
 		expected: str,
+		exception: Type[Exception],
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
@@ -457,7 +424,7 @@ def test_pep621parser_class_bad_config(
 			readme,
 			])
 
-	with in_directory(tmp_pathplus), pytest.raises(BadConfigError, match=expected):
+	with in_directory(tmp_pathplus), pytest.raises(exception, match=expected):
 		PEP621Parser().parse(dom_toml.load(tmp_pathplus / "pyproject.toml")["project"])
 
 
@@ -835,7 +802,7 @@ readme = "{filename}"
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / filename).write_text("This is the readme.")
 
-	with pytest.raises(ValueError, match=f"Unrecognised filetype for '{filename}'"):
+	with pytest.raises(ValueError, match=f"Unsupported extension for '{filename}'"):
 		load_toml(tmp_pathplus / "pyproject.toml")
 
 

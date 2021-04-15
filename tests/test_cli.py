@@ -8,6 +8,7 @@ from typing import Any, Dict
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from consolekit.testing import CliRunner, Result
+from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus, in_directory
 from pyproject_examples.example_configs import (
 		AUTHORS,
@@ -450,6 +451,12 @@ def test_bad_config(
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
 						id="missing_readme_file",
+						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
+						),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
+						id="missing_readme_file",
+						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7"),
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',

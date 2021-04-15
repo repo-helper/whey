@@ -46,6 +46,7 @@ known_third_party = [
     "importlib_metadata",
     "natsort",
     "packaging",
+    "pyproject_parser",
     "pytest",
     "pytest_cov",
     "pytest_randomly",

@@ -27,8 +27,8 @@ python_versions:
  - '3.8'
  - '3.9'
  - 3.10-dev
- - pypy3.6
- - pypy3.7
+ - pypy36
+ - pypy37
 
 sphinx_conf_epilogue:
  - nitpicky = True

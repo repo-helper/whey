@@ -1,4 +1,5 @@
 # stdlib
+import re
 import tarfile
 import zipfile
 from typing import Any, Dict
@@ -7,15 +8,10 @@ from typing import Any, Dict
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from consolekit.testing import CliRunner, Result
-from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus, in_directory
-
-# this package
-from tests.example_configs import (
+from pyproject_examples.example_configs import (
 		AUTHORS,
 		CLASSIFIERS,
-		COMPLETE_A,
-		COMPLETE_B,
 		DEPENDENCIES,
 		ENTRY_POINTS,
 		KEYWORDS,
@@ -24,6 +20,10 @@ from tests.example_configs import (
 		OPTIONAL_DEPENDENCIES,
 		URLS
 		)
+from pyproject_examples.utils import file_not_found_regex
+
+# this package
+from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey.__main__ import main
 
 
@@ -364,62 +364,48 @@ def test_build_additional_files(
 						),
 				pytest.param(
 						'[project]\nname = "spam"\nversion = "???????12345=============☃"',
-						"BadConfigError: Invalid version: '???????12345=============☃'\nAborted!",
+						re.escape("BadConfigError: Invalid version: '???????12345=============☃'\nAborted!"),
 						id="bad_version"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
-						"BadConfigError: Invalid specifier: '???????12345=============☃'\nAborted!",
+						re.escape("BadConfigError: Invalid specifier: '???????12345=============☃'\nAborted!"),
 						id="bad_requires_python"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]',
-						"BadConfigError: The 'project.authors[0].name' key cannot contain commas.\nAborted!",
+						r"BadConfigError: The 'project.authors\[0\].name' key cannot contain commas.\nAborted!",
 						id="author_comma"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]',
-						"BadConfigError: The 'project.maintainers[0].name' key cannot contain commas.\nAborted!",
+						r"BadConfigError: The 'project.maintainers\[0\].name' key cannot contain commas.\nAborted!",
 						id="maintainer_comma"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]',
-						"TypeError: Invalid type for 'project.keywords[0]': expected <class 'str'>, got <class 'int'>\nAborted!",
+						r"TypeError: Invalid type for 'project.keywords\[0\]': expected <class 'str'>, got <class 'int'>\nAborted!",
 						id="keywords_wrong_type"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]',
-						"TypeError: Invalid type for 'project.classifiers[0]': expected <class 'str'>, got <class 'int'>\nAborted!",
+						r"TypeError: Invalid type for 'project.classifiers\[0\]': expected <class 'str'>, got <class 'int'>\nAborted!",
 						id="classifiers_wrong_type"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]',
-						"TypeError: Invalid type for 'project.dependencies[0]': expected <class 'str'>, got <class 'int'>\nAborted!",
+						r"TypeError: Invalid type for 'project.dependencies\[0\]': expected <class 'str'>, got <class 'int'>\nAborted!",
 						id="dependencies_wrong_type"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						"File Not Found: [Errno 2] No such file or directory: 'README.rst'\nAborted!",
+						f"File Not Found: {file_not_found_regex('README.rst')}\nAborted!",
 						id="missing_readme_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						"File Not Found: [Errno 2] No such file or directory: 'LICENSE.txt'\nAborted!",
+						f"File Not Found: {file_not_found_regex('LICENSE.txt')}\nAborted!",
 						id="missing_license_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						f"File Not Found: [Errno 2] No such file or directory: {PathPlus().__class__.__name__}('README.rst')\nAborted!",
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						f"File Not Found: [Errno 2] No such file or directory: {PathPlus().__class__.__name__}('LICENSE.txt')\nAborted!",
-						id="missing_license_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
 						),
 				]
 		)
@@ -439,7 +425,7 @@ def test_bad_config(
 				)
 	assert result.exit_code == 1
 
-	assert result.stdout.rstrip() == match
+	assert re.match(match, result.stdout.rstrip())
 
 
 @pytest.mark.parametrize(
@@ -464,22 +450,10 @@ def test_bad_config(
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
 						id="missing_readme_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
 						id="missing_license_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						id="missing_license_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
 						),
 				]
 		)

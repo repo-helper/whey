@@ -8,11 +8,9 @@ import dom_toml
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from dom_toml.parser import BadConfigError
-from domdf_python_tools.compat import PYPY37
 from domdf_python_tools.paths import PathPlus, in_directory
-
-# this package
-from tests.example_configs import (
+from pyproject_examples import bad_pep621_config
+from pyproject_examples.example_configs import (
 		AUTHORS,
 		CLASSIFIERS,
 		DEPENDENCIES,
@@ -24,6 +22,8 @@ from tests.example_configs import (
 		UNICODE,
 		URLS
 		)
+
+# this package
 from whey.builder import AbstractBuilder
 from whey.config import PEP621Parser, backfill_classifiers, load_toml
 
@@ -582,100 +582,7 @@ def test_bad_config_license(
 						"The 'project.version' field must be provided.",
 						id="no_version"
 						),
-				pytest.param(
-						'[project]\n\nversion = "2020.0.0"',
-						BadConfigError,
-						"The 'project.name' field must be provided.",
-						id="no_name"
-						),
-				pytest.param(
-						'[project]\ndynamic = ["name"]',
-						BadConfigError,
-						"The 'project.name' field may not be dynamic.",
-						id="dynamic_name"
-						),
-				pytest.param(
-						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"',
-						BadConfigError,
-						"The value for 'project.name' is invalid.",
-						id="bad_name"
-						),
-				pytest.param(
-						'[project]\nname = "spam"\nversion = "???????12345=============☃"',
-						BadConfigError,
-						re.escape("Invalid version: '???????12345=============☃'"),
-						id="bad_version"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
-						BadConfigError,
-						re.escape("Invalid specifier: '???????12345=============☃'"),
-						id="bad_requires_python"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]',
-						BadConfigError,
-						r"The 'project.authors\[0\].name' key cannot contain commas.",
-						id="author_comma"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]',
-						BadConfigError,
-						r"The 'project.maintainers\[0\].name' key cannot contain commas.",
-						id="maintainer_comma"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]',
-						TypeError,
-						r"Invalid type for 'project.keywords\[0\]': expected <class 'str'>, got <class 'int'>",
-						id="keywords_wrong_type"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]',
-						TypeError,
-						r"Invalid type for 'project.classifiers\[0\]': expected <class 'str'>, got <class 'int'>",
-						id="classifiers_wrong_type"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]',
-						TypeError,
-						r"Invalid type for 'project.dependencies\[0\]': expected <class 'str'>, got <class 'int'>",
-						id="dependencies_wrong_type"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						FileNotFoundError,
-						"No such file or directory: 'README.rst'",
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						FileNotFoundError,
-						"No such file or directory: 'LICENSE.txt'",
-						id="missing_license_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						FileNotFoundError,
-						r"No such file or directory: .*PathPlus\('README.rst'\)",
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						FileNotFoundError,
-						r"No such file or directory: .*PathPlus\('LICENSE.txt'\)",
-						id="missing_license_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\ndynamic = ["dependencies"]',
-						BadConfigError,
-						"'project.dependencies' was listed as a dynamic field but no 'requirements.txt' file was found.",
-						id="missing_dynamic_requirements"
-						),
+				*bad_pep621_config,
 				]
 		)
 def test_parse_config_errors(config: str, expects: Type[Exception], match: str, tmp_pathplus: PathPlus):
@@ -694,94 +601,7 @@ def test_parse_config_errors(config: str, expects: Type[Exception], match: str, 
 						"The 'project.version' field must be provided.",
 						id="no_version"
 						),
-				pytest.param(
-						'[project]\n\nversion = "2020.0.0"',
-						BadConfigError,
-						"The 'project.name' field must be provided.",
-						id="no_name"
-						),
-				pytest.param(
-						'[project]\ndynamic = ["name"]',
-						BadConfigError,
-						"The 'project.name' field may not be dynamic.",
-						id="dynamic_name"
-						),
-				pytest.param(
-						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"',
-						BadConfigError,
-						"The value for 'project.name' is invalid.",
-						id="bad_name"
-						),
-				pytest.param(
-						'[project]\nname = "spam"\nversion = "???????12345=============☃"',
-						BadConfigError,
-						re.escape("Invalid version: '???????12345=============☃'"),
-						id="bad_version"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
-						BadConfigError,
-						re.escape("Invalid specifier: '???????12345=============☃'"),
-						id="bad_requires_python"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]',
-						BadConfigError,
-						r"The 'project.authors\[0\].name' key cannot contain commas.",
-						id="author_comma"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]',
-						BadConfigError,
-						r"The 'project.maintainers\[0\].name' key cannot contain commas.",
-						id="maintainer_comma"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]',
-						TypeError,
-						r"Invalid type for 'project.keywords\[0\]': expected <class 'str'>, got <class 'int'>",
-						id="keywords_wrong_type"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]',
-						TypeError,
-						r"Invalid type for 'project.classifiers\[0\]': expected <class 'str'>, got <class 'int'>",
-						id="classifiers_wrong_type"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]',
-						TypeError,
-						r"Invalid type for 'project.dependencies\[0\]': expected <class 'str'>, got <class 'int'>",
-						id="dependencies_wrong_type"
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						FileNotFoundError,
-						"No such file or directory: 'README.rst'",
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						FileNotFoundError,
-						"No such file or directory: 'LICENSE.txt'",
-						id="missing_license_file",
-						marks=pytest.mark.skipif(PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
-						FileNotFoundError,
-						r"No such file or directory: .*PathPlus\('README.rst'\)",
-						id="missing_readme_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
-						),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nlicense = {{file = "LICENSE.txt"}}',
-						FileNotFoundError,
-						r"No such file or directory: .*PathPlus\('LICENSE.txt'\)",
-						id="missing_license_file",
-						marks=pytest.mark.skipif(not PYPY37, reason="Message differs on PyPy 3.7")
-						),
+				*bad_pep621_config,
 				]
 		)
 def test_pep621parser_class_errors(config: str, expects: Type[Exception], match: str, tmp_pathplus: PathPlus):

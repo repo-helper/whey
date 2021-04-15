@@ -8,14 +8,9 @@ import zipfile
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, check_file_regression
 from domdf_python_tools.paths import PathPlus, compare_dirs
-from pytest_regressions.file_regression import FileRegressionFixture
-
-# this package
-from tests.example_configs import (
+from pyproject_examples.example_configs import (
 		AUTHORS,
 		CLASSIFIERS,
-		COMPLETE_A,
-		COMPLETE_B,
 		DEPENDENCIES,
 		DYNAMIC_REQUIREMENTS,
 		ENTRY_POINTS,
@@ -27,6 +22,10 @@ from tests.example_configs import (
 		UNICODE,
 		URLS
 		)
+from pytest_regressions.file_regression import FileRegressionFixture
+
+# this package
+from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey import SDistBuilder, WheelBuilder
 from whey.config import load_toml
 

@@ -6,10 +6,7 @@ import zipfile
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from domdf_python_tools.paths import PathPlus, in_directory
-
-# this package
-import whey
-from tests.example_configs import (
+from pyproject_examples.example_configs import (
 		AUTHORS,
 		CLASSIFIERS,
 		DEPENDENCIES,
@@ -20,7 +17,9 @@ from tests.example_configs import (
 		OPTIONAL_DEPENDENCIES,
 		URLS
 		)
-from whey import SDistBuilder, WheelBuilder
+
+# this package
+import whey
 from whey.__main__ import main
 
 COMPLETE_PROJECT_A = """\

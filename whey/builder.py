@@ -34,6 +34,7 @@ import posixpath
 import re
 import shutil
 import tarfile
+import warnings
 from abc import ABC, abstractmethod
 from email.headerregistry import Address
 from email.message import EmailMessage
@@ -264,6 +265,9 @@ class AbstractBuilder(ABC):
 					if exclude_file.is_file():
 						exclude_file.unlink()
 						self.report_removed(exclude_file)
+
+			else:  # pragma: no cover
+				warnings.warn(f"Unsupported command in 'additional-files': {entry}")
 
 		#
 		# elif parts[0] == "global-include":

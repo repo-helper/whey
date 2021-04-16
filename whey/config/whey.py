@@ -197,7 +197,8 @@ class WheyParser(AbstractConfigParser):
 		for idx, version in enumerate(python_versions):
 			if not isinstance(version, (str, int, float)):
 				raise TypeError(
-						f"Invalid type for 'tool.whey.python-versions[{idx}]': expected {str!r}, {int!r} or {float!r}, got {type(version)!r}"
+						f"Invalid type for 'tool.whey.python-versions[{idx}]': "
+						f"expected {str!r}, {int!r} or {float!r}, got {type(version)!r}"
 						)
 			if str(version) in "12":
 				raise BadConfigError(
@@ -294,7 +295,7 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	Python versions and implementations, and the project's license, as appropriate.
 
 	:param config: The parsed config from ``pyproject.toml``.
-	"""
+	"""  # noqa: D400
 
 	# TODO: Typing :: Typed
 

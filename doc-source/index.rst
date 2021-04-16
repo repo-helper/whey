@@ -133,7 +133,7 @@ whey
 		:alt: GitHub top language
 
 	.. |commits-since| github-shield::
-		:commits-since: v0.0.11
+		:commits-since: v0.0.12
 		:alt: GitHub commits since tagged version
 
 	.. |commits-latest| github-shield::

@@ -155,9 +155,10 @@ class WheyParser(AbstractConfigParser):
 
 	def parse_additional_files(self, config: Dict[str, TOML_TYPES]) -> List[str]:
 		"""
-		Parse the ``additional-files`` key,
-		giving `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_-style
+		Parse the ``additional-files`` key, giving `MANIFEST.in`_-style
 		entries for additional files to include in distributions.
+
+		.. _MANIFEST.in: https://packaging.python.org/guides/using-manifest-in/
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""  # noqa: D400
@@ -293,7 +294,7 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	Python versions and implementations, and the project's license, as appropriate.
 
 	:param config: The parsed config from ``pyproject.toml``.
-	"""  # noqa: D400
+	"""
 
 	# TODO: Typing :: Typed
 
@@ -338,11 +339,12 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 
 def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
 	r"""
-	Returns an iterable over `EntryPoint <https://docs.python.org/3/library/importlib.metadata.html#entry-points>`_
-	objects in the ``whey.builder`` group.
+	Returns an iterable over `EntryPoint`_ objects in the ``whey.builder`` group.
 
-	:rtype: :class:`Iterable <typing.Iterable>`\[`EntryPoint <https://docs.python.org/3/library/importlib.metadata.html#entry-points>`_\]
-	"""  # noqa: D400
+	:rtype: :class:`Iterable <typing.Iterable>`\[`EntryPoint`_\]
+
+	.. _EntryPoint: https://docs.python.org/3/library/importlib.metadata.html#entry-points
+	"""
 
 	eps = itertools.chain.from_iterable(dist.entry_points for dist in importlib_metadata.distributions())
 

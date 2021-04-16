@@ -216,7 +216,7 @@ class AbstractBuilder(ABC):
 		if self.verbose:
 			self._echo(f"Writing {written_file.relative_to(self.build_dir).as_posix()}")
 
-	def copy_additional_files(self) -> None:  # pylint: disable=useless-return
+	def copy_additional_files(self) -> None:
 		"""
 		Copy additional files to the build directory, as specified in the ``additional-files`` key.
 		"""
@@ -225,11 +225,12 @@ class AbstractBuilder(ABC):
 
 	def parse_additional_files(self, *entries: str) -> None:  # pylint: disable=useless-return
 		r"""
-		Copy additional files to the build directory,
-		by parsing `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_-style entries.
+		Copy additional files to the build directory, by parsing `MANIFEST.in`_-style entries.
+
+		.. _MANIFEST.in: https://packaging.python.org/guides/using-manifest-in/
 
 		:param \*entries:
-		"""  # noqa: D400
+		"""
 
 		def copy_file(filename):
 			target = self.build_dir / filename.relative_to(self.project_dir)
@@ -309,11 +310,12 @@ class AbstractBuilder(ABC):
 
 	def write_metadata(self, metadata_file: PathPlus):
 		"""
-		Write `Core Metadata <https://packaging.python.org/specifications/core-metadata>`_
-		to the given file.
+		Write `Core Metadata`_ to the given file.
+
+		.. _Core Metadata: https://packaging.python.org/specifications/core-metadata
 
 		:param metadata_file:
-		"""  # noqa: D400
+		"""
 
 		metadata = EmailMessage()
 

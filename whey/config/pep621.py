@@ -27,7 +27,7 @@
 #
 
 # stdlib
-from typing import Dict, List, cast
+from typing import Dict, cast
 
 # 3rd party
 import pyproject_parser.parsers
@@ -39,7 +39,7 @@ from pyproject_parser.type_hints import ProjectDict
 __all__ = ["PEP621Parser"]
 
 
-class PEP621Parser(pyproject_parser.parsers.PEP621Parser):
+class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True):
 	"""
 	Parser for :pep:`621` metadata from ``pyproject.toml``.
 	"""
@@ -50,43 +50,6 @@ class PEP621Parser(pyproject_parser.parsers.PEP621Parser):
 			"requires-python": None,
 			"license": None,
 			}
-	factories = {
-			"authors": list,
-			"maintainers": list,
-			"keywords": list,
-			"classifiers": list,
-			"urls": dict,
-			"scripts": dict,
-			"gui-scripts": dict,
-			"entry-points": dict,
-			"dependencies": list,
-			"optional-dependencies": dict,
-			}
-
-	@property
-	def keys(self) -> List[str]:
-		"""
-		The keys to parse from the TOML file.
-		"""
-
-		return [
-				"name",
-				"version",
-				"description",
-				"readme",
-				"requires-python",
-				"license",
-				"authors",
-				"maintainers",
-				"keywords",
-				"classifiers",
-				"urls",
-				"scripts",
-				"gui-scripts",
-				"entry-points",
-				"dependencies",
-				"optional-dependencies",
-				]
 
 	def _parse(
 			self,

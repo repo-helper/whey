@@ -15,4 +15,5 @@ python:
    - requirements: doc-source/requirements.txt
    - method: pip
      path: .
-     extra_requirements: readme
+     extra_requirements:
+      - readme

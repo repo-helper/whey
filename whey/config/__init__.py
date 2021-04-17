@@ -40,7 +40,7 @@ from shippinglabel.requirements import combine_requirements, read_requirements
 
 # this package
 from whey.config.pep621 import PEP621Parser
-from whey.config.whey import WheyParser, backfill_classifiers, get_default_builders
+from whey.config.whey import WheyParser, backfill_classifiers
 
 __all__ = [
 		"BadConfigError",

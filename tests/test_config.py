@@ -1,5 +1,4 @@
 # stdlib
-import re
 from textwrap import dedent
 from typing import Any, Dict, Type
 

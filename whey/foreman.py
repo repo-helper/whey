@@ -27,7 +27,7 @@ The foreman is responsible for loading the configuration calling the builders.
 #
 
 # stdlib
-from typing import Any, Mapping, Optional, Type
+from typing import Optional, Type
 
 # 3rd party
 from domdf_python_tools.paths import PathPlus, traverse_to_file

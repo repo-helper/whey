@@ -33,7 +33,6 @@ from typing import Dict, cast
 import pyproject_parser.parsers
 from dom_toml.parser import TOML_TYPES, BadConfigError
 from domdf_python_tools.words import word_join
-from email_validator import EmailSyntaxError, validate_email  # type: ignore
 from pyproject_parser.type_hints import ProjectDict
 
 __all__ = ["PEP621Parser"]

@@ -17,4 +17,7 @@ __all__ = [
 		]
 
 __version__ = "0.0.12"
-extras_require = {"readme": ["readme-renderer[md]>=27.0"], "all": ["readme-renderer[md]>=27.0"]}
+extras_require = {
+		"readme": ["docutils==0.16", "pyproject-parser[readme]>=0.1.0"],
+		"all": ["docutils==0.16", "pyproject-parser[readme]>=0.1.0"]
+		}

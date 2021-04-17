@@ -64,4 +64,5 @@ entry_points:
 
 extras_require:
  readme:
-  - readme-renderer[md]>=27.0
+  - pyproject-parser[readme]>=0.1.0
+  - docutils==0.16

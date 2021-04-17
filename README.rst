@@ -165,3 +165,18 @@ To install with ``conda``:
 		$ conda install whey
 
 .. end installation
+
+``whey`` also has an optional README validation feature, which checks the README will render correctly on PyPI.
+This requires that the ``readme`` extra is installed:
+
+.. code-block:: bash
+
+	$ python -m pip install whey[readme]
+
+and in ``pyproject.toml``:
+
+.. code-block:: TOML
+
+	[build-system]
+	requires = [ "whey[readme]",]
+	build-backend = "whey"

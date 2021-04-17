@@ -21,6 +21,12 @@ whey
   It is a byproduct of the manufacture of cheese and has several commercial uses.
 
 
+See `the documentation`_ for configuration_ and usage_ information.
+
+.. _the documentation: https://whey.readthedocs.io/en/latest/
+.. _configuration: https://whey.readthedocs.io/en/latest/configuration.html
+.. _usage: https://whey.readthedocs.io/en/latest/configuration.html
+
 .. start shields
 
 .. list-table::

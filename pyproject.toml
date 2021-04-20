@@ -7,12 +7,12 @@ name = "whey"
 version = "0.0.13"
 description = "A simple Python wheel builder for simple projects."
 readme = "README.rst"
-keywords = [ "pep517", "pep621", "build", "sdist", "wheel", "packaging", "distribution",]
+keywords = [ "build", "distribution", "packaging", "pep517", "pep621", "sdist", "wheel",]
 dynamic = [ "requires-python", "classifiers", "dependencies",]
 
 [[project.authors]]
-email = "dominic@davis-foster.co.uk"
 name = "Dominic Davis-Foster"
+email = "dominic@davis-foster.co.uk"
 
 
 [project.license]

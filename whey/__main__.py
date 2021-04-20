@@ -40,9 +40,6 @@ from domdf_python_tools.typing import PathLike
 
 __all__ = ["main"]
 
-# this package
-from whey._traceback_handler import ConfigTracebackHandler
-
 
 @colour_option()
 @traceback_option()
@@ -71,6 +68,7 @@ def main(
 
 	# 3rd party
 	from domdf_python_tools.paths import PathPlus
+	from pyproject_parser.cli import ConfigTracebackHandler
 
 	# this package
 	from whey.foreman import Foreman

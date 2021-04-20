@@ -257,6 +257,9 @@ class AbstractBuilder(ABC):
 
 			elif parts[0] == "recursive-include":
 				for include_file in sort_paths(*(self.project_dir / parts[1]).rglob(parts[2])):
+					if "__pycache__" in include_file.parts:
+						continue
+
 					if include_file.is_file():
 						copy_file(filename=include_file)
 

@@ -351,7 +351,8 @@ class AbstractBuilder(ABC):
 
 		for entry in self.config["maintainers"]:
 			if entry["name"] and entry["email"]:
-				maintainer_email.append("{name} <{email}>".format_map(entry))
+				address = Address(entry["name"], addr_spec=entry["email"])
+				author_email.append(str(address))
 			elif entry["email"]:
 				maintainer_email.append(entry["email"])
 			elif entry["name"]:

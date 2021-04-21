@@ -1,6 +1,6 @@
-#####
+=====
 whey
-#####
+=====
 
 .. figure:: Little_Miss_Muffet_-_Sir_John_Everett_Millais.png
 	:figwidth: 30%
@@ -182,6 +182,8 @@ and in ``pyproject.toml``:
 
 Contents
 -----------
+
+.. html-section::
 
 .. toctree::
 	:hidden:

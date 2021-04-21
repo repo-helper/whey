@@ -42,6 +42,7 @@ extensions = [
 		"seed_intersphinx_mapping",
 		"sphinx_click",
 		"configconfig.autoconfig",
+		"html_section",
 		]
 sphinxemoji_style = "twemoji"
 gitstamp_fmt = "%d %b %Y"

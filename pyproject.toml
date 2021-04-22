@@ -28,8 +28,8 @@ Documentation = "https://whey.readthedocs.io/en/latest"
 whey = "whey.__main__:main"
 
 [project.optional-dependencies]
-readme = [ "docutils==0.16", "pyproject-parser[readme]>=0.1.0",]
-all = [ "docutils==0.16", "pyproject-parser[readme]>=0.1.0",]
+readme = [ "docutils==0.16", "pyproject-parser[readme]>=0.2.0",]
+all = [ "docutils==0.16", "pyproject-parser[readme]>=0.2.0",]
 
 [tool.mkrecipe]
 conda-channels = [ "conda-forge", "domdfcoding",]

@@ -5,6 +5,9 @@ name: mypy
 on:
   push:
 
+permissions:
+  contents: read
+
 jobs:
   Run:
     name: "mypy / ${{ matrix.os }}"
@@ -19,7 +22,17 @@ jobs:
       - name: Checkout 🛎️
         uses: "actions/checkout@v2"
 
+      - name: Check for changed files
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          list-files: "json"
+          filters: |
+            code:
+              - '!(doc-source/**|CONTRIBUTING.rst|.imgbotconfig|.pre-commit-config.yaml|.pylintrc|.readthedocs.yml)'
+
       - name: Setup Python 🐍
+        if: steps.changes.outputs.code == 'true'
         uses: "actions/setup-python@v2"
         with:
           python-version: "3.6"
@@ -32,4 +45,5 @@ jobs:
           python -m pip install --upgrade tox virtualenv
 
       - name: "Run mypy"
+        if: steps.changes.outputs.code == 'true'
         run: "python -m tox -e mypy"

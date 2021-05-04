@@ -197,6 +197,7 @@ Contents
 
 	configuration
 	cli
+	Source
 
 .. toctree::
 	:maxdepth: 3
@@ -205,13 +206,6 @@ Contents
 
 	api/*
 	extending
-
-.. toctree::
-	:maxdepth: 3
-	:caption: Contributing
-
-	contributing
-	Source
 
 .. start links
 

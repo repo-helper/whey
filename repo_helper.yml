@@ -32,6 +32,7 @@ python_versions:
 
 sphinx_conf_epilogue:
  - nitpicky = True
+ - 'latex_elements = {"fncychap": "\\usepackage[Bjarne]{fncychap}\n\\ChNameAsIs\n\\ChTitleAsIs\n"}'
 
 console_scripts:
  - whey = whey.__main__:main
@@ -67,3 +68,8 @@ extras_require:
  readme:
   - pyproject-parser[readme]>=0.2.0
   - docutils==0.16
+
+exclude_files:
+ - contributing
+
+preserve_custom_theme: true

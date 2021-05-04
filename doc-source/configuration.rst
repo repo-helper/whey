@@ -34,6 +34,10 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 	Specifies which fields listed by :pep:`621` were intentionally unspecified so ``whey`` can provide such metadata dynamically.
 	Whey currently only supports ``classifiers``, ``dependencies``, and ``requires-python`` as dynamic fields.
 
+.. raw:: latex
+
+	\clearpage
+
 
 ``[tool.whey]``
 -------------------
@@ -100,6 +104,10 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 	``whey`` was built with type hints in mind, and so it will automatically include any ``py.typed`` files and ``*.pyi`` stub files automatically.
 
+	.. raw:: latex
+
+		\begin{minipage}{\textwidth}
+
 	**Example**:
 
 	.. code-block:: TOML
@@ -110,6 +118,9 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 			"recursive-exclude domdf_python_tools *.json",
 		]
 
+	.. raw:: latex
+
+		\end{minipage}
 
 .. conf:: license-key
 
@@ -161,10 +172,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 	.. code-block:: TOML
 
 		[tool.whey]
-		platforms = [
-			"Windows",
-			"Linux",
-		]
+		platforms = [ "Windows", "Linux",]
 
 
 .. conf:: python-implementations
@@ -178,10 +186,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 	.. code-block:: TOML
 
 		[tool.whey]
-		python-implementations = [
-			"CPython",
-			"PyPy",
-		]
+		python-implementations = [ "CPython", "PyPy",]
 
 
 

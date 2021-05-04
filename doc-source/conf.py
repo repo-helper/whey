@@ -142,3 +142,4 @@ autodoc_default_options = {
 		}
 
 nitpicky = True
+latex_elements = {"fncychap": "\\usepackage[Bjarne]{fncychap}\n\\ChNameAsIs\n\\ChTitleAsIs\n"}

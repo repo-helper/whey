@@ -4,6 +4,10 @@ Configuration
 
 ``whey`` is configured in the ``pyproject.toml`` file defined in :pep:`517` and :pep:`518`.
 
+.. note::
+
+	``whey`` only supports `TOML v0.5.0 <https://toml.io/en/v0.5.0>`_.
+	``pyproject.toml`` files using features of newer TOML versions may not parse correctly.
 
 ``[build-system]``
 -------------------
@@ -189,6 +193,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 		python-implementations = [ "CPython", "PyPy",]
 
 
+.. latex:clearpage::
 
 .. conf:: python-versions
 

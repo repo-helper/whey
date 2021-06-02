@@ -71,9 +71,23 @@ class AbstractBuilder(ABC):
 	:param build_dir: The (temporary) build directory.
 	:default build_dir: :file:`{<project_dir>}/build/`
 	:param out_dir: The output directory.
-	:default out_dir: :file:`{<project_dir>}/dist`
+	:default out_dir: :file:`{<project_dir>}/dist/`
 	:param verbose: Whether to enable verbose output.
 	:param colour: Whether to use coloured output.
+
+	.. autosummary-widths:: 1/2
+		:html: 3/10
+
+	.. autoclasssumm:: AbstractBuilder
+		:autosummary-sections: Attributes
+
+	.. latex:clearpage::
+
+	.. autosummary-widths:: 7/16
+		:html: 4/10
+
+	.. autoclasssumm:: AbstractBuilder
+		:autosummary-sections: Methods
 	"""
 
 	def __init__(
@@ -91,7 +105,7 @@ class AbstractBuilder(ABC):
 		#: The pyproject.toml directory
 		self.project_dir: PathPlus = traverse_to_file(PathPlus(project_dir), "pyproject.toml")
 
-		#: Configuration parsed from "pyproject.toml".
+		#: Configuration parsed from ``pyproject.toml``.
 		self.config: Dict[str, Any] = dict(config)
 
 		#: The archive name, without the tag
@@ -182,6 +196,8 @@ class AbstractBuilder(ABC):
 
 			Copying {source} -> {target.relative_to(self.build_dir)}
 
+		.. latex:vspace:: -5px
+
 		:param source: The source file
 		:param target: The file in the build directory.
 		"""
@@ -191,11 +207,13 @@ class AbstractBuilder(ABC):
 
 	def report_removed(self, removed_file: pathlib.Path) -> None:
 		"""
-		Report that a file has been removed from the build directory.
+		Reports the removal of a file from the build directory.
 
 		The format is::
 
 			Removing {removed_file.relative_to(self.build_dir)}
+
+		.. latex:vspace:: -5px
 
 		:param removed_file:
 		"""
@@ -210,6 +228,8 @@ class AbstractBuilder(ABC):
 		The format is::
 
 			Writing {written_file.relative_to(self.build_dir)}
+
+		.. latex:vspace:: -5px
 
 		:param written_file:
 		"""

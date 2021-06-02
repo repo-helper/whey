@@ -95,6 +95,9 @@ def get_default_builders() -> Dict[str, Type[AbstractBuilder]]:
 class WheyParser(AbstractConfigParser):
 	"""
 	Parser for the ``[tool.whey]`` table from ``pyproject.toml``.
+
+	.. autosummary-widths:: 1/2
+		:html: 45/100
 	"""
 
 	defaults = {
@@ -114,7 +117,7 @@ class WheyParser(AbstractConfigParser):
 		"""
 		Parse the ``package`` key, giving the name of the importable package.
 
-		This defaults to `project.name <https://www.python.org/dev/peps/pep-0621/#name>`_ if unspecified.
+		This defaults to :pep621:`project.name <name>` if unspecified.
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""
@@ -223,12 +226,11 @@ class WheyParser(AbstractConfigParser):
 
 	def parse_base_classifiers(self, config: Dict[str, TOML_TYPES]) -> Set[str]:
 		"""
-		Parse the ``base-classifiers`` key, giving a list `trove classifiers <https://pypi.org/classifiers/>`_.
+		Parse the ``base-classifiers`` key, giving a list `trove classifiers <https://pypi.org/classifiers/>`__.
 
 		This list will be extended with the appropriate classifiers for supported platforms,
 		Python versions and implementations, and the project's license.
-		Ignored if `classifiers <https://www.python.org/dev/peps/pep-0621/#classifiers>`_
-		is not listed in `dynamic <https://www.python.org/dev/peps/pep-0621/#dynamic>`_
+		Ignored if :pep621:`classifiers>` is not listed in :pep621:`dynamic`
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""

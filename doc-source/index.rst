@@ -164,6 +164,9 @@ Installation
 .. end installation
 
 
+.. latex:vspace:: 20px
+
+
 ``whey`` also has an optional README validation feature, which checks the README will render correctly on PyPI.
 This requires that the ``readme`` extra is installed:
 
@@ -207,12 +210,18 @@ Contents
 	api/*
 	extending
 
+.. sidebar-links::
+	:caption: Links
+	:github:
+	:pypi: whey
+
+
 .. start links
 
 .. only:: html
 
 	View the :ref:`Function Index <genindex>` or browse the `Source Code <_modules/index.html>`__.
 
-	`Browse the GitHub Repository <https://github.com/repo-helper/whey>`__
+	:github:repo:`Browse the GitHub Repository <repo-helper/whey>`
 
 .. end links

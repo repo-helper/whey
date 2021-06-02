@@ -33,7 +33,13 @@ from typing import Optional
 # 3rd party
 import click
 from consolekit import click_command
-from consolekit.options import colour_option, flag_option
+from consolekit.options import (
+		DescribedArgument,
+		auto_default_argument,
+		auto_default_option,
+		colour_option,
+		flag_option
+		)
 from consolekit.terminal_colours import ColourTrilean
 from consolekit.tracebacks import handle_tracebacks, traceback_option
 from domdf_python_tools.typing import PathLike
@@ -44,12 +50,17 @@ __all__ = ["main"]
 @colour_option()
 @traceback_option()
 @flag_option("-v", "--verbose", help="Enable verbose output.")
-@click.option("-o", "--out-dir", type=click.STRING, default=None, help="The output directory.")
-@click.option("--build-dir", type=click.STRING, default=None, help="The temporary build directory.")
+@auto_default_option("-o", "--out-dir", type=click.STRING, help="The output directory.")
+@auto_default_option("--build-dir", type=click.STRING, help="The temporary build directory.")
 @flag_option("-b", "--binary", help="Build a binary distribution.")
 @flag_option("-b", "--wheel", help="Build a wheel.")
 @flag_option("-s", "--sdist", help="Build a sdist distribution.")
-@click.argument("project", type=click.STRING, default='.')
+@auto_default_argument(
+		"project",
+		type=click.STRING,
+		cls=DescribedArgument,
+		description="The path to the project to build.",
+		)
 @click_command()
 def main(
 		project: PathLike = '.',

@@ -47,18 +47,18 @@ class Foreman:
 
 	def __init__(self, project_dir: PathLike):
 
-		# Walk up the tree until a "pyproject.toml" file is found.
+		# Walk up the tree until a ``pyproject.toml`` file is found.
 		#: The pyproject.toml directory
 		self.project_dir: PathPlus = traverse_to_file(PathPlus(project_dir), "pyproject.toml")
 
-		#: Configuration parsed from "pyproject.toml".
+		#: Configuration parsed from ``pyproject.toml``.
 		self.config = load_toml(self.project_dir / "pyproject.toml")
 
 	def get_builder(self, distribution_type: str) -> Type[AbstractBuilder]:
 		"""
-		Returns the builder for the given distribution type (e.g. "source").
+		Returns the builder for the given distribution type.
 
-		:param distribution_type:
+		:param distribution_type: The distribution type, such as ``'source'`` or ``'wheel'``.
 		"""
 
 		return self.config["builders"][distribution_type]

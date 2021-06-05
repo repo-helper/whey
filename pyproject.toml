@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "whey"
-version = "0.0.13"
+version = "0.0.14"
 description = "A simple Python wheel builder for simple projects."
 readme = "README.rst"
 keywords = [ "build", "distribution", "packaging", "pep517", "pep621", "sdist", "wheel",]

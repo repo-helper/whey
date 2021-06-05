@@ -32,7 +32,6 @@ python_versions:
 
 sphinx_conf_epilogue:
  - nitpicky = True
- - 'latex_elements = {"fncychap": "\\usepackage[Bjarne]{fncychap}\n\\ChNameAsIs\n\\ChTitleAsIs\n"}'
 
 console_scripts:
  - whey = whey.__main__:main
@@ -40,7 +39,10 @@ console_scripts:
 extra_sphinx_extensions:
  - sphinx_click
  - configconfig.autoconfig
- - html_section
+ - sphinx_toolbox_experimental.html_section
+ - sphinx_toolbox_experimental.autosummary_widths
+ - sphinx_toolbox_experimental.needspace
+ - sphinx_toolbox_experimental.peps
 
 classifiers:
  - 'Development Status :: 3 - Alpha'
@@ -71,5 +73,3 @@ extras_require:
 
 exclude_files:
  - contributing
-
-preserve_custom_theme: true

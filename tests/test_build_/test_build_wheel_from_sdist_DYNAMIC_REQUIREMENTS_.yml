@@ -1,5 +1,5 @@
 stderr: ''
-stdout: 'Copying .../sdist_unpacked/whey/__init__.py -> whey/__init__.py
+stdout: 'Copying .../sdist_unpacked/whey-2021.0.0/whey/__init__.py -> whey/__init__.py
 
   Writing whey-2021.0.0.dist-info/LICENSE
 

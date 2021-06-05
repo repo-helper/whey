@@ -498,7 +498,10 @@ class SDistBuilder(AbstractBuilder):
 		with tarfile.open(sdist_filename, mode="w:gz", format=tarfile.PAX_FORMAT) as sdist_archive:
 			for file in self.build_dir.rglob('*'):
 				if file.is_file():
-					sdist_archive.add(str(file), arcname=file.relative_to(self.build_dir).as_posix())
+					sdist_archive.add(
+							str(file),
+							arcname=posixpath.join(self.archive_name, file.relative_to(self.build_dir).as_posix()),
+							)
 
 		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve().as_posix()}"))
 		return os.path.basename(sdist_filename)

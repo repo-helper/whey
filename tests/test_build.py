@@ -101,13 +101,13 @@ def test_build_success(
 		tar = tarfile.open(tmp_pathplus / sdist)
 		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("spam/__init__.py") as fp:  # type: ignore
+		with tar.extractfile("spam-2020.0.0/spam/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
-		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+		with tar.extractfile("spam-2020.0.0/PKG-INFO") as fp:  # type: ignore
 			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
-		with tar.extractfile("pyproject.toml") as fp:  # type: ignore
+		with tar.extractfile("spam-2020.0.0/pyproject.toml") as fp:  # type: ignore
 			check_file_regression(fp.read().decode("UTF-8"), file_regression, extension=".toml")
 
 	outerr = capsys.readouterr()
@@ -195,17 +195,17 @@ def test_build_complete(
 		tar = tarfile.open(tmp_pathplus / sdist)
 		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("README.rst") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("LICENSE") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("requirements.txt") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
-		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/PKG-INFO") as fp:  # type: ignore
 			check_file_regression(fp.read().decode("UTF-8"), file_regression)
-		with tar.extractfile("pyproject.toml") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/pyproject.toml") as fp:  # type: ignore
 			check_file_regression(fp.read().decode("UTF-8"), file_regression, extension=".toml")
 
 	outerr = capsys.readouterr()
@@ -282,15 +282,15 @@ def test_build_additional_files(
 		tar = tarfile.open(tmp_pathplus / sdist)
 		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("whey/style.css") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/whey/style.css") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-		with tar.extractfile("README.rst") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("LICENSE") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("requirements.txt") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
@@ -344,13 +344,13 @@ def test_build_markdown_readme(
 		tar = tarfile.open(tmp_pathplus / sdist)
 		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("README.md") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/README.md") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("LICENSE") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("requirements.txt") as fp:  # type: ignore
+		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
@@ -473,7 +473,7 @@ def test_build_wheel_from_sdist(
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
-				project_dir=tmp_pathplus / "sdist_unpacked",
+				project_dir=tmp_pathplus / "sdist_unpacked/whey-2021.0.0/",
 				config=load_toml(tmp_pathplus / "pyproject.toml"),
 				build_dir=tmpdir,
 				out_dir=tmp_pathplus,
@@ -607,10 +607,10 @@ def test_build_underscore_name(
 		tar = tarfile.open(tmp_pathplus / sdist)
 		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("spam_spam/__init__.py") as fp:  # type: ignore
+		with tar.extractfile("spam_spam-2020.0.0/spam_spam/__init__.py") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
-		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+		with tar.extractfile("spam_spam-2020.0.0/PKG-INFO") as fp:  # type: ignore
 			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
 	outerr = capsys.readouterr()
@@ -673,10 +673,10 @@ def test_build_stubs_name(
 		tar = tarfile.open(tmp_pathplus / sdist)
 		data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("spam_spam-stubs/__init__.pyi") as fp:  # type: ignore
+		with tar.extractfile("spam_spam_stubs-2020.0.0/spam_spam-stubs/__init__.pyi") as fp:  # type: ignore
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
-		with tar.extractfile("PKG-INFO") as fp:  # type: ignore
+		with tar.extractfile("spam_spam_stubs-2020.0.0/PKG-INFO") as fp:  # type: ignore
 			check_file_regression(fp.read().decode("UTF-8"), file_regression)
 
 	outerr = capsys.readouterr()

@@ -1,10 +1,10 @@
 sdist_content:
-- LICENSE
-- PKG-INFO
-- README.rst
-- pyproject.toml
-- requirements.txt
-- whey/__init__.py
+- whey-2021.0.0/LICENSE
+- whey-2021.0.0/PKG-INFO
+- whey-2021.0.0/README.rst
+- whey-2021.0.0/pyproject.toml
+- whey-2021.0.0/requirements.txt
+- whey-2021.0.0/whey/__init__.py
 stderr: ''
 stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 

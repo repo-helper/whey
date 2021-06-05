@@ -25,7 +25,7 @@ def _representer_for(*data_type: Type):
 	return deco
 
 
-@_representer_for(Version, Requirement, Marker, SpecifierSet)
+@_representer_for(str, Version, Requirement, Marker, SpecifierSet)
 def represent_packaging_types(
 		dumper: RegressionYamlDumper,
 		data: Union[Version, Requirement, Marker, SpecifierSet],

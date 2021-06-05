@@ -1,7 +1,7 @@
 sdist_content:
-- PKG-INFO
-- pyproject.toml
-- spam_spam/__init__.py
+- spam_spam-2020.0.0/PKG-INFO
+- spam_spam-2020.0.0/pyproject.toml
+- spam_spam-2020.0.0/spam_spam/__init__.py
 stderr: ''
 stdout: 'Copying .../spam_spam/__init__.py -> spam_spam/__init__.py
 

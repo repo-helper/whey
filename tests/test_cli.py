@@ -82,7 +82,7 @@ def test_cli_build_success(
 	tar = tarfile.open(tmp_pathplus / sdist)
 	data["sdist_content"] = sorted(tar.getnames())
 
-	with tar.extractfile("spam/__init__.py") as fp:  # type: ignore
+	with tar.extractfile("spam-2020.0.0/spam/__init__.py") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
@@ -105,13 +105,13 @@ def check_built_sdist(filename: PathPlus):
 
 	tar = tarfile.open(filename)
 
-	with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "print('hello world)\n"
-	with tar.extractfile("README.rst") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-	with tar.extractfile("LICENSE") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "This is the license\n"
-	with tar.extractfile("requirements.txt") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	return sorted(tar.getnames())
@@ -325,15 +325,15 @@ def test_build_additional_files(
 	tar = tarfile.open(tmp_pathplus / sdist)
 	data["sdist_content"] = sorted(tar.getnames())
 
-	with tar.extractfile("whey/__init__.py") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "print('hello world)\n"
-	with tar.extractfile("whey/style.css") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/whey/style.css") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-	with tar.extractfile("README.rst") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-	with tar.extractfile("LICENSE") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "This is the license\n"
-	with tar.extractfile("requirements.txt") as fp:  # type: ignore
+	with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
 		assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
 
 	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")

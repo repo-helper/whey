@@ -396,9 +396,12 @@ class AbstractBuilder(ABC):
 		if self.config["keywords"]:
 			metadata["Keywords"] = ','.join(self.config["keywords"])
 
+		seen_hp = False
+
 		for category, url in self.config["urls"].items():
-			if category.lower() in {"homepage", "home page"}:
+			if category.lower() in {"homepage", "home page"} and not seen_hp:
 				metadata["Home-page"] = url
+				seen_hp = True
 			else:
 				metadata["Project-URL"] = f"{category}, {url}"
 

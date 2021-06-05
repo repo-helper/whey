@@ -66,6 +66,7 @@ name = "Dominic Davis-Foster"
 
 [project.urls]
 Homepage = "https://whey.readthedocs.io/en/latest"
+"Home Page" = "https://whey.readthedocs.io/en/latest"
 Documentation = "https://whey.readthedocs.io/en/latest"
 "Issue Tracker" = "https://github.com/repo-helper/whey/issues"
 "Source Code" = "https://github.com/repo-helper/whey"

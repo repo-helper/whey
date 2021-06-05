@@ -6,6 +6,7 @@ Author-email: Dominic Davis-Foster <dominic@davis-foster.co.uk>
 License: MIT
 Keywords: build,distribution,packaging,pep517,pep621,sdist,wheel
 Home-page: https://whey.readthedocs.io/en/latest
+Project-URL: Home Page, https://whey.readthedocs.io/en/latest
 Project-URL: Documentation, https://whey.readthedocs.io/en/latest
 Project-URL: Issue Tracker, https://github.com/repo-helper/whey/issues
 Project-URL: Source Code, https://github.com/repo-helper/whey

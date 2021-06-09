@@ -79,3 +79,4 @@ def setup(app):
 
 nitpicky = True
 toctree_plus_types.add("conf")
+needspace_amount = "4\\baselineskip"

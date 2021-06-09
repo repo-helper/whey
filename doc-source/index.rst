@@ -216,6 +216,7 @@ Contents
 	:github:
 	:pypi: whey
 
+	Contributing Guide <https://contributing.repo-helper.uk>
 
 .. start links
 

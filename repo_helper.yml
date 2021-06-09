@@ -33,6 +33,7 @@ python_versions:
 sphinx_conf_epilogue:
  - nitpicky = True
  - toctree_plus_types.add("conf")
+ - needspace_amount = "4\\baselineskip"
 
 console_scripts:
  - whey = whey.__main__:main

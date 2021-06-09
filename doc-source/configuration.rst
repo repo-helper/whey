@@ -9,9 +9,9 @@ Configuration
 	``whey`` only supports `TOML v0.5.0 <https://toml.io/en/v0.5.0>`_.
 	``pyproject.toml`` files using features of newer TOML versions may not parse correctly.
 
+
 ``[build-system]``
 -------------------
-
 
 ``whey`` must be set as the ``build-backend`` in the ``[build-system]`` table.
 
@@ -23,12 +23,14 @@ Configuration
 	requires = ["whey"]
 	build-backend = "whey"
 
+
 ``[project]``
 -------------------
 
 The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`621`.
 
 As a minimum, the table MUST contain the keys ``name`` and ``version``.
+
 
 .. conf:: name
 
@@ -44,6 +46,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 		[project]
 		name = "spam"
+
 
 .. conf:: version
 
@@ -62,6 +65,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		[project]
 		version = "2020.0.0"
 
+
 .. conf:: description
 
 	**Type**: :toml:`String`
@@ -74,6 +78,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 		[project]
 		description = "Lovely Spam! Wonderful Spam!"
+
 
 .. conf:: readme
 
@@ -161,6 +166,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		and then the user promises not to redistribute it.
 		"""
 
+
 .. conf:: authors
 
 	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
@@ -189,6 +195,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		[[project.authors]]
 		name = "Tzu-Ping Chung"
 
+
 .. conf:: maintainers
 
 	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
@@ -209,6 +216,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		maintainers = [
 		  {name = "Brett Cannon", email = "brett@python.org"}
 		]
+
 
 .. conf:: keywords
 
@@ -392,7 +400,6 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		]
 
 
-
 ``[tool.whey]``
 -------------------
 
@@ -403,7 +410,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 	The path to the package to distribute, relative to the directory containing ``pyproject.toml``.
 	This defaults to :conf:`project.name <name>` if unspecified.
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -427,7 +434,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 		:conf:`source-dir` does not currently work correctly with :conf:`additional-files`
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -462,7 +469,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 		\begin{minipage}{\textwidth}
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -484,7 +491,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	It is recommended to use an `SPDX Identifier <https://spdx.org/licenses/>`_, but note that not all map to classifiers.
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -502,7 +509,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 	Python versions and implementations, and the project's license.
 	This field is ignored if :conf:`classifiers` is not listed in :conf:`dynamic`
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -523,7 +530,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	A list of supported platforms. This is used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and is listed under `Platform <https://packaging.python.org/specifications/core-metadata/#platform-multiple-use>`_ in the Core Metadata.
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -537,7 +544,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	A list of supported Python implementations. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__.
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 
@@ -553,7 +560,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	A list of supported Python versions. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and dynamically determine the minimum required Python version for :conf:`requires-python`.
 
-	**Example**:
+	:bold-title:`Example:`
 
 	.. code-block:: TOML
 

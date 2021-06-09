@@ -188,6 +188,10 @@ class AbstractBuilder(ABC):
 			target.write_clean(py_file.read_text())
 			self.report_copied(py_file, target)
 
+	def _echo_if_v(self, *args, **kwargs):
+		if self.verbose:
+			self._echo(*args, **kwargs)
+
 	def report_copied(self, source: pathlib.Path, target: pathlib.Path) -> None:
 		"""
 		Report that a file has been copied into the build directory.
@@ -202,8 +206,9 @@ class AbstractBuilder(ABC):
 		:param target: The file in the build directory.
 		"""
 
-		if self.verbose:
-			self._echo(f"Copying {source.resolve().as_posix()} -> {target.relative_to(self.build_dir).as_posix()}")
+		self._echo_if_v(
+				f"Copying {source.resolve().as_posix()} -> {target.relative_to(self.build_dir).as_posix()}"
+				)
 
 	def report_removed(self, removed_file: pathlib.Path) -> None:
 		"""
@@ -218,8 +223,7 @@ class AbstractBuilder(ABC):
 		:param removed_file:
 		"""
 
-		if self.verbose:
-			self._echo(f"Removing {removed_file.relative_to(self.build_dir).as_posix()}")
+		self._echo_if_v(f"Removing {removed_file.relative_to(self.build_dir).as_posix()}")
 
 	def report_written(self, written_file: pathlib.Path) -> None:
 		"""
@@ -234,8 +238,7 @@ class AbstractBuilder(ABC):
 		:param written_file:
 		"""
 
-		if self.verbose:
-			self._echo(f"Writing {written_file.relative_to(self.build_dir).as_posix()}")
+		self._echo_if_v(f"Writing {written_file.relative_to(self.build_dir).as_posix()}")
 
 	def copy_additional_files(self) -> None:
 		"""
@@ -699,6 +702,17 @@ class WheelBuilder(AbstractBuilder):
 		wheel_file.write_clean(str(wheel))
 		self.report_written(wheel_file)
 
+	def write_top_level(self, dist_info: PathPlus) -> None:
+		"""
+		Write the ``top_level.txt`` file to the ``*.dist-info`` directory.
+
+		:param dist_info: The absolute path to the ``*.dist-info`` directory.
+		"""
+
+		top_level = first(posixpath.split(self.config["package"]), default=self.config["package"])
+		(dist_info / "top_level.txt").write_clean(top_level)
+		self.report_written(dist_info / "top_level.txt")
+
 	def create_wheel_archive(self) -> str:
 		"""
 		Create the wheel archive.
@@ -752,11 +766,8 @@ class WheelBuilder(AbstractBuilder):
 		self.write_entry_points()
 		self.write_metadata(self.dist_info / "METADATA")
 		self.write_wheel()
+		self.write_top_level(self.dist_info)
 		self.call_additional_hooks()
-
-		top_level = first(posixpath.split(self.config["package"]), default=self.config["package"])
-		(self.dist_info / "top_level.txt").write_clean(top_level)
-		self.report_written(self.dist_info / "top_level.txt")
 
 		return self.create_wheel_archive()
 

@@ -325,15 +325,16 @@ class AbstractBuilder(ABC):
 
 		return
 
-	def write_license(self, dest_dir: PathPlus):
+	def write_license(self, dest_dir: PathPlus, dest_filename: str = "LICENSE"):
 		"""
 		Write the ``LICENSE`` file.
 
-		:param dest_dir: The directory to write the files into.
+		:param dest_dir: The directory to write the file into.
+		:param dest_filename: The name of the file to write in ``dest_dir``.
 		"""
 
 		if self.config.get("license", None) is not None:
-			target = dest_dir / "LICENSE"
+			target = dest_dir / dest_filename
 			target.parent.maybe_make(parents=True)
 			target.write_clean(self.config["license"].text)
 			self.report_written(target)

@@ -1,12 +1,11 @@
 # stdlib
 import shutil
-import tarfile
 import tempfile
 import zipfile
 
 # 3rd party
 import pytest
-from coincidence.regressions import AdvancedDataRegressionFixture, check_file_regression
+from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileRegressionFixture
 from domdf_python_tools.paths import PathPlus, compare_dirs
 from pyproject_examples.example_configs import (
 		AUTHORS,
@@ -22,10 +21,10 @@ from pyproject_examples.example_configs import (
 		UNICODE,
 		URLS
 		)
-from pytest_regressions.file_regression import FileRegressionFixture
 
 # this package
 from tests.example_configs import COMPLETE_A, COMPLETE_B
+from tests.utils import TarFile
 from whey import SDistBuilder, WheelBuilder
 from whey.config import load_toml
 
@@ -55,7 +54,7 @@ def test_build_success(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -83,7 +82,7 @@ def test_build_success(
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 		with zip_file.open("spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -98,17 +97,12 @@ def test_build_success(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
+			assert tar.read_text("spam-2020.0.0/spam/__init__.py") == "print('hello world)\n"
 
-		with tar.extractfile("spam-2020.0.0/spam/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-
-		with tar.extractfile("spam-2020.0.0/PKG-INFO") as fp:  # type: ignore
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
-
-		with tar.extractfile("spam-2020.0.0/pyproject.toml") as fp:  # type: ignore
-			check_file_regression(fp.read().decode("UTF-8"), file_regression, extension=".toml")
+			advanced_file_regression.check(tar.read_text("spam-2020.0.0/PKG-INFO"))
+			advanced_file_regression.check(tar.read_text("spam-2020.0.0/pyproject.toml"), extension=".toml")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -117,14 +111,14 @@ def test_build_success(
 	advanced_data_regression.check(data)
 
 
-def check_built_wheel(filename: PathPlus, file_regression: FileRegressionFixture):
+def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFileRegressionFixture):
 	assert filename.is_file()
 	zip_file = zipfile.ZipFile(filename)
 
 	with zip_file.open("whey/__init__.py", mode='r') as fp:
 		assert fp.read().decode("UTF-8") == "print('hello world)\n"
 	with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-		check_file_regression(fp.read().decode("UTF-8"), file_regression)
+		advanced_file_regression.check(fp.read().decode("UTF-8"))
 
 	contents = sorted(zip_file.namelist())
 
@@ -154,7 +148,7 @@ def test_build_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -177,7 +171,7 @@ def test_build_complete(
 				)
 
 		wheel = wheel_builder.build_wheel()
-		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, file_regression)
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -192,21 +186,16 @@ def test_build_complete(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
-		with tar.extractfile("whey-2021.0.0/PKG-INFO") as fp:  # type: ignore
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
-		with tar.extractfile("whey-2021.0.0/pyproject.toml") as fp:  # type: ignore
-			check_file_regression(fp.read().decode("UTF-8"), file_regression, extension=".toml")
+			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world)\n"
+			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
+
+			advanced_file_regression.check(tar.read_text("whey-2021.0.0/PKG-INFO"))
+			advanced_file_regression.check(tar.read_text("whey-2021.0.0/pyproject.toml"), extension=".toml")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -218,7 +207,7 @@ def test_build_complete(
 def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 
@@ -265,7 +254,7 @@ def test_build_additional_files(
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -279,19 +268,14 @@ def test_build_additional_files(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("whey-2021.0.0/whey/style.css") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-		with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world)\n"
+			assert tar.read_text("whey-2021.0.0/whey/style.css") == "This is the style.css file\n"
+			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -303,7 +287,7 @@ def test_build_additional_files(
 def test_build_markdown_readme(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 
@@ -327,7 +311,7 @@ def test_build_markdown_readme(
 				)
 
 		wheel = wheel_builder.build_wheel()
-		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, file_regression)
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -341,17 +325,13 @@ def test_build_markdown_readme(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("whey-2021.0.0/README.md") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world)\n"
+			assert tar.read_text("whey-2021.0.0/README.md") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -434,7 +414,7 @@ def test_build_wheel_from_sdist(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -465,7 +445,7 @@ def test_build_wheel_from_sdist(
 
 	(tmp_pathplus / "sdist_unpacked").mkdir()
 
-	with tarfile.open(tmp_pathplus / sdist) as sdist_tar:
+	with TarFile.open(tmp_pathplus / sdist) as sdist_tar:
 		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
 
 	capsys.readouterr()
@@ -481,7 +461,7 @@ def test_build_wheel_from_sdist(
 				colour=False,
 				)
 		wheel = wheel_builder.build_wheel()
-		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, file_regression)
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -557,7 +537,7 @@ def test_build_wheel_reproducible(
 def test_build_underscore_name(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -589,7 +569,7 @@ def test_build_underscore_name(
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 		with zip_file.open("spam_spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -604,14 +584,12 @@ def test_build_underscore_name(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("spam_spam-2020.0.0/spam_spam/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+			assert tar.read_text("spam_spam-2020.0.0/spam_spam/__init__.py") == "print('hello world)\n"
 
-		with tar.extractfile("spam_spam-2020.0.0/PKG-INFO") as fp:  # type: ignore
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			advanced_file_regression.check(tar.read_text("spam_spam-2020.0.0/PKG-INFO"))
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -623,7 +601,7 @@ def test_build_underscore_name(
 def test_build_stubs_name(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		file_regression: FileRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
 		):
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -655,7 +633,7 @@ def test_build_stubs_name(
 			assert fp.read().decode("UTF-8") == "print('hello world)\n"
 
 		with zip_file.open("spam_spam_stubs-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -670,14 +648,14 @@ def test_build_stubs_name(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("spam_spam_stubs-2020.0.0/spam_spam-stubs/__init__.pyi") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+			assert tar.read_text(
+					"spam_spam_stubs-2020.0.0/spam_spam-stubs/__init__.pyi"
+					) == "print('hello world)\n"
 
-		with tar.extractfile("spam_spam_stubs-2020.0.0/PKG-INFO") as fp:  # type: ignore
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			advanced_file_regression.check(tar.read_text("spam_spam_stubs-2020.0.0/PKG-INFO"))
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

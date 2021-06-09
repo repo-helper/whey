@@ -115,6 +115,9 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		content-type = "text/x-rst"
 
 
+.. latex:clearpage::
+
+
 .. conf:: requires-python
 
 	**Type**: :toml:`String`

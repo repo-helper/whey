@@ -612,6 +612,11 @@ class WheelBuilder(AbstractBuilder):
 	:param out_dir: The output directory.
 	:default out_dir: :file:`{<project_dir>}/dist`
 	:param verbose: Enable verbose output.
+
+	.. autosummary-widths:: 11/32
+		:html: 4/10
+
+	.. latex:vspace:: -10px
 	"""
 
 	@property

@@ -21,16 +21,18 @@ Custom builders must be registered as an entry point in the ``whey.builder`` gro
 
 	[options.entry_points]
 	whey.builder =
-	    whey_sdist = whey.builder:SDistBuilder
-	    whey_wheel = whey.builder:WheelBuilder
+		whey_sdist = whey.builder:SDistBuilder
+		whey_wheel = whey.builder:WheelBuilder
 
 Each builder must inherit from :class:`whey.builder.AbstractBuilder`.
 
 The custom builders can be enabled by setting keys in the ``tool.whey.builders`` table.
 The table supports three keys: ``sdist``, ``wheel``, ``binary``.
 
-* The ``sdist`` builder is used when running whey with the ``--sdist`` option or when using the :pep:`517` backend to build an sdist.
-* The ``wheel`` builder is used when running whey with the ``--wheel`` option or when using the :pep:`517` backend to build a wheel.
-* The ``binary`` builder is used when running whey with the ``--binary`` option.
+* The ``sdist`` builder is used when running whey with the :option:`--sdist <whey -s>` option
+  or when using the :pep:`517` backend to build an sdist.
+* The ``wheel`` builder is used when running whey with the :option:`--wheel <whey -w>` option
+  or when using the :pep:`517` backend to build a wheel.
+* The ``binary`` builder is used when running whey with the :option:`--binary <whey -b>` option.
 
 The value for each key is the name of an entry point, such as ``whey_sdist`` from the example above.

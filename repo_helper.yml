@@ -32,6 +32,7 @@ python_versions:
 
 sphinx_conf_epilogue:
  - nitpicky = True
+ - toctree_plus_types.add("conf")
 
 console_scripts:
  - whey = whey.__main__:main
@@ -43,6 +44,7 @@ extra_sphinx_extensions:
  - sphinx_toolbox_experimental.autosummary_widths
  - sphinx_toolbox_experimental.needspace
  - sphinx_toolbox_experimental.peps
+ - sphinx_toolbox_experimental.toml
 
 classifiers:
  - 'Development Status :: 3 - Alpha'

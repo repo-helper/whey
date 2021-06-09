@@ -15,7 +15,7 @@ Configuration
 
 ``whey`` must be set as the ``build-backend`` in the ``[build-system]`` table.
 
-**Example**:
+:bold-title:`Example`:
 
 .. code-block:: TOML
 
@@ -26,21 +26,368 @@ Configuration
 ``[project]``
 -------------------
 
-The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`621`;
-see that document for more details on the keys and their values.
+The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`621`.
 
-As a minimum, the table should contain the keys ``name`` and ``version``.
+As a minimum, the table MUST contain the keys ``name`` and ``version``.
+
+.. conf:: name
+
+	**Type**: :toml:`String`
+
+	The name of the project.
+
+	This key is required, and MUST be defined statically.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		name = "spam"
+
+.. conf:: version
+
+	**Type**: :toml:`String`
+
+	The version of the project as supported by :pep:`440`.
+
+	Ideally, the name should be normalised to lowercase, with underscores replaced by hyphens.
+
+	This key is required, and MUST be defined statically.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		version = "2020.0.0"
+
+.. conf:: description
+
+	**Type**: :toml:`String`
+
+	A summary description of the project.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		description = "Lovely Spam! Wonderful Spam!"
+
+.. conf:: readme
+
+	**Type**: :toml:`String` or :toml:`table <Table>`
+
+	The full description of the project (i.e. the README).
+
+	The field accepts either a string or a table.
+	If it is a string then it is the relative path to a text file containing the full description.
+	The file's encoding MUST be UTF-8, and have one of the following content types:
+
+	* ``text/markdown``, with a a case-insensitive ``.md`` suffix.
+	* ``text/x-rst``, with a a case-insensitive ``.rst`` suffix.
+	* ``text/plain``, with a a case-insensitive ``.txt`` suffix.
+
+	The readme field may instead be a table with the following keys:
+
+	* ``file`` -- a string value representing a relative path to a file containing the full description.
+	* ``text`` -- a string value which is the full description.
+	* ``content-type`` -- (required) a string specifying the content-type of the full description.
+	* ``charset`` -- (optional, default UTF-8) the encoding of the ``file``.
+
+	The ``file`` and ``text`` keys are mutually exclusive, but one must be provided in the table.
+
+	:bold-title:`Examples:`
+
+	.. code-block:: TOML
+
+		[project]
+		readme = "README.rst"
+
+		[project.readme]
+		file = "README.rst"
+		content-type = "text/x-rst"
+		encoding = "UTF-8"
+
+		[project.readme]
+		text = "Spam is a brand of canned cooked pork made by Hormel Foods Corporation."
+		content-type = "text/x-rst"
+
+
+.. conf:: requires-python
+
+	**Type**: :toml:`String`
+
+	The Python version requirements of the project, as a :pep:`508` marker.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		requires-python = ">=3.6"
+
+
+.. conf:: license
+
+	**Type**: :toml:`Table`
+
+
+	The table may have one of two keys:
+
+	* ``file`` -- a string value that is a relative file path to the file which contains
+	  the license for the project. The file's encoding MUST be UTF-8.
+	* ``text`` -- string value which is the license of the project.
+
+	These keys are mutually exclusive.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project.license]
+		file = "LICENSE.rst"
+
+		[project.license]
+		file = "COPYING"
+
+		[project.license]
+		text = """
+		This software may only be obtained by sending the author a postcard,
+		and then the user promises not to redistribute it.
+		"""
+
+.. conf:: authors
+
+	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
+
+	The tables list the people or organizations considered to be the "authors" of the project.
+
+	Each table has 2 keys: ``name`` and ``email``.
+	Both values must be strings.
+
+	* The ``name`` value MUST be a valid email name (i.e. whatever can be put as a name,
+	  before an email, in :rfc:`822`) and not contain commas.
+	* The ``email`` value MUST be a valid email address.
+
+	Both keys are optional.
+
+	:bold-title:`Examples:`
+
+	.. code-block:: TOML
+
+		[project]
+		authors = [
+			{email = "hi@pradyunsg.me"},
+			{name = "Tzu-Ping Chung"}
+		]
+
+		[[project.authors]]
+		name = "Tzu-Ping Chung"
+
+.. conf:: maintainers
+
+	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
+
+	The tables list the people or organizations considered to be the "maintainers" of the project.
+
+	This field otherwise functions the same as :conf:`authors`.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		authors = [
+		  {email = "hi@pradyunsg.me"},
+		  {name = "Tzu-Ping Chung"}
+		]
+		maintainers = [
+		  {name = "Brett Cannon", email = "brett@python.org"}
+		]
+
+.. conf:: keywords
+
+	**Type**: :toml:`Array` of :toml:`strings <String>`
+
+	The keywords for the project.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		keywords = [ "egg", "bacon", "sausage", "tomatoes", "Lobster Thermidor",]
+
+
+.. conf:: classifiers
+
+	**Type**: :toml:`Array` of :toml:`strings <String>`
+
+	The `trove classifiers`_ which apply to the project.
+
+	.. _trove classifiers: https://pypi.org/classifiers/
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		classifiers = [
+			"Development Status :: 4 - Beta",
+			"Programming Language :: Python"
+		]
+
+
+.. conf:: urls
+
+	**Type**: :toml:`Table`, with keys and values of :toml:`strings <String>`
+
+	A table of URLs where the key is the URL label and the value is the URL itself.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project.urls]
+		homepage = "https://example.com"
+		documentation = "https://readthedocs.org"
+		repository = "https://github.com"
+		changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+
+.. conf:: scripts
+
+	**Type**: :toml:`Table`, with keys and values of :toml:`strings <String>`
+
+	The console scripts provided by the project.
+
+	The keys are the names of the scripts and the values are the object references
+	in the form ``module.submodule:object``.
+
+	See the `entry point specification`_ for more details.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project.scripts]
+		spam-cli = "spam:main_cli"
+		# One which depends on extras:
+		foobar = "foomod:main_bar [bar,baz]"
+
+
+.. conf:: gui-scripts
+
+	**Type**: :toml:`Table`, with keys and values of :toml:`strings <String>`
+
+	The graphical application scripts provided by the project.
+
+	The keys are the names of the scripts and the values are the object references
+	in the form ``module.submodule:object``.
+
+	See the `entry point specification`_ for more details.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project.gui-scripts]
+		spam-gui = "spam.gui:main_gui"
+
+
+.. conf:: entry-points
+
+	**Type**: :toml:`Table` of :toml:`tables <!Table>`, with keys and values of :toml:`strings <String>`
+
+	Each sub-table's name is an entry point group.
+
+	Users MUST NOT create nested sub-tables but instead keep the entry point groups to only one level deep.
+
+	Users MUST NOT created sub-tables for ``console_scripts`` or ``gui_scripts``.
+	Use ``[project.scripts]` and ``[project.gui-scripts]`` instead.
+
+	See the `entry point specification`_ for more details.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project.entry-points."spam.magical"]
+		tomatoes = "spam:main_tomatoes"
+
+		# pytest plugins refer to a module, so there is no ':obj'
+		[project.entry-points.pytest11]
+		nbval = "nbval.plugin"
+
+.. _entry point specification: https://packaging.python.org/specifications/entry-points/
+
+
+.. conf:: dependencies
+
+	**Type**: :toml:`Array` of :pep:`508` strings
+
+	The dependencies of the project.
+
+	Each string MUST be formatted as a valid :pep:`508` string.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		dependencies = [
+			"httpx",
+			"gidgethub[httpx]>4.0.0",
+			"django>2.1; os_name != 'nt'",
+			"django>2.0; os_name == 'nt'"
+		]
+
+
+.. conf:: optional-dependencies
+
+	**Type**: :toml:`Table` with values of :toml:`arrays <Array>` of :pep:`508` strings
+
+	The optional dependencies of the project.
+
+	* The keys specify an extra, and must be valid Python identifiers.
+	* The values are arrays of strings, which must be valid :pep:`508` strings.
+
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project.optional-dependencies]
+		test = [
+		  "pytest < 5.0.0",
+		  "pytest-cov[all]"
+		]
+
 
 .. conf:: dynamic
 
-	**Type**: :class:`list`\[:class:`str`\]
+	**Type**: :toml:`Array` of :toml:`strings <String>`
 
-	Specifies which fields listed by :pep:`621` were intentionally unspecified so ``whey`` can provide such metadata dynamically.
+	Specifies which fields listed by :pep:`621` were intentionally unspecified
+	so ``whey`` can provide such metadata dynamically.
+
 	Whey currently only supports ``classifiers``, ``dependencies``, and ``requires-python`` as dynamic fields.
 
-.. raw:: latex
 
-	\clearpage
+	:bold-title:`Example:`
+
+	.. code-block:: TOML
+
+		[project]
+		dynamic = [ "classifiers", ]
+
+		[tool.whey]
+		base-classifiers = [
+			"Development Status :: 3 - Alpha",
+			"Typing :: Typed",
+		]
+
 
 
 ``[tool.whey]``
@@ -48,10 +395,10 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: package
 
-	**Type**: :class:`str`
+	**Type**: :toml:`String`
 
 	The path to the package to distribute, relative to the directory containing ``pyproject.toml``.
-	This defaults to `project.name <https://www.python.org/dev/peps/pep-0621/#name>`_ if unspecified.
+	This defaults to :conf:`project.name <name>` if unspecified.
 
 	**Example**:
 
@@ -66,7 +413,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: source-dir
 
-	**Type**: :class:`str`
+	**Type**: :toml:`String`
 
 	The name of the directory containing the project's source.
 	This defaults to ``'.'`` if unspecified.
@@ -90,7 +437,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: additional-files
 
-	**Type**: :class:`list`\[:class:`str`\]
+	**Type**: :toml:`Array` of :toml:`strings <String>`
 
 	A list of `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_-style
 	entries for additional files to include in distributions.
@@ -106,7 +453,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 	:samp:`recursive-exclude {dir-pattern} {pat1} {pat2} ...`  Remove all files under directories matching ``dir-pattern`` that match any of the listed patterns
 	=========================================================  ==================================================================================================
 
-	``whey`` was built with type hints in mind, and so it will automatically include any ``py.typed`` files and ``*.pyi`` stub files automatically.
+	``whey`` was built with type hints in mind, so it will automatically include any ``py.typed`` files and ``*.pyi`` stub files automatically.
 
 	.. raw:: latex
 
@@ -128,7 +475,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: license-key
 
-	**Type**: :class:`str`
+	**Type**: :toml:`String`
 
 	An identifier giving the project's license. This is used for the `License <https://packaging.python.org/specifications/core-metadata/#license>`_ field in the Core Metadata, and to add the appropriate `trove classifier <https://pypi.org/classifiers/>`_.
 
@@ -144,18 +491,20 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: base-classifiers
 
-	**Type**: :class:`list`\[:class:`str`\]
+	**Type**: :toml:`Array` of :toml:`strings <String>`
 
 	A list of `trove classifiers <https://pypi.org/classifiers/>`_.
 
 	This list will be extended with the appropriate classifiers for supported platforms,
 	Python versions and implementations, and the project's license.
-	This field is ignored if `classifiers <https://www.python.org/dev/peps/pep-0621/#classifiers>`_
-	is not listed in `dynamic <https://www.python.org/dev/peps/pep-0621/#dynamic>`_
+	This field is ignored if :conf:`classifiers` is not listed in :conf:`dynamic`
 
 	**Example**:
 
 	.. code-block:: TOML
+
+		[project]
+		dynamic = [ "classifiers", ]
 
 		[tool.whey]
 		base-classifiers = [
@@ -167,7 +516,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: platforms
 
-	**Type**: :class:`list`\[:class:`str`\]
+	**Type**: :toml:`Array` of :toml:`strings <String>`
 
 	A list of supported platforms. This is used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and is listed under `Platform <https://packaging.python.org/specifications/core-metadata/#platform-multiple-use>`_ in the Core Metadata.
 
@@ -181,7 +530,7 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: python-implementations
 
-	**Type**: :class:`list`\[:class:`str`\]
+	**Type**: :toml:`Array` of :toml:`strings <String>`
 
 	A list of supported Python implementations. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__.
 
@@ -197,9 +546,9 @@ As a minimum, the table should contain the keys ``name`` and ``version``.
 
 .. conf:: python-versions
 
-	**Type**: :class:`list`\[:class:`str`\]
+	**Type**: :toml:`Array` of :toml:`strings <String>`
 
-	A list of supported Python versions. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and dynamically determine the minimum required Python version for `requires-python <https://www.python.org/dev/peps/pep-0621/#requires-python>`_.
+	A list of supported Python versions. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and dynamically determine the minimum required Python version for :conf:`requires-python`.
 
 	**Example**:
 

@@ -230,7 +230,7 @@ class WheyParser(AbstractConfigParser):
 
 		This list will be extended with the appropriate classifiers for supported platforms,
 		Python versions and implementations, and the project's license.
-		Ignored if :pep621:`classifiers>` is not listed in :pep621:`dynamic`
+		Ignored if :pep621:`classifiers` is not listed in :pep621:`dynamic`
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""

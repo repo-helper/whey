@@ -53,7 +53,7 @@ __all__ = ["main"]
 @auto_default_option("-o", "--out-dir", type=click.STRING, help="The output directory.")
 @auto_default_option("--build-dir", type=click.STRING, help="The temporary build directory.")
 @flag_option("-b", "--binary", help="Build a binary distribution.")
-@flag_option("-b", "--wheel", help="Build a wheel.")
+@flag_option("-w", "--wheel", help="Build a wheel.")
 @flag_option("-s", "--sdist", help="Build a sdist distribution.")
 @auto_default_argument(
 		"project",

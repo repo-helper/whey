@@ -26,23 +26,13 @@ A simple Python wheel builder for simple projects.
 #  OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-# stdlib
-import tempfile
-
-# 3rd party
-from domdf_python_tools.paths import PathPlus
-
-# this package
-from whey.builder import SDistBuilder, WheelBuilder
-from whey.foreman import Foreman
-
-__all__ = ["build_sdist", "build_wheel", "SDistBuilder", "WheelBuilder", "Foreman"]
-
 __author__: str = "Dominic Davis-Foster"
 __copyright__: str = "2021 Dominic Davis-Foster"
 __license__: str = "MIT License"
 __version__: str = "0.0.14"
 __email__: str = "dominic@davis-foster.co.uk"
+
+__all__ = ["build_sdist", "build_wheel"]
 
 
 def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
@@ -56,7 +46,13 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 	:param metadata_directory:
 	"""
 
-	with tempfile.TemporaryDirectory() as tmpdir:
+	# 3rd party
+	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
+
+	# this package
+	from whey.foreman import Foreman
+
+	with TemporaryPathPlus() as tmpdir:
 		foreman = Foreman(project_dir=PathPlus.cwd())
 		return foreman.build_wheel(build_dir=tmpdir, out_dir=wheel_directory, verbose=True)
 
@@ -71,7 +67,13 @@ def build_sdist(sdist_directory, config_settings=None):
 	:param config_settings:
 	"""
 
-	with tempfile.TemporaryDirectory() as tmpdir:
+	# 3rd party
+	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
+
+	# this package
+	from whey.foreman import Foreman
+
+	with TemporaryPathPlus() as tmpdir:
 		foreman = Foreman(project_dir=PathPlus.cwd())
 		return foreman.build_sdist(build_dir=tmpdir, out_dir=sdist_directory, verbose=True)
 

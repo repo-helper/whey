@@ -1,0 +1,35 @@
+sdist_content:
+- spam_spam-2020.0.0/PKG-INFO
+- spam_spam-2020.0.0/pyproject.toml
+- spam_spam-2020.0.0/spam_spam/__init__.py
+stderr: ''
+stdout: 'Copying .../spam_spam/__init__.py -> spam_spam/__init__.py
+
+  Writing spam_spam-2020.0.0.dist-info/entry_points.txt
+
+  Writing spam_spam-2020.0.0.dist-info/METADATA
+
+  Writing spam_spam-2020.0.0.dist-info/WHEEL
+
+  Writing spam_spam-2020.0.0.dist-info/top_level.txt
+
+  Writing spam_spam-2020.0.0.dist-info/RECORD
+
+  Wheel created at .../spam_spam-2020.0.0-py3-none-any.whl
+
+  Copying .../spam_spam/__init__.py -> spam_spam/__init__.py
+
+  Copying .../pyproject.toml -> pyproject.toml
+
+  Writing PKG-INFO
+
+  Source distribution created at .../spam_spam-2020.0.0.tar.gz
+
+  '
+wheel_content:
+- spam_spam-2020.0.0.dist-info/METADATA
+- spam_spam-2020.0.0.dist-info/RECORD
+- spam_spam-2020.0.0.dist-info/WHEEL
+- spam_spam-2020.0.0.dist-info/entry_points.txt
+- spam_spam-2020.0.0.dist-info/top_level.txt
+- spam_spam/__init__.py

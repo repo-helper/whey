@@ -27,6 +27,7 @@
 #
 
 # stdlib
+import re
 from typing import Any, Dict
 
 # 3rd party
@@ -49,6 +50,12 @@ __all__ = [
 		"backfill_classifiers",
 		"load_toml",
 		]
+
+_name_to_package_re = re.compile("-(?!stubs)")
+
+
+def _get_default_package(name: str) -> str:
+	return _name_to_package_re.sub('_', name.split('.', 1)[0])
 
 
 def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
@@ -82,7 +89,7 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 			parsed_config["license"] = parsed_config["license"].resolve()
 
 	# set defaults
-	parsed_config.setdefault("package", config["project"]["name"].split('.', 1)[0])
+	parsed_config.setdefault("package", _get_default_package(config["project"]["name"]))
 
 	dynamic_fields = parsed_config.get("dynamic", [])
 

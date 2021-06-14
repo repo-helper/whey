@@ -24,7 +24,7 @@ from pytest_regressions.file_regression import FileRegressionFixture
 
 # this package
 from tests.example_configs import COMPLETE_A, COMPLETE_B
-from whey import Foreman
+from whey.foreman import Foreman
 
 
 @pytest.mark.parametrize(

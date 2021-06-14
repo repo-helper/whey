@@ -2,6 +2,7 @@
 import shutil
 import tempfile
 import zipfile
+from typing import List
 
 # 3rd party
 import pytest
@@ -25,7 +26,7 @@ from pyproject_examples.example_configs import (
 # this package
 from tests.example_configs import COMPLETE_A, COMPLETE_B
 from tests.utils import TarFile
-from whey import SDistBuilder, WheelBuilder
+from whey.builder import SDistBuilder, WheelBuilder
 from whey.config import load_toml
 
 
@@ -534,17 +535,35 @@ def test_build_wheel_reproducible(
 			)
 
 
+@pytest.mark.parametrize(
+		"config",
+		[
+				pytest.param(
+						["[project]", 'name = "spam_spam"', 'version = "2020.0.0"'],
+						id="underscore_name",
+						),
+				pytest.param(
+						["[project]", 'name = "spam-spam"', 'version = "2020.0.0"'],
+						id="hyphen_name_underscore_package_implicit",
+						),
+				pytest.param([
+						"[project]",
+						'name = "spam-spam"',
+						'version = "2020.0.0"',
+						"[tool.whey]",
+						"package = 'spam_spam'"
+						],
+								id="hyphen_name_underscore_package_explicit"),
+				]
+		)
 def test_build_underscore_name(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys,
+		config: List[str]
 		):
-	(tmp_pathplus / "pyproject.toml").write_lines([
-			"[project]",
-			'name = "spam_spam"',
-			'version = "2020.0.0"',
-			])
+	(tmp_pathplus / "pyproject.toml").write_lines(config)
 	(tmp_pathplus / "spam_spam").mkdir()
 	(tmp_pathplus / "spam_spam" / "__init__.py").write_clean("print('hello world)")
 

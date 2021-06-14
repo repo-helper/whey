@@ -259,7 +259,7 @@ class WheyParser(AbstractConfigParser):
 		parsed_builders = get_default_builders()
 		builders = config["builders"]
 
-		entry_points: Dict[str, importlib_metadata.EntryPoint] = {ep.name: ep for ep in get_entry_points()}
+		entry_points: Dict[str, importlib_metadata.EntryPoint] = get_entry_points()
 
 		self.assert_type(builders, dict, ["tool", "whey", "builders"])
 
@@ -344,7 +344,7 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	return natsorted(parsed_classifiers)
 
 
-def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
+def get_entry_points() -> Dict[str, importlib_metadata.EntryPoint]:
 	r"""
 	Returns an iterable over `EntryPoint`_ objects in the ``whey.builder`` group.
 
@@ -355,6 +355,10 @@ def get_entry_points() -> Iterable[importlib_metadata.EntryPoint]:
 
 	eps = itertools.chain.from_iterable(dist.entry_points for dist in importlib_metadata.distributions())
 
+	entry_points: Dict[str, "importlib_metadata.EntryPoint"] = {}
+
 	for entry_point in eps:
 		if entry_point.group == "whey.builder":
-			yield entry_point
+			entry_points[entry_point.name] = entry_point
+
+	return entry_points

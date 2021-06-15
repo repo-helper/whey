@@ -54,5 +54,7 @@ known_third_party = [
     "readme_renderer",
     "shippinglabel",
     "toml",
+    "whey_conda",
+    "whey_pth",
 ]
 known_first_party = "whey"

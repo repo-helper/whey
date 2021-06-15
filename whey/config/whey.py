@@ -268,7 +268,7 @@ class WheyParser(AbstractConfigParser):
 				entry_point_name = builders[builder_type]
 				if entry_point_name not in entry_points:
 					raise BadConfigError(
-							f"Unknown {builder_type} builder {entry_point_name}. \n"
+							f"Unknown {builder_type} builder {entry_point_name!r}. \n"
 							f"Is it registered as an entry point under 'whey.builder'?"
 							)
 

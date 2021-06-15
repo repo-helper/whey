@@ -2,11 +2,11 @@
 import re
 import tarfile
 import zipfile
-from typing import Any, Dict, Type
+from typing import Any, Dict, List, Type
 
 # 3rd party
 import pytest
-from coincidence.regressions import AdvancedDataRegressionFixture
+from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileRegressionFixture
 from consolekit.testing import CliRunner, Result
 from dom_toml.parser import BadConfigError
 from domdf_python_tools.paths import PathPlus, in_directory
@@ -237,6 +237,43 @@ def test_build_wheel_complete(
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				]
 		)
+def test_build_wheel_via_builder_complete(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data: Dict[str, Any] = {}
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main, args=["--builder", "whey_wheel", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				)
+
+	assert result.exit_code == 0
+
+	wheel = "whey-2021.0.0-py3-none-any.whl"
+	data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel)
+
+	data["stdout"] = result.stdout.rstrip().replace(tmp_pathplus.as_posix(), "...")
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config", [
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				]
+		)
 def test_build_binary_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
@@ -415,7 +452,6 @@ def test_bad_config(
 		config: str,
 		match: str,
 		tmp_pathplus: PathPlus,
-		advanced_file_regression: AdvancedDataRegressionFixture,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 
@@ -458,3 +494,67 @@ def test_bad_config_show_traceback(
 					main,
 					args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus), "-T"],
 					)
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				pytest.param(MINIMAL_CONFIG, id="default"),
+				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nsdist = "whey_sdist"', id="sdist"),
+				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_wheel"', id="wheel"),
+				# pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_pth_wheel"', id="whey_pth"),
+				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nbinary = "whey_wheel"', id="binary_wheel"),
+				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nbinary = "whey_conda"', id="binary_conda"),
+				pytest.param(
+						f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nsdist = "whey_sdist"\nwheel = "whey_wheel"',
+						id="sdist_and_wheel",
+						),
+				]
+		)
+@pytest.mark.parametrize(
+		"args",
+		[
+				pytest.param([], id="none"),
+				pytest.param(["--sdist"], id="sdist"),
+				pytest.param(["--wheel"], id="wheel"),
+				pytest.param(["--binary"], id="binary"),
+				pytest.param(["--binary", "--sdist"], id="binary_and_sdist"),
+				pytest.param(["--builder", "whey_conda"], id="whey_conda"),
+				pytest.param(["--builder", "whey_conda", "--sdist"], id="whey_conda_and_sdist"),
+				# pytest.param(["--builder", "whey_pth", "--builder", "whey_conda"], id="whey_conda_and_whey_pth"),
+				]
+		)
+def test_show_builders(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		args: List[str]
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main,
+				args=[*args, "--show-builders", "--no-colour"],
+				)
+
+	result.check_stdout(advanced_file_regression)
+	assert result.exit_code == 0
+
+
+def test_show_builders_error(
+		tmp_pathplus: PathPlus,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(MINIMAL_CONFIG)
+
+	with in_directory(tmp_pathplus):
+		runner = CliRunner()
+		result: Result = runner.invoke(
+				main,
+				args=["--builder", "foo", "--show-builders", "--no-colour"],
+				)
+
+	result.check_stdout(advanced_file_regression)
+	assert result.exit_code == 2

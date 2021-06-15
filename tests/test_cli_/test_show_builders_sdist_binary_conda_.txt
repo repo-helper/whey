@@ -1,0 +1,2 @@
+Using the following builder:
+    sdist: whey.builder.SDistBuilder

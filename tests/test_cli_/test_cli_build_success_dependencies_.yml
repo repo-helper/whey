@@ -3,10 +3,10 @@ sdist_content:
 - spam-2020.0.0/pyproject.toml
 - spam-2020.0.0/spam/__init__.py
 stdout: "Using the following builders:\n    sdist: whey.builder.SDistBuilder\n   \
-  \ binary: whey.builder.WheelBuilder\n    wheel: whey.builder.WheelBuilder\n\nBuilding\
-  \ ...\nCopying .../spam/__init__.py -> spam/__init__.py\nWriting spam-2020.0.0.dist-info/entry_points.txt\n\
-  Writing spam-2020.0.0.dist-info/METADATA\nWriting spam-2020.0.0.dist-info/WHEEL\n\
-  Writing spam-2020.0.0.dist-info/top_level.txt\nWriting spam-2020.0.0.dist-info/RECORD\n\
+  \ wheel: whey.builder.WheelBuilder\n\nBuilding ...\nCopying .../spam/__init__.py\
+  \ -> spam/__init__.py\nWriting spam-2020.0.0.dist-info/entry_points.txt\nWriting\
+  \ spam-2020.0.0.dist-info/METADATA\nWriting spam-2020.0.0.dist-info/WHEEL\nWriting\
+  \ spam-2020.0.0.dist-info/top_level.txt\nWriting spam-2020.0.0.dist-info/RECORD\n\
   Wheel created at .../spam-2020.0.0-py3-none-any.whl\nCopying .../spam/__init__.py\
   \ -> spam/__init__.py\nCopying .../pyproject.toml -> pyproject.toml\nWriting PKG-INFO\n\
   Source distribution created at .../spam-2020.0.0.tar.gz"

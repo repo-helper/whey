@@ -1,0 +1,2 @@
+Using the following builder:
+    binary: whey_conda.CondaBuilder

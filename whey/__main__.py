@@ -28,7 +28,6 @@ A simple Python wheel builder for simple projects.
 
 # stdlib
 import sys
-from typing import Optional
 
 # 3rd party
 import click
@@ -40,21 +39,47 @@ from consolekit.options import (
 		colour_option,
 		flag_option
 		)
-from consolekit.terminal_colours import ColourTrilean
 from consolekit.tracebacks import handle_tracebacks, traceback_option
-from domdf_python_tools.typing import PathLike
+
+if False:  # TYPE_CHECKING:
+	# stdlib
+	from typing import Iterable, Optional
+
+	# 3rd party
+	from consolekit.terminal_colours import ColourTrilean
+	from domdf_python_tools.typing import PathLike
 
 __all__ = ["main"]
 
 
 @colour_option()
 @traceback_option()
+@flag_option("-S", "--show-builders", help="Show the builders which will be used, and exit.")
 @flag_option("-v", "--verbose", help="Enable verbose output.")
-@auto_default_option("-o", "--out-dir", type=click.STRING, help="The output directory.")
-@auto_default_option("--build-dir", type=click.STRING, help="The temporary build directory.")
+@auto_default_option(
+		"-o",
+		"--out-dir",
+		type=click.STRING,
+		help="The output directory.",
+		metavar="DIRECTORY",
+		)
+@auto_default_option(
+		"--build-dir",
+		type=click.STRING,
+		help="The temporary build directory.",
+		metavar="DIRECTORY",
+		)
+@auto_default_option(
+		"-B",
+		"--builder",
+		type=click.STRING,
+		help="The builder to build with.",
+		multiple=True,
+		metavar="BUILDER",
+		)
 @flag_option("-b", "--binary", help="Build a binary distribution.")
 @flag_option("-w", "--wheel", help="Build a wheel.")
-@flag_option("-s", "--sdist", help="Build a sdist distribution.")
+@flag_option("-s", "--sdist", help="Build a source distribution.")
 @auto_default_argument(
 		"project",
 		type=click.STRING,
@@ -63,15 +88,17 @@ __all__ = ["main"]
 		)
 @click_command()
 def main(
-		project: PathLike = '.',
-		build_dir: Optional[str] = None,
-		out_dir: Optional[str] = None,
+		project: "PathLike" = '.',
+		build_dir: "Optional[str]" = None,
+		out_dir: "Optional[str]" = None,
 		sdist: bool = False,
 		wheel: bool = False,
 		binary: bool = False,
+		builder: "Optional[Iterable[str]]" = None,
 		verbose: bool = False,
-		colour: ColourTrilean = None,
+		colour: "ColourTrilean" = None,
 		show_traceback: bool = False,
+		show_builders: bool = False,
 		):
 	"""
 	Build a wheel for the given project.
@@ -79,27 +106,27 @@ def main(
 
 	# 3rd party
 	from domdf_python_tools.paths import PathPlus
-	from pyproject_parser.cli import ConfigTracebackHandler
 
 	# this package
 	from whey.foreman import Foreman
+	from whey.utils import WheyTracebackHandler, parse_custom_builders, print_builder_names
 
-	if not binary and not sdist and not wheel:
+	if not any((binary, sdist, wheel, builder)):
 		wheel = True
 		sdist = True
 
 	project = PathPlus(project).resolve()
 
-	with handle_tracebacks(show_traceback, ConfigTracebackHandler):
+	with handle_tracebacks(show_traceback, WheyTracebackHandler):
 		foreman = Foreman(project_dir=project)
 
-		if verbose:
-			click.echo("Using the following builders:")
+		custom_builders = parse_custom_builders(builder)
 
-			for builder_name, builder_obj in foreman.config["builders"].items():
-				click.echo(f"    {builder_name}: {builder_obj.__module__}.{builder_obj.__qualname__}")
+		if verbose or show_builders:
+			print_builder_names(foreman, custom_builders, sdist=sdist, wheel=wheel, binary=binary)
 
-			click.echo()
+		if show_builders:
+			sys.exit(0)
 
 		click.echo(f"Building {foreman.project_dir.as_posix()}")
 
@@ -126,6 +153,16 @@ def main(
 					verbose=verbose,
 					colour=colour,
 					)
+
+		for custom_builder in custom_builders.values():
+			custom_builder(
+					foreman.project_dir,
+					foreman.config,
+					build_dir=build_dir,
+					out_dir=out_dir,
+					verbose=verbose,
+					colour=colour,
+					).build()
 
 
 if __name__ == "__main__":

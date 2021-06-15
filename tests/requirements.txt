@@ -8,3 +8,5 @@ pytest>=6.0.0
 pytest-cov>=2.8.1
 pytest-randomly>=3.7.0
 pytest-timeout>=1.4.2
+whey-conda>=0.1.0
+whey-pth>=0.0.3

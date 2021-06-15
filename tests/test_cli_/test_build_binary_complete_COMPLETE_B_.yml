@@ -1,5 +1,4 @@
-stdout: "Using the following builders:\n    sdist: whey.builder.SDistBuilder\n   \
-  \ binary: whey.builder.WheelBuilder\n    wheel: whey.builder.WheelBuilder\n\nBuilding\
+stdout: "Using the following builder:\n    binary: whey.builder.WheelBuilder\n\nBuilding\
   \ ...\nCopying .../whey/__init__.py -> whey/__init__.py\nWriting whey-2021.0.0.dist-info/LICENSE\n\
   Writing whey-2021.0.0.dist-info/entry_points.txt\nWriting whey-2021.0.0.dist-info/METADATA\n\
   Writing whey-2021.0.0.dist-info/WHEEL\nWriting whey-2021.0.0.dist-info/top_level.txt\n\

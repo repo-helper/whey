@@ -1,0 +1,5 @@
+Usage: main [OPTIONS] [PROJECT]
+Try 'main -h' for help.
+
+Error: Unknown builder 'foo'.
+Is it registered as an entry point under 'whey.builder'?

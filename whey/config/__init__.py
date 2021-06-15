@@ -36,6 +36,7 @@ from dom_toml.parser import BadConfigError
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
 from domdf_python_tools.typing import PathLike
+from packaging.requirements import InvalidRequirement
 from packaging.specifiers import Specifier
 from shippinglabel.requirements import combine_requirements, read_requirements
 
@@ -101,7 +102,11 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 
 	if "dependencies" in dynamic_fields:
 		if (project_dir / "requirements.txt").is_file():
-			dependencies = read_requirements(project_dir / "requirements.txt", include_invalid=True)[0]
+			dependencies, comments, invalid = read_requirements(project_dir / "requirements.txt", include_invalid=True)
+
+			for bad_string in invalid:
+				raise InvalidRequirement(bad_string)
+
 			parsed_config["dependencies"] = sorted(combine_requirements(dependencies))
 		else:
 			raise BadConfigError(

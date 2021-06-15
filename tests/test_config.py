@@ -8,6 +8,7 @@ import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from dom_toml.parser import BadConfigError
 from domdf_python_tools.paths import PathPlus, in_directory
+from packaging.requirements import InvalidRequirement
 from pyproject_examples import bad_pep621_config
 from pyproject_examples.example_configs import (
 		AUTHORS,
@@ -501,6 +502,37 @@ license-key = "MIT"
 		config["dependencies"] = list(map(str, config["dependencies"]))
 
 	check_config(config, advanced_data_regression)
+
+
+def test_parse_dynamic_requirements_invalid(tmp_pathplus: PathPlus, ):
+	toml_config = dedent(
+			"""
+[project]
+name = "whey"
+version = "2021.0.0"
+description = "A simple Python wheel builder for simple projects."
+keywords = [ "pep517", "pep621", "build", "sdist", "wheel", "packaging", "distribution",]
+dynamic = [ "classifiers", "requires-python", "dependencies",]
+
+[tool.whey]
+base-classifiers = [ "Development Status :: 4 - Beta",]
+python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
+python-implementations = [ "CPython", "PyPy",]
+platforms = [ "Windows", "macOS", "Linux",]
+license-key = "MIT"
+"""
+			)
+	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
+	(tmp_pathplus / "requirements.txt").write_lines([
+			"apeye>=0.7.0",
+			"click>=7.1.2",
+			"consolekit>=1.0.1",
+			"not a requirement",
+			"# a comment",
+			])
+
+	with pytest.raises(InvalidRequirement, match="not a requirement"):
+		load_toml(tmp_pathplus / "pyproject.toml")
 
 
 @pytest.mark.parametrize("filename", ["LICENSE.rst", "LICENSE.md", "LICENSE.txt", "LICENSE"])

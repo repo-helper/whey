@@ -525,10 +525,10 @@ license-key = "MIT"
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	(tmp_pathplus / "requirements.txt").write_lines([
 			"apeye>=0.7.0",
+			"# a comment",
 			"click>=7.1.2",
 			"consolekit>=1.0.1",
 			"not a requirement",
-			"# a comment",
 			])
 
 	with pytest.raises(InvalidRequirement, match="not a requirement"):

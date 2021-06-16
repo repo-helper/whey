@@ -1,9 +1,9 @@
 click>=7.1.2
-consolekit>=1.2.0
-dom-toml>=0.3.0
-domdf-python-tools>=2.7.0
+consolekit>=1.2.2
+dom-toml>=0.4.0
+domdf-python-tools>=2.8.0
 first>=2.0.2
 natsort>=7.1.1
 packaging>=20.9
-pyproject-parser>=0.2.0
-shippinglabel>=0.10.0
+pyproject-parser>=0.3.0
+shippinglabel>=0.15.0

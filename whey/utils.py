@@ -65,7 +65,7 @@ def parse_custom_builders(builders: Optional[Iterable[str]]) -> Dict[str, Type[A
 	:param builders:
 	"""
 
-	custom_builders = {}
+	custom_builders: Dict[str, Type[AbstractBuilder]] = {}
 
 	if builders is None:
 		return custom_builders

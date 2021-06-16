@@ -72,7 +72,7 @@ entry_points:
 
 extras_require:
  readme:
-  - pyproject-parser[readme]>=0.2.0
+  - pyproject-parser[readme]>=0.3.0
   - docutils==0.16
 
 exclude_files:

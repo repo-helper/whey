@@ -7,7 +7,7 @@ email: 'dominic@davis-foster.co.uk'
 username: 'repo-helper'
 assignee: 'domdfcoding'
 primary_conda_channel: "domdfcoding"
-version: '0.0.15'
+version: '0.0.16'
 license: 'MIT'
 short_desc: 'A simple Python wheel builder for simple projects.'
 

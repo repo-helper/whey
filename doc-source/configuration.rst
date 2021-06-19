@@ -316,8 +316,8 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	Users MUST NOT create nested sub-tables but instead keep the entry point groups to only one level deep.
 
-	Users MUST NOT created sub-tables for ``console_scripts`` or ``gui_scripts``.
-	Use ``[project.scripts]` and ``[project.gui-scripts]`` instead.
+	Users MUST NOT create sub-tables for ``console_scripts`` or ``gui_scripts``.
+	Use ``[project.scripts]`` and ``[project.gui-scripts]`` instead.
 
 	See the `entry point specification`_ for more details.
 

@@ -502,7 +502,7 @@ def test_bad_config_show_traceback(
 				pytest.param(MINIMAL_CONFIG, id="default"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nsdist = "whey_sdist"', id="sdist"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_wheel"', id="wheel"),
-				# pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_pth_wheel"', id="whey_pth"),
+				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_pth_wheel"', id="whey_pth"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nbinary = "whey_wheel"', id="binary_wheel"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nbinary = "whey_conda"', id="binary_conda"),
 				pytest.param(
@@ -521,7 +521,7 @@ def test_bad_config_show_traceback(
 				pytest.param(["--binary", "--sdist"], id="binary_and_sdist"),
 				pytest.param(["--builder", "whey_conda"], id="whey_conda"),
 				pytest.param(["--builder", "whey_conda", "--sdist"], id="whey_conda_and_sdist"),
-				# pytest.param(["--builder", "whey_pth", "--builder", "whey_conda"], id="whey_conda_and_whey_pth"),
+				pytest.param(["--builder", "whey_pth_wheel", "--builder", "whey_conda"], id="whey_conda_and_whey_pth"),
 				]
 		)
 def test_show_builders(

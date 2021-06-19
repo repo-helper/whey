@@ -1,0 +1,3 @@
+Using the following builders:
+    sdist: whey.builder.SDistBuilder
+    whey_pth: whey_pth.PthWheelBuilder

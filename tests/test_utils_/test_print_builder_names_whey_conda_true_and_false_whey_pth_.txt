@@ -1,0 +1,3 @@
+Using the following builders:
+    wheel: whey_pth.PthWheelBuilder
+    whey_conda: whey_conda.CondaBuilder

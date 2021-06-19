@@ -1,0 +1,4 @@
+Using the following builders:
+    sdist: whey.builder.SDistBuilder
+    wheel: whey_pth.PthWheelBuilder
+    whey_conda: whey_conda.CondaBuilder

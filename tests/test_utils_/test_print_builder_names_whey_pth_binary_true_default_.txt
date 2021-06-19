@@ -1,0 +1,3 @@
+Using the following builders:
+    binary: whey.builder.WheelBuilder
+    whey_pth: whey_pth.PthWheelBuilder

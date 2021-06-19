@@ -8,6 +8,7 @@ from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileR
 from domdf_python_tools.paths import PathPlus
 from pyproject_examples import MINIMAL_CONFIG
 from whey_conda import CondaBuilder
+from whey_pth import PthWheelBuilder
 
 # this package
 from whey.builder import AbstractBuilder, SDistBuilder, WheelBuilder
@@ -21,7 +22,7 @@ from whey.utils import parse_custom_builders, print_builder_names
 				pytest.param(MINIMAL_CONFIG, id="default"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nsdist = "whey_sdist"', id="sdist"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_wheel"', id="wheel"),
-				# pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_pth_wheel"', id="whey_pth"),
+				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nwheel = "whey_pth_wheel"', id="whey_pth"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nbinary = "whey_wheel"', id="binary_wheel"),
 				pytest.param(f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nbinary = "whey_conda"', id="binary_conda"),
 				pytest.param(
@@ -45,7 +46,7 @@ from whey.utils import parse_custom_builders, print_builder_names
 		[
 				pytest.param({}, id="none"),
 				pytest.param({"whey_conda": CondaBuilder}, id="whey_conda"),
-				# pytest.param({"whey_pth": PthWheelBuilder}, id="whey_pth"),
+				pytest.param({"whey_pth": PthWheelBuilder}, id="whey_pth"),
 				]
 		)
 def test_print_builder_names(
@@ -74,8 +75,10 @@ def test_parse_custom_builders(advanced_data_regression: AdvancedDataRegressionF
 	assert parse_custom_builders(["whey_sdist"]) == {"whey_sdist": SDistBuilder}
 	assert parse_custom_builders(["whey_wheel"]) == {"whey_wheel": WheelBuilder}
 	assert parse_custom_builders(["whey_conda"]) == {"whey_conda": CondaBuilder}
-	# assert parse_custom_builders(["whey_pth_wheel"]) == {"whey_pth_wheel": }
-	# assert parse_custom_builders(["whey_conda", "whey_pth_wheel"]) == {"whey_conda": CondaBuilder, "whey_pth_wheel": }
+	assert parse_custom_builders(["whey_pth_wheel"]) == {"whey_pth_wheel": PthWheelBuilder}
+
+	expected = {"whey_conda": CondaBuilder, "whey_pth_wheel": PthWheelBuilder}
+	assert parse_custom_builders(["whey_conda", "whey_pth_wheel"]) == expected
 
 	with pytest.raises(
 			click.BadArgumentUsage,

@@ -521,7 +521,8 @@ def test_bad_config_show_traceback(
 				pytest.param(["--binary", "--sdist"], id="binary_and_sdist"),
 				pytest.param(["--builder", "whey_conda"], id="whey_conda"),
 				pytest.param(["--builder", "whey_conda", "--sdist"], id="whey_conda_and_sdist"),
-				pytest.param(["--builder", "whey_pth_wheel", "--builder", "whey_conda"], id="whey_conda_and_whey_pth"),
+				pytest.param(["--builder", "whey_pth_wheel", "--builder", "whey_conda"],
+								id="whey_conda_and_whey_pth"),
 				]
 		)
 def test_show_builders(

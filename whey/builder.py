@@ -186,6 +186,7 @@ class AbstractBuilder(ABC):
 			target = self.build_dir / py_file.relative_to(self.project_dir / self.config["source-dir"])
 			target.parent.maybe_make(parents=True)
 			target.write_clean(py_file.read_text())
+			shutil.copystat(py_file, target)
 			self.report_copied(py_file, target)
 
 	def _echo_if_v(self, *args, **kwargs):

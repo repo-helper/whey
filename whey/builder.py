@@ -459,8 +459,7 @@ class AbstractBuilder(ABC):
 			description = self.config["readme"].text
 
 		metadata_file.write_lines([
-				# TODO: https://github.com/python/typeshed/issues/5094
-				metadata.as_string(maxheaderlen=2048, policy=metadata.policy.clone(utf8=True)),  # type: ignore
+				metadata.as_string(maxheaderlen=2048, policy=metadata.policy.clone(utf8=True)),
 				description,
 				])
 

@@ -29,8 +29,13 @@ Configuration
 
 The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`621`.
 
-As a minimum, the table MUST contain the keys ``name`` and ``version``.
+As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [1]_.
 
+.. [1] Other tools, such as flit_ and trampolim_, may support determining :conf:`version`
+dynamically without specifying a value in ``pyproject.toml``.
+
+.. _flit: https://flit.readthedocs.io/en/latest/
+.. _trampolim: https://github.com/FFY00/trampolim
 
 .. conf:: name
 
@@ -385,7 +390,8 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 	Specifies which fields listed by :pep:`621` were intentionally unspecified
 	so ``whey`` can provide such metadata dynamically.
 
-	Whey currently only supports ``classifiers``, ``dependencies``, and ``requires-python`` as dynamic fields.
+	Whey currently only supports :conf:`classifiers`, :conf:`dependencies`, and :conf:`requires-python` as dynamic fields.
+	Other tools may support different dynamic fields.
 
 
 	:bold-title:`Example:`

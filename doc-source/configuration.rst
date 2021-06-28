@@ -32,7 +32,7 @@ The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`6
 As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [1]_.
 
 .. [1] Other tools, such as flit_ and trampolim_, may support determining :conf:`version`
-dynamically without specifying a value in ``pyproject.toml``.
+       dynamically without specifying a value in ``pyproject.toml``.
 
 .. _flit: https://flit.readthedocs.io/en/latest/
 .. _trampolim: https://github.com/FFY00/trampolim

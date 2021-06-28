@@ -38,6 +38,8 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	The name of the project.
 
+	Ideally, the name should be normalised to lowercase, with underscores replaced by hyphens.
+
 	This key is required, and MUST be defined statically.
 
 	:bold-title:`Example:`
@@ -53,8 +55,6 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 	**Type**: :toml:`String`
 
 	The version of the project as supported by :pep:`440`.
-
-	Ideally, the name should be normalised to lowercase, with underscores replaced by hyphens.
 
 	This key is required, and MUST be defined statically.
 

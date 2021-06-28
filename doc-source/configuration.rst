@@ -129,7 +129,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	**Type**: :toml:`String`
 
-	The Python version requirements of the project, as a :pep:`508` marker.
+	The Python version requirements of the project, as a :pep:`508` specifier.
 
 	:bold-title:`Example:`
 

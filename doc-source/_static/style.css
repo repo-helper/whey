@@ -8,3 +8,8 @@ div.highlight {
 .field-list dt, dl.simple dt {
 	margin-top: 0.5rem;
 }
+
+div.versionchanged ul, div.versionremoved ul {
+	margin-left: 20px;
+	margin-top: 0;
+}

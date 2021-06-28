@@ -121,26 +121,27 @@ def test_build_success(
 
 def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFileRegressionFixture):
 	assert filename.is_file()
-	zip_file = zipfile.ZipFile(filename)
 
-	with zip_file.open("whey/__init__.py", mode='r') as fp:
-		assert fp.read().decode("UTF-8") == "print('hello world')\n"
-	with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-		advanced_file_regression.check(fp.read().decode("UTF-8"))
+	with zipfile.ZipFile(filename) as zip_file:
 
-	contents = sorted(zip_file.namelist())
+		with zip_file.open("whey/__init__.py", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
 
-	with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
-		for line in fp.readlines():
-			entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
-			assert entry_filename in contents, entry_filename
-			contents.remove(entry_filename)
+		contents = sorted(zip_file.namelist())
 
-			if "RECORD" not in entry_filename:
-				assert zip_file.getinfo(entry_filename).file_size == int(size)
-				# TODO: check digest
+		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
+			for line in fp.readlines():
+				entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
+				assert entry_filename in contents, entry_filename
+				contents.remove(entry_filename)
 
-	return sorted(zip_file.namelist())
+				if "RECORD" not in entry_filename:
+					assert zip_file.getinfo(entry_filename).file_size == int(size)
+					# TODO: check digest
+
+		return sorted(zip_file.namelist())
 
 
 @pytest.mark.parametrize(
@@ -988,6 +989,61 @@ def test_build_additional_files_source_dir(
 			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
 			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
 			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
+				]
+		)
+def test_custom_wheel_builder(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data = {}
+
+	class CustomWheelBuilder(WheelBuilder):
+
+		@property
+		def generator(self) -> str:
+			return "My Custom Builder v1.2.3"
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = CustomWheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_wheel()
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
+
+		with zipfile.ZipFile(tmp_pathplus / wheel) as zip_file:
+			with zip_file.open("whey-2021.0.0.dist-info/WHEEL", mode='r') as fp:
+				advanced_file_regression.check(fp.read().decode("UTF-8"), extension=".WHEEL")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

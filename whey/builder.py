@@ -671,6 +671,17 @@ class WheelBuilder(AbstractBuilder):
 
 		return "py3-none-any"
 
+	@property
+	def generator(self) -> str:
+		"""
+		The value for the ``Generator`` field in ``*.dist-info/WHEEL``.
+		"""
+
+		# this package
+		from whey import __version__
+
+		return f"whey ({__version__})"
+
 	def write_entry_points(self) -> None:
 		"""
 		Write the list of entry points to the wheel, as specified in
@@ -712,12 +723,9 @@ class WheelBuilder(AbstractBuilder):
 		Write the metadata to the ``WHEEL`` file.
 		"""
 
-		# this package
-		from whey import __version__
-
 		wheel = EmailMessage()
 		wheel["Wheel-Version"] = "1.0"
-		wheel["Generator"] = f"whey ({__version__})"
+		wheel["Generator"] = self.generator
 		wheel["Root-Is-Purelib"] = "true"
 		wheel["Tag"] = self.tag
 

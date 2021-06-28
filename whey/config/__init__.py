@@ -32,6 +32,7 @@ from typing import Any, Dict
 
 # 3rd party
 import dom_toml
+import dom_toml.decoder
 from dom_toml.parser import BadConfigError
 from domdf_python_tools.iterative import natmin
 from domdf_python_tools.paths import PathPlus, in_directory
@@ -69,7 +70,7 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 	filename = PathPlus(filename)
 
 	project_dir = filename.parent
-	config = dom_toml.load(filename)
+	config = dom_toml.load(filename, decoder=dom_toml.decoder.TomlPureDecoder)
 
 	parsed_config = {}
 	tool_table = config.get("tool", {})

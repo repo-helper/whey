@@ -1,3 +1,5 @@
+.. _configuration:
+
 =====================
 Configuration
 =====================
@@ -594,3 +596,16 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 			"3.6",
 			"3.7",
 		]
+
+
+Complete Example
+------------------
+
+This is an example of a complete ``pyproject.toml`` file for :pep:`621`.
+
+For an explanation of each field, see the :ref:`configuration` section.
+
+
+.. literalinclude:: pyproject.toml
+	:caption: :download:`pyproject.toml`
+	:language: toml

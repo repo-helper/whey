@@ -117,10 +117,16 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		[project]
 		readme = "README.rst"
 
-		[project.readme]
-		file = "README.rst"
-		content-type = "text/x-rst"
-		encoding = "UTF-8"
+	.. code-block:: TOML
+
+		[project]
+		readme = {
+			file = "README.rst" ,
+			content-type = "text/x-rst",
+			encoding = "UTF-8",
+		}
+
+	.. code-block:: TOML
 
 		[project.readme]
 		text = "Spam is a brand of canned cooked pork made by Hormel Foods Corporation."
@@ -157,15 +163,19 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	These keys are mutually exclusive.
 
-	:bold-title:`Example:`
+	:bold-title:`Examples:`
+
+	.. code-block:: TOML
+
+		[project]
+		license = {file = "LICENSE.rst"}
 
 	.. code-block:: TOML
 
 		[project.license]
-		file = "LICENSE.rst"
-
-		[project.license]
 		file = "COPYING"
+
+	.. code-block:: TOML
 
 		[project.license]
 		text = """
@@ -176,7 +186,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 .. conf:: authors
 
-	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
+	**Type**: :toml:`Array` of :toml:`tables <Table>` with string keys and values
 
 	The tables list the people or organizations considered to be the "authors" of the project.
 
@@ -195,12 +205,17 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 		[project]
 		authors = [
-			{email = "hi@pradyunsg.me"},
-			{name = "Tzu-Ping Chung"}
+			{name = "Dominic Davis-Foster", email = "dominic@davis-foster.co.uk"},
+			{name = "The pip developers", email = "distutils-sig@python.org"}
 		]
+
+	.. code-block:: TOML
 
 		[[project.authors]]
 		name = "Tzu-Ping Chung"
+
+		[[project.authors]]
+		email = "hi@pradyunsg.me"
 
 
 .. conf:: maintainers

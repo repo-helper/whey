@@ -3,7 +3,9 @@ import os
 import shutil
 import tempfile
 import zipfile
+from base64 import urlsafe_b64encode
 from datetime import datetime
+from hashlib import sha256
 from typing import List
 
 # 3rd party
@@ -131,15 +133,22 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 
 		contents = sorted(zip_file.namelist())
 
-		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
-			for line in fp.readlines():
-				entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
+		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as record_fp:
+			for line in record_fp.readlines():
+				entry_filename, expected_digest, size, *_ = line.decode("UTF-8").strip().split(',')
 				assert entry_filename in contents, entry_filename
 				contents.remove(entry_filename)
 
 				if "RECORD" not in entry_filename:
 					assert zip_file.getinfo(entry_filename).file_size == int(size)
-					# TODO: check digest
+
+					sha256_hash = sha256()
+
+					with zip_file.open(entry_filename) as fp:
+						sha256_hash.update(fp.read())
+
+					digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
+					assert expected_digest == digest
 
 		return sorted(zip_file.namelist())
 

@@ -39,11 +39,9 @@ from pyproject_parser.cli import ConfigTracebackHandler
 # this package
 from whey.builder import AbstractBuilder
 from whey.config.whey import get_entry_points
+from whey.foreman import Foreman
 
 __all__ = ["WheyTracebackHandler", "parse_custom_builders", "print_builder_names"]
-
-# this package
-from whey.foreman import Foreman
 
 _builder = Plural("builder", "builders")
 

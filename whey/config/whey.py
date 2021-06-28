@@ -203,7 +203,7 @@ class WheyParser(AbstractConfigParser):
 						f"Invalid type for 'tool.whey.python-versions[{idx}]': "
 						f"expected {str!r}, {int!r} or {float!r}, got {type(version)!r}"
 						)
-			if str(version) in "12":
+			if str(version)[0] in "12":
 				raise BadConfigError(
 						f"Invalid value for 'tool.whey.python-versions[{idx}]': whey only supports Python 3-only projects."
 						)

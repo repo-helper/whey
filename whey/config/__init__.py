@@ -46,7 +46,6 @@ from whey.config.pep621 import PEP621Parser
 from whey.config.whey import WheyParser, backfill_classifiers
 
 __all__ = [
-		"BadConfigError",
 		"PEP621Parser",
 		"WheyParser",
 		"backfill_classifiers",

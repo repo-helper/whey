@@ -435,7 +435,6 @@ def test_build_wheel_from_sdist(
 			])
 
 	# Build the sdist
-
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
 				project_dir=tmp_pathplus,
@@ -450,7 +449,6 @@ def test_build_wheel_from_sdist(
 		assert (tmp_pathplus / sdist).is_file()
 
 	# unpack sdist into another tmpdir and use that as project_dir
-
 	(tmp_pathplus / "sdist_unpacked").mkdir()
 
 	with TarFile.open(tmp_pathplus / sdist) as sdist_tar:

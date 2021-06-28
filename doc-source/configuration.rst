@@ -70,7 +70,9 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	**Type**: :toml:`String`
 
-	A summary description of the project.
+	A short summary description of the project.
+
+	A longer description can be provided as :conf:`readme`.
 
 	:bold-title:`Example:`
 

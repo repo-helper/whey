@@ -61,7 +61,9 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	The version of the project as supported by :pep:`440`.
 
-	This key is required, and MUST be defined statically.
+	With ``whey`` this key is required, and must be defined statically.
+	Other backends may support determining this value automatically if it is listed in :conf:`dynamic`.
+
 
 	:bold-title:`Example:`
 

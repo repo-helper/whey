@@ -1,0 +1,36 @@
+Metadata-Version: 2.1
+Name: whey
+Version: 2021.0.0
+Summary: A simple Python wheel builder for simple projects.
+Author-email: Dominic Davis-Foster <dominic@davis-foster.co.uk>
+License: MIT
+Keywords: build,distribution,packaging,pep517,pep621,sdist,wheel
+Home-page: https://whey.readthedocs.io/en/latest
+Project-URL: Home Page, https://whey.readthedocs.io/en/latest
+Project-URL: Documentation, https://whey.readthedocs.io/en/latest
+Project-URL: Issue Tracker, https://github.com/repo-helper/whey/issues
+Project-URL: Source Code, https://github.com/repo-helper/whey
+Platform: Windows
+Platform: macOS
+Platform: Linux
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Requires-Python: >=3.6
+Requires-Dist: django>2.1; os_name != "nt"
+Requires-Dist: django>2.0; os_name == "nt"
+Requires-Dist: gidgethub[httpx]>4.0.0
+Requires-Dist: httpx
+Description-Content-Type: text/x-rst
+
+
+Spam Spam Spam Spam

@@ -407,7 +407,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	**Type**: :toml:`String`
 
-	The path to the package to distribute, relative to the directory containing ``pyproject.toml``.
+	The path to the package to distribute, relative to :conf:`source-dir`.
 	This defaults to :conf:`project.name <name>` if unspecified.
 
 	:bold-title:`Example:`
@@ -428,18 +428,14 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 	The name of the directory containing the project's source.
 	This defaults to ``'.'`` if unspecified.
 
-	.. versionadded:: 0.0.4
-
-	.. attention::
-
-		:conf:`source-dir` does not currently work correctly with :conf:`additional-files`
-
-	:bold-title:`Example:`
+	:bold-title:`Examples:`
 
 	.. code-block:: TOML
 
 		[project]
 		name = "flake8"
+
+	.. code-block:: TOML
 
 		[tool.whey]
 		source_dir = "src/flake8"
@@ -465,11 +461,19 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	``whey`` was built with type hints in mind, so it will automatically include any ``py.typed`` files and ``*.pyi`` stub files automatically.
 
+	.. note::
+
+		If using :conf:`source-dir`, the entries for files within the package
+		must start with the value of :conf:`source-dir`.
+
+		For example, if :conf:`source-dir` is ``'src'`` and the package
+		is at ``src/spam`` an entry might be ``include src/spam/template.scss``.
+
 	.. raw:: latex
 
 		\begin{minipage}{\textwidth}
 
-	:bold-title:`Example:`
+	:bold-title:`Examples:`
 
 	.. code-block:: TOML
 
@@ -477,6 +481,15 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		additional-files = [
 			"include domdf_python_tools/google-10000-english-no-swears.txt",
 			"recursive-exclude domdf_python_tools *.json",
+		]
+
+	.. code-block:: TOML
+
+		[tool.whey]
+		source-dir = "src"
+		additional-files = [
+			"include src/domdf_python_tools/google-10000-english-no-swears.txt",
+			"recursive-exclude src/domdf_python_tools *.json",
 		]
 
 	.. raw:: latex

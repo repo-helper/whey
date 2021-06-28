@@ -146,6 +146,14 @@ class AbstractBuilder(ABC):
 
 		return self.project_dir / "dist"
 
+	@property
+	def code_directory(self) -> str:
+		"""
+		The directory containing the code in the build directory.
+		"""
+
+		return self.config["source-dir"]
+
 	def clear_build_dir(self) -> None:
 		"""
 		Clear the build directory of any residue from previous builds.
@@ -164,7 +172,12 @@ class AbstractBuilder(ABC):
 		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
 
 		if not pkgdir.is_dir():
-			raise FileNotFoundError(f"Package directory '{self.config['package']}' not found.")
+			message = f"Package directory {self.config['package']!r} not found"
+
+			if self.config["source-dir"]:
+				raise FileNotFoundError(f"{message} in {self.config['source-dir']!r}.")
+			else:
+				raise FileNotFoundError(f"{message}.")
 
 		found_file = False
 
@@ -183,7 +196,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		for py_file in self.iter_source_files():
-			target = self.build_dir / py_file.relative_to(self.project_dir / self.config["source-dir"])
+			target = self.build_dir / py_file.relative_to(self.project_dir / self.code_directory)
 			target.parent.maybe_make(parents=True)
 			target.write_clean(py_file.read_text())
 			shutil.copystat(py_file, target)
@@ -258,7 +271,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		def copy_file(filename):
-			target = self.build_dir / filename.relative_to(self.project_dir)
+			target = self.build_dir / filename.relative_to(self.project_dir / self.code_directory)
 			target.parent.maybe_make(parents=True)
 			shutil.copy2(src=filename, dst=target)
 			self.report_copied(filename, target)
@@ -492,6 +505,14 @@ class SDistBuilder(AbstractBuilder):
 		"""
 
 		return self.project_dir / "build" / "sdist"
+
+	@property
+	def code_directory(self) -> str:
+		"""
+		The directory containing the code in the build and project directories.
+		"""
+
+		return ''
 
 	def create_sdist_archive(self) -> str:
 		"""

@@ -1,0 +1,82 @@
+sdist_content:
+- whey-2021.0.0/LICENSE
+- whey-2021.0.0/PKG-INFO
+- whey-2021.0.0/README.rst
+- whey-2021.0.0/pyproject.toml
+- whey-2021.0.0/requirements.txt
+- whey-2021.0.0/src/whey/__init__.py
+- whey-2021.0.0/src/whey/static/foo.c
+- whey-2021.0.0/src/whey/static/foo.py
+- whey-2021.0.0/src/whey/style.css
+stderr: ''
+stdout: 'Copying .../src/whey/__init__.py -> whey/__init__.py
+
+  Copying .../src/whey/static/foo.py -> whey/static/foo.py
+
+  Copying .../src/whey/style.css -> whey/style.css
+
+  Copying .../src/whey/style.css -> whey/style.css
+
+  Copying .../src/whey/static/foo.c -> whey/static/foo.c
+
+  Copying .../src/whey/static/foo.py -> whey/static/foo.py
+
+  Copying .../src/whey/static/foo.txt -> whey/static/foo.txt
+
+  Writing whey-2021.0.0.dist-info/LICENSE
+
+  Writing whey-2021.0.0.dist-info/entry_points.txt
+
+  Writing whey-2021.0.0.dist-info/METADATA
+
+  Writing whey-2021.0.0.dist-info/WHEEL
+
+  Writing whey-2021.0.0.dist-info/top_level.txt
+
+  Writing whey-2021.0.0.dist-info/RECORD
+
+  Wheel created at .../whey-2021.0.0-py3-none-any.whl
+
+  Copying .../src/whey/__init__.py -> src/whey/__init__.py
+
+  Copying .../src/whey/static/foo.py -> src/whey/static/foo.py
+
+  Copying .../src/whey/style.css -> src/whey/style.css
+
+  Removing src/whey/style.css
+
+  Copying .../src/whey/style.css -> src/whey/style.css
+
+  Copying .../src/whey/static/foo.c -> src/whey/static/foo.c
+
+  Copying .../src/whey/static/foo.py -> src/whey/static/foo.py
+
+  Copying .../src/whey/static/foo.txt -> src/whey/static/foo.txt
+
+  Removing src/whey/static/foo.txt
+
+  Writing LICENSE
+
+  Copying .../pyproject.toml -> pyproject.toml
+
+  Copying .../requirements.txt -> requirements.txt
+
+  Writing README.rst
+
+  Writing PKG-INFO
+
+  Source distribution created at .../whey-2021.0.0.tar.gz
+
+  '
+wheel_content:
+- whey-2021.0.0.dist-info/LICENSE
+- whey-2021.0.0.dist-info/METADATA
+- whey-2021.0.0.dist-info/RECORD
+- whey-2021.0.0.dist-info/WHEEL
+- whey-2021.0.0.dist-info/entry_points.txt
+- whey-2021.0.0.dist-info/top_level.txt
+- whey/__init__.py
+- whey/static/foo.c
+- whey/static/foo.py
+- whey/static/foo.txt
+- whey/style.css

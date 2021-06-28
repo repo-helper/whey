@@ -261,6 +261,9 @@ def test_build_additional_files(
 		with zip_file.open("whey/__init__.py", mode='r') as fp:
 			assert fp.read().decode("UTF-8") == "print('hello world')\n"
 
+		with zip_file.open("whey/style.css", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
+
 		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
 			advanced_file_regression.check(fp.read().decode("UTF-8"))
 
@@ -689,3 +692,305 @@ def test_build_stubs_name(
 
 
 # TODO: test some bad configurations
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
+				pytest.param(f"{COMPLETE_A}\nsource-dir = 'src'", id="COMPLETE_A"),
+				pytest.param(f"{COMPLETE_B}\nsource-dir = 'src'", id="COMPLETE_B"),
+				# pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
+				]
+		)
+def test_build_source_dir_complete(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "src/whey").mkdir(parents=True)
+	(tmp_pathplus / "src/whey" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_wheel()
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
+
+			assert tar.read_text("whey-2021.0.0/src/whey/__init__.py") == "print('hello world')\n"
+			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
+
+			advanced_file_regression.check(tar.read_text("whey-2021.0.0/PKG-INFO"))
+			advanced_file_regression.check(tar.read_text("whey-2021.0.0/pyproject.toml"), extension=".toml")
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+def test_build_source_dir_different_package(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			COMPLETE_A,
+			"source-dir = 'src'",
+			"package = 'SpamSpam'",
+			])
+	(tmp_pathplus / "src/SpamSpam").mkdir(parents=True)
+	(tmp_pathplus / "src/SpamSpam" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_wheel()
+		assert (tmp_pathplus / wheel).is_file()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+
+		with zip_file.open("SpamSpam/__init__.py", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
+
+		contents = sorted(zip_file.namelist())
+
+		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
+			for line in fp.readlines():
+				entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
+				assert entry_filename in contents, entry_filename
+				contents.remove(entry_filename)
+
+				if "RECORD" not in entry_filename:
+					assert zip_file.getinfo(entry_filename).file_size == int(size)
+			# TODO: check digest
+
+		data["wheel_content"] = sorted(zip_file.namelist())
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
+
+			assert tar.read_text("whey-2021.0.0/src/SpamSpam/__init__.py") == "print('hello world')\n"
+			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
+
+			advanced_file_regression.check(tar.read_text("whey-2021.0.0/PKG-INFO"))
+			advanced_file_regression.check(tar.read_text("whey-2021.0.0/pyproject.toml"), extension=".toml")
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				pytest.param(f"{COMPLETE_A}\nsource-dir = 'src'", id="COMPLETE_A"),
+				pytest.param(f"{COMPLETE_B}\nsource-dir = 'src'", id="COMPLETE_B"),
+				# pytest.param(DYNAMIC_REQUIREMENTS, id="DYNAMIC_REQUIREMENTS"),
+				# pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
+				]
+		)
+def test_build_wheel_from_sdist_source_dir(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "src/whey").mkdir(parents=True)
+	(tmp_pathplus / "src/whey" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_lines([
+			"httpx", "gidgethub[httpx]>4.0.0", "django>2.1; os_name != 'nt'", "django>2.0; os_name == 'nt'"
+			])
+
+	# Build the sdist
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+	# unpack sdist into another tmpdir and use that as project_dir
+	(tmp_pathplus / "sdist_unpacked").mkdir()
+
+	with TarFile.open(tmp_pathplus / sdist) as sdist_tar:
+		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
+
+	capsys.readouterr()
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus / "sdist_unpacked/whey-2021.0.0/",
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+		wheel = wheel_builder.build_wheel()
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+def test_build_additional_files_source_dir(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_lines([
+			COMPLETE_B,
+			'source-dir = "src"',
+			"additional-files = [",
+			'  "include src/whey/style.css",',
+			'  "exclude src/whey/style.css",',
+			'  "include src/whey/style.css",',
+			'  "recursive-include src/whey/static *",',
+			'  "recursive-exclude src/whey/static *.txt",',
+			']',
+			])
+	(tmp_pathplus / "src/whey").mkdir(parents=True)
+	(tmp_pathplus / "src/whey" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "src/whey" / "style.css").write_clean("This is the style.css file")
+	(tmp_pathplus / "src/whey" / "static").mkdir()
+	(tmp_pathplus / "src/whey" / "static" / "foo.py").touch()
+	(tmp_pathplus / "src/whey" / "static" / "foo.c").touch()
+	(tmp_pathplus / "src/whey" / "static" / "foo.txt").touch()
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_wheel()
+		assert (tmp_pathplus / wheel).is_file()
+		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		data["wheel_content"] = sorted(zip_file.namelist())
+
+		with zip_file.open("whey/__init__.py", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+
+		with zip_file.open("whey/style.css", mode='r') as fp:
+			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
+
+		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
+			advanced_file_regression.check(fp.read().decode("UTF-8"))
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		sdist_builder = SDistBuilder(
+				project_dir=tmp_pathplus,
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				)
+		sdist = sdist_builder.build_sdist()
+		assert (tmp_pathplus / sdist).is_file()
+
+		with TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
+
+			assert tar.read_text("whey-2021.0.0/src/whey/__init__.py") == "print('hello world')\n"
+			assert tar.read_text("whey-2021.0.0/src/whey/style.css") == "This is the style.css file\n"
+			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)

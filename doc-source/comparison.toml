@@ -1,0 +1,57 @@
+[Whey]
+supports_517 = true
+supports_621 = true
+install = "No -- Use pip"
+upload = "No -- Use twine"
+released = "Feb 2021"
+src_layout = true
+python_versions = ">=3.6"
+
+[Distutils]
+link = "https://docs.python.org/3/library/distutils.html"
+build_extensions = true
+upload = true
+src_layout = "?"
+install = "Yes [1]_"
+released = "2000 [2]_"
+
+[Setuptools]
+link = "https://setuptools.readthedocs.io/en/latest/"
+supports_517 = true
+build_extensions = true
+upload = "Maybe"
+install = "Yes [1]_"
+released = "May 2006"
+python_versions = ">=3.6"
+src_layout = true
+
+[Flit]
+link = "https://flit.readthedocs.io/en/latest/index.html"
+supports_517 = true
+supports_621 = "Yes [3]_"
+src_layout = "Yes [4]_"
+install = true
+upload = true
+released = "March 2015"
+python_versions = ">=3.5"
+
+[Poetry]
+link = "https://python-poetry.org/"
+supports_517 = true
+supports_621 = false
+install = true
+upload = true
+released = "Feb 2018"
+python_versions = ">=2.7 or >=3.5"
+src_layout = "?"
+
+[Enscons]
+link = "https://github.com/dholth/enscons"
+supports_517 = true
+supports_621 = true
+build_extensions = true
+install = "?"
+upload = "?"
+released = "June 2016"
+python_versions = "2 and 3"
+src_layout = "?"

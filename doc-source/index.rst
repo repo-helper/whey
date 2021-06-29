@@ -201,6 +201,7 @@ Contents
 
 	configuration
 	cli
+	comparison
 	Source
 
 .. toctree::

@@ -125,8 +125,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 		[project]
 		readme = {
-			file = "README.rst" ,
-			content-type = "text/x-rst",
+			file = "README.md" ,
+			content-type = "text/markdown",
 			encoding = "UTF-8",
 		}
 

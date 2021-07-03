@@ -6,4 +6,4 @@ first>=2.0.2
 natsort>=7.1.1
 packaging>=20.9
 pyproject-parser>=0.3.0
-shippinglabel>=0.15.0
+shippinglabel>=0.16.0

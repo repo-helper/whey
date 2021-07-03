@@ -5,7 +5,6 @@ import tempfile
 import zipfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
-from hashlib import sha256
 from typing import List
 
 # 3rd party
@@ -26,6 +25,7 @@ from pyproject_examples.example_configs import (
 		UNICODE,
 		URLS
 		)
+from shippinglabel.checksum import get_sha256_hash
 
 # this package
 from tests.example_configs import COMPLETE_A, COMPLETE_B
@@ -142,10 +142,8 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 				if "RECORD" not in entry_filename:
 					assert zip_file.getinfo(entry_filename).file_size == int(size)
 
-					sha256_hash = sha256()
-
 					with zip_file.open(entry_filename) as fp:
-						sha256_hash.update(fp.read())
+						sha256_hash = get_sha256_hash(fp)  # type: ignore
 
 					digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
 					assert expected_digest == digest

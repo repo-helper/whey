@@ -48,6 +48,7 @@ extra_sphinx_extensions:
  - sphinx_toolbox_experimental.needspace
  - sphinx_toolbox_experimental.peps
  - sphinx_toolbox_experimental.toml
+ - local_extension
 
 classifiers:
  - 'Development Status :: 3 - Alpha'

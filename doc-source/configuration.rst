@@ -124,11 +124,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 	.. code-block:: TOML
 
 		[project]
-		readme = {
-			file = "README.md" ,
-			content-type = "text/markdown",
-			encoding = "UTF-8",
-		}
+		readme = {file = "README.md", content-type = "text/markdown", encoding = "UTF-8"}
 
 	.. code-block:: TOML
 

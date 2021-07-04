@@ -1,9 +1,8 @@
 # stdlib
-import tarfile
 import tempfile
-import zipfile
 
 # 3rd party
+import handy_archives
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, check_file_regression
 from domdf_python_tools.paths import PathPlus
@@ -71,14 +70,12 @@ def test_build_success(
 				colour=False,
 				)
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			assert zip_file.read_text("spam/__init__.py") == "print('hello world)\n"
+			check_file_regression(zip_file.read_text("spam-2020.0.0.dist-info/METADATA"), file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist = foreman.build_sdist(
@@ -89,11 +86,9 @@ def test_build_success(
 				)
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
-
-		with tar.extractfile("spam-2020.0.0/spam/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
+			assert tar.read_text("spam-2020.0.0/spam/__init__.py") == "print('hello world)\n"
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -137,14 +132,12 @@ def test_build_complete(
 				colour=False,
 				)
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			assert zip_file.read_text("whey/__init__.py") == "print('hello world)\n"
+			check_file_regression(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"), file_regression)
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist = foreman.build_sdist(
@@ -155,17 +148,13 @@ def test_build_complete(
 				)
 		assert (tmp_pathplus / sdist).is_file()
 
-		tar = tarfile.open(tmp_pathplus / sdist)
-		data["sdist_content"] = sorted(tar.getnames())
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
+			data["sdist_content"] = sorted(tar.getnames())
 
-		with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
-		with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-		with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "This is the license\n"
-		with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
-			assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world)\n"
+			assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+			assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+			assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
@@ -215,35 +204,24 @@ def test_build_additional_files(
 				colour=False,
 				)
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world)\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			check_file_regression(fp.read().decode("UTF-8"), file_regression)
+			assert zip_file.read_text("whey/__init__.py") == "print('hello world)\n"
+			check_file_regression(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"), file_regression)
 
-	sdist = foreman.build_sdist(
-			out_dir=tmp_pathplus,
-			verbose=True,
-			colour=False,
-			)
+	sdist = foreman.build_sdist(out_dir=tmp_pathplus, verbose=True, colour=False)
 	assert (tmp_pathplus / sdist).is_file()
 
-	tar = tarfile.open(tmp_pathplus / sdist)
-	data["sdist_content"] = sorted(tar.getnames())
+	with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
+		data["sdist_content"] = sorted(tar.getnames())
 
-	with tar.extractfile("whey-2021.0.0/whey/__init__.py") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "print('hello world)\n"
-	with tar.extractfile("whey-2021.0.0/whey/style.css") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-	with tar.extractfile("whey-2021.0.0/README.rst") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "Spam Spam Spam Spam\n"
-	with tar.extractfile("whey-2021.0.0/LICENSE") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "This is the license\n"
-	with tar.extractfile("whey-2021.0.0/requirements.txt") as fp:  # type: ignore
-		assert fp.read().decode("UTF-8") == "domdf_python_tools\n"
+		assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world)\n"
+		assert tar.read_text("whey-2021.0.0/whey/style.css") == "This is the style.css file\n"
+		assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
+		assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
+		assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

@@ -8,6 +8,7 @@ from datetime import datetime
 from typing import List
 
 # 3rd party
+import handy_archives
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileRegressionFixture
 from domdf_python_tools.paths import PathPlus, compare_dirs
@@ -29,7 +30,6 @@ from shippinglabel.checksum import get_sha256_hash
 
 # this package
 from tests.example_configs import COMPLETE_A, COMPLETE_B
-from tests.utils import TarFile
 from whey.builder import SDistBuilder, WheelBuilder
 from whey.config import load_toml
 
@@ -82,17 +82,15 @@ def test_build_success(
 
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+			assert zip_file.read_text("spam/__init__.py") == "print('hello world')\n"
+			advanced_file_regression.check(zip_file.read_text("spam-2020.0.0.dist-info/METADATA"))
 
-		# The seconds can vary by 1 second between the mtime and the time in the zip, but this is inconsistent
-		assert zip_file.getinfo("spam/__init__.py").date_time[:5] == now.timetuple()[:5]
+			# The seconds can vary by 1 second between the mtime and the time in the zip, but this is inconsistent
+			assert zip_file.getinfo("spam/__init__.py").date_time[:5] == now.timetuple()[:5]
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -107,7 +105,7 @@ def test_build_success(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 			assert tar.read_text("spam-2020.0.0/spam/__init__.py") == "print('hello world')\n"
 
@@ -124,12 +122,10 @@ def test_build_success(
 def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFileRegressionFixture):
 	assert filename.is_file()
 
-	with zipfile.ZipFile(filename) as zip_file:
+	with handy_archives.ZipFile(filename) as zip_file:
 
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+		assert zip_file.read_text("whey/__init__.py") == "print('hello world')\n"
+		advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
 
 		contents = sorted(zip_file.namelist())
 
@@ -202,7 +198,7 @@ def test_build_complete(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world')\n"
@@ -263,17 +259,13 @@ def test_build_additional_files(
 
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey/style.css", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+			assert zip_file.read_text("whey/__init__.py") == "print('hello world')\n"
+			assert zip_file.read_text("whey/style.css") == "This is the style.css file\n"
+			advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -287,7 +279,7 @@ def test_build_additional_files(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world')\n"
@@ -344,7 +336,7 @@ def test_build_markdown_readme(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("whey-2021.0.0/whey/__init__.py") == "print('hello world')\n"
@@ -462,7 +454,7 @@ def test_build_wheel_from_sdist(
 	# unpack sdist into another tmpdir and use that as project_dir
 	(tmp_pathplus / "sdist_unpacked").mkdir()
 
-	with TarFile.open(tmp_pathplus / sdist) as sdist_tar:
+	with handy_archives.TarFile.open(tmp_pathplus / sdist) as sdist_tar:
 		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
 
 	capsys.readouterr()
@@ -597,14 +589,12 @@ def test_build_underscore_name(
 
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam_spam/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam_spam-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+			assert zip_file.read_text("spam_spam/__init__.py") == "print('hello world')\n"
+			advanced_file_regression.check(zip_file.read_text("spam_spam-2020.0.0.dist-info/METADATA"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -619,7 +609,7 @@ def test_build_underscore_name(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("spam_spam-2020.0.0/spam_spam/__init__.py") == "print('hello world')\n"
@@ -661,14 +651,12 @@ def test_build_stubs_name(
 
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam_spam-stubs/__init__.pyi", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("spam_spam_stubs-2020.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+			assert zip_file.read_text("spam_spam-stubs/__init__.pyi") == "print('hello world')\n"
+			advanced_file_regression.check(zip_file.read_text("spam_spam_stubs-2020.0.0.dist-info/METADATA"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -683,7 +671,7 @@ def test_build_stubs_name(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text(
@@ -753,7 +741,7 @@ def test_build_source_dir_complete(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("whey-2021.0.0/src/whey/__init__.py") == "print('hello world')\n"
@@ -802,26 +790,24 @@ def test_build_source_dir_different_package(
 
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
 
-		with zip_file.open("SpamSpam/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+			assert zip_file.read_text("SpamSpam/__init__.py") == "print('hello world')\n"
+			advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
 
-		contents = sorted(zip_file.namelist())
+			contents = sorted(zip_file.namelist())
 
-		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
-			for line in fp.readlines():
-				entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
-				assert entry_filename in contents, entry_filename
-				contents.remove(entry_filename)
+			with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
+				for line in fp.readlines():
+					entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
+					assert entry_filename in contents, entry_filename
+					contents.remove(entry_filename)
 
-				if "RECORD" not in entry_filename:
-					assert zip_file.getinfo(entry_filename).file_size == int(size)
-			# TODO: check digest
+					if "RECORD" not in entry_filename:
+						assert zip_file.getinfo(entry_filename).file_size == int(size)
+				# TODO: check digest
 
-		data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = sorted(zip_file.namelist())
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -836,7 +822,7 @@ def test_build_source_dir_different_package(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("whey-2021.0.0/src/SpamSpam/__init__.py") == "print('hello world')\n"
@@ -896,7 +882,7 @@ def test_build_wheel_from_sdist_source_dir(
 	# unpack sdist into another tmpdir and use that as project_dir
 	(tmp_pathplus / "sdist_unpacked").mkdir()
 
-	with TarFile.open(tmp_pathplus / sdist) as sdist_tar:
+	with handy_archives.TarFile.open(tmp_pathplus / sdist) as sdist_tar:
 		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
 
 	capsys.readouterr()
@@ -964,17 +950,13 @@ def test_build_additional_files_source_dir(
 
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
-		zip_file = zipfile.ZipFile(tmp_pathplus / wheel)
-		data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey/__init__.py", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "print('hello world')\n"
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			data["wheel_content"] = sorted(zip_file.namelist())
 
-		with zip_file.open("whey/style.css", mode='r') as fp:
-			assert fp.read().decode("UTF-8") == "This is the style.css file\n"
-
-		with zip_file.open("whey-2021.0.0.dist-info/METADATA", mode='r') as fp:
-			advanced_file_regression.check(fp.read().decode("UTF-8"))
+			assert zip_file.read_text("whey/__init__.py") == "print('hello world')\n"
+			assert zip_file.read_text("whey/style.css") == "This is the style.css file\n"
+			advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -988,7 +970,7 @@ def test_build_additional_files_source_dir(
 		sdist = sdist_builder.build_sdist()
 		assert (tmp_pathplus / sdist).is_file()
 
-		with TarFile.open(tmp_pathplus / sdist) as tar:
+		with handy_archives.TarFile.open(tmp_pathplus / sdist) as tar:
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text("whey-2021.0.0/src/whey/__init__.py") == "print('hello world')\n"
@@ -1048,9 +1030,8 @@ def test_custom_wheel_builder(
 		wheel = wheel_builder.build_wheel()
 		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
 
-		with zipfile.ZipFile(tmp_pathplus / wheel) as zip_file:
-			with zip_file.open("whey-2021.0.0.dist-info/WHEEL", mode='r') as fp:
-				advanced_file_regression.check(fp.read().decode("UTF-8"), extension=".WHEEL")
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/WHEEL"), extension=".WHEEL")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

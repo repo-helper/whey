@@ -83,7 +83,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	A short summary description of the project.
 
-	A longer description can be provided as :conf:`readme`.
+	PyPI will display this towards the top of the `project page`_. A longer description can be provided as :conf:`readme`.
 
 	:bold-title:`Example:`
 
@@ -115,6 +115,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 	* ``charset`` -- (optional, default UTF-8) the encoding of the ``file``.
 
 	The ``file`` and ``text`` keys are mutually exclusive, but one must be provided in the table.
+
+	PyPI will display this on the `project page`_
 
 	:bold-title:`Examples:`
 
@@ -249,6 +251,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	The keywords for the project.
 
+	These can be used by community members to find projects based on their desired criteria.
+
 	:bold-title:`Example:`
 
 	.. code-block:: TOML
@@ -263,7 +267,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	The `trove classifiers`_ which apply to the project.
 
-	.. _trove classifiers: https://pypi.org/classifiers/
+	Classifiers describe who the project is for, what systems it can run on, and how mature it is.
+	These can then be used by community members to find projects based on their desired criteria.
 
 	:bold-title:`Example:`
 
@@ -320,7 +325,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	The graphical application scripts provided by the project.
 
-	The keys are the names of the scripts and the values are the object references
+	The keys are the names of the scripts, and the values are the object references
 	in the form ``module.submodule:object``.
 
 	See the `entry point specification`_ for more details.
@@ -439,7 +444,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	**Type**: :toml:`String`
 
-	The path to the package to distribute, relative to :conf:`source-dir`.
+	The path to the package to distribute, relative to the directory containing ``pyproject.toml``.
 	This defaults to :conf:`project.name <name>` if unspecified.
 
 	:bold-title:`Example:`
@@ -532,9 +537,12 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	**Type**: :toml:`String`
 
-	An identifier giving the project's license. This is used for the `License <https://packaging.python.org/specifications/core-metadata/#license>`_ field in the Core Metadata, and to add the appropriate `trove classifier <https://pypi.org/classifiers/>`_.
+	An identifier giving the project's license.
 
-	It is recommended to use an `SPDX Identifier <https://spdx.org/licenses/>`_, but note that not all map to classifiers.
+	This is used for the :core-meta:`License` field in the Core Metadata,
+	and to add the appropriate `trove classifier`_.
+
+	It is recommended to use an `SPDX Identifier`_, but note that not all map to classifiers.
 
 	:bold-title:`Example:`
 
@@ -550,8 +558,9 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	A list of `trove classifiers <https://pypi.org/classifiers/>`_.
 
-	This list will be extended with the appropriate classifiers for supported platforms,
-	Python versions and implementations, and the project's license.
+	This list will be extended with the appropriate classifiers for the :conf:`license-key`
+	and the supported :conf:`platforms`, :conf:`python-implementations` and :conf:`python-versions`.
+
 	This field is ignored if :conf:`classifiers` is not listed in :conf:`dynamic`
 
 	:bold-title:`Example:`
@@ -572,7 +581,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	**Type**: :toml:`Array` of :toml:`strings <String>`
 
-	A list of supported platforms. This is used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and is listed under `Platform <https://packaging.python.org/specifications/core-metadata/#platform-multiple-use>`_ in the Core Metadata.
+	A list of supported platforms. This is used to add appropriate `trove classifiers`_
+	and is listed under :core-meta:`Platform` in the Core Metadata.
 
 	:bold-title:`Example:`
 
@@ -586,7 +596,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	**Type**: :toml:`Array` of :toml:`strings <String>`
 
-	A list of supported Python implementations. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__.
+	A list of supported Python implementations. This can be used to add appropriate `trove classifiers`_.
 
 	:bold-title:`Example:`
 
@@ -600,7 +610,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	**Type**: :toml:`Array` of :toml:`strings <String>`
 
-	A list of supported Python versions. This can be used to add appropriate `trove classifiers <https://pypi.org/classifiers/>`__ and dynamically determine the minimum required Python version for :conf:`requires-python`.
+	A list of supported Python versions. This can be used to add appropriate `trove classifiers`_
+	and dynamically determine the minimum required Python version for :conf:`requires-python`.
 
 	:bold-title:`Example:`
 
@@ -611,6 +622,12 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 			"3.6",
 			"3.7",
 		]
+
+
+.. _trove classifier: https://pypi.org/classifiers/
+.. _SPDX Identifier: https://spdx.org/licenses/
+.. _project page: https://pypi.org/project/whey/
+.. _trove classifiers: https://pypi.org/classifiers/
 
 
 Complete Example

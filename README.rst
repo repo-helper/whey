@@ -119,7 +119,7 @@ See `the documentation`_ for configuration_ and usage_ information.
 .. |language| image:: https://img.shields.io/github/languages/top/repo-helper/whey
 	:alt: GitHub top language
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/repo-helper/whey/v0.0.16
+.. |commits-since| image:: https://img.shields.io/github/commits-since/repo-helper/whey/v0.0.17
 	:target: https://github.com/repo-helper/whey/pulse
 	:alt: GitHub commits since tagged version
 

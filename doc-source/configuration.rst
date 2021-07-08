@@ -22,7 +22,7 @@ Configuration
 .. code-block:: TOML
 
 	[build-system]
-	requires = ["whey"]
+	requires = [ "whey",]
 	build-backend = "whey"
 
 
@@ -195,14 +195,13 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	The tables list the people or organizations considered to be the "authors" of the project.
 
-	Each table has 2 keys: ``name`` and ``email``.
-	Both values must be strings.
+	Each table has 2 keys: ``name`` and ``email``. Both keys are optional, and both values must be strings.
 
 	* The ``name`` value MUST be a valid email name (i.e. whatever can be put as a name,
 	  before an email, in :rfc:`822`) and not contain commas.
 	* The ``email`` value MUST be a valid email address.
 
-	Both keys are optional.
+	.. latex:vspace:: -5px
 
 	:bold-title:`Examples:`
 
@@ -225,7 +224,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 .. conf:: maintainers
 
-	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
+	**Type**: :toml:`Array` of :toml:`tables <Table>` with string keys and values
 
 	The tables list the people or organizations considered to be the "maintainers" of the project.
 
@@ -428,7 +427,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 	.. code-block:: TOML
 
 		[project]
-		dynamic = [ "classifiers", ]
+		dynamic = [ "classifiers",]
 
 		[tool.whey]
 		base-classifiers = [

@@ -721,3 +721,129 @@ _backfill_base_dict: Dict[str, Any] = {
 		)
 def test_backfill_classifiers(config: Dict[str, str], advanced_data_regression: AdvancedDataRegressionFixture):
 	advanced_data_regression.check(backfill_classifiers(config))
+
+
+@pytest.mark.parametrize(
+		"config, match",
+		[
+				pytest.param(
+						f"{MINIMAL_CONFIG}\ndynamic = ['version']",
+						"Unsupported dynamic field 'version'.\nnote: whey only supports .* as dynamic fields.",
+						id="version"
+						),
+				pytest.param(
+						f"{MINIMAL_CONFIG}\ndynamic = ['optional-dependencies']",
+						"Unsupported dynamic field 'optional-dependencies'.\nnote: whey only supports .* as dynamic fields.",
+						id="optional-dependencies"
+						),
+				pytest.param(
+						f"{MINIMAL_CONFIG}\ndynamic = ['authors']",
+						"Unsupported dynamic field 'authors'.\nnote: whey only supports .* as dynamic fields.",
+						id="authors"
+						),
+				pytest.param(
+						f"{MINIMAL_CONFIG}\ndynamic = ['keywords']",
+						"Unsupported dynamic field 'keywords'.\nnote: whey only supports .* as dynamic fields.",
+						id="keywords"
+						),
+				pytest.param(
+						f"{MINIMAL_CONFIG}\ndependencies = ['foo']\ndynamic = ['dependencies']",
+						"'dependencies' was listed in 'project.dynamic' but a value was given.",
+						id="dynamic_but_given"
+						),
+				]
+		)
+def test_bad_config_dynamic(
+		config: str,
+		match: str,
+		tmp_pathplus: PathPlus,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+
+	with pytest.raises(BadConfigError, match=match):
+		load_toml(tmp_pathplus / "pyproject.toml")
+
+
+@pytest.mark.parametrize(
+		"config, exception, match",
+		[
+				pytest.param(
+						"package = 1234",
+						TypeError,
+						"Invalid type for 'tool.whey.package': expected <class 'str'>, got <class 'int'>",
+						id="package-int"
+						),
+				pytest.param(
+						"package = ['spam', 'eggs']",
+						TypeError,
+						"Invalid type for 'tool.whey.package': expected <class 'str'>, got <class 'list'>",
+						id="package-list"
+						),
+				pytest.param(
+						"source-dir = 1234",
+						TypeError,
+						"Invalid type for 'tool.whey.source-dir': expected <class 'str'>, got <class 'int'>",
+						id="source-dir-int"
+						),
+				pytest.param(
+						"source-dir = ['spam', 'eggs']",
+						TypeError,
+						"Invalid type for 'tool.whey.source-dir': expected <class 'str'>, got <class 'list'>",
+						id="source-dir-list"
+						),
+				pytest.param(
+						"license-key = 1234",
+						TypeError,
+						"Invalid type for 'tool.whey.license-key': expected <class 'str'>, got <class 'int'>",
+						id="license-key-int"
+						),
+				pytest.param(
+						"license-key = ['MIT', 'Apache2']",
+						TypeError,
+						"Invalid type for 'tool.whey.license-key': expected <class 'str'>, got <class 'list'>",
+						id="license-key-list"
+						),
+				pytest.param(
+						"license-key = {file = 'LICENSE'}",
+						TypeError,
+						"Invalid type for 'tool.whey.license-key': expected <class 'str'>, got <class 'dict'>",
+						id="license-key-dict"
+						),
+				# pytest.param(
+				# 		"additional-files = 'include foo.bar'",
+				# 		TypeError,
+				# 		"Invalid type for 'tool.whey.additional-files': expected <class 'str'>, got <class 'dict'>",
+				# 		id="additional-files-dict"
+				# 		),
+				pytest.param(
+						"python-versions = ['2.7']",
+						BadConfigError,
+						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
+						id="python-versions-2.7-string"
+						),
+				pytest.param(
+						"python-versions = [2.7]",
+						BadConfigError,
+						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
+						id="python-versions-2.7-float"
+						),
+				pytest.param(
+						"python-versions = ['1.6']",
+						BadConfigError,
+						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
+						id="python-versions-1.6-string"
+						),
+				]
+		)
+def test_bad_config_whey_table(
+		config: str,
+		exception: Type[Exception],
+		match: str,
+		tmp_pathplus: PathPlus,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_clean(f"{MINIMAL_CONFIG}\n[tool.whey]\n{config}")
+
+	with pytest.raises(exception, match=match):
+		load_toml(tmp_pathplus / "pyproject.toml")

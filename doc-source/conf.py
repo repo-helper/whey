@@ -81,3 +81,4 @@ nitpicky = True
 toml_spec_version = "0.5.0"
 toctree_plus_types.add("conf")
 needspace_amount = "4\\baselineskip"
+latex_elements["preamble"] = "\\usepackage{multicol}"

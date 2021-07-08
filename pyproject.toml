@@ -63,7 +63,7 @@ extensions = [
     "sphinxcontrib.toctree_plus",
     "sphinx_debuginfo",
     "seed_intersphinx_mapping",
-    "sphinx_click",
+    "cli_extension",
     "configconfig.autoconfig",
     "sphinx_toolbox_experimental.html_section",
     "sphinx_toolbox_experimental.autosummary_widths",

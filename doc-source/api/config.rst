@@ -25,6 +25,8 @@
 	:noindex:
 
 .. automodule:: whey.config.whey
+	:no-autosummary:
+	:no-docstring:
 	:exclude-members: license_lookup
 
 .. autovariable:: whey.config.whey.license_lookup

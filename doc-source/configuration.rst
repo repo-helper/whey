@@ -57,6 +57,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		name = "spam"
 
 
+.. latex:clearpage::
+
 .. conf:: version
 
 	**Type**: :toml:`String`
@@ -133,14 +135,13 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		content-type = "text/x-rst"
 
 
-.. latex:clearpage::
-
-
 .. conf:: requires-python
 
 	**Type**: :toml:`String`
 
 	The Python version requirements of the project, as a :pep:`508` specifier.
+
+	.. latex:vspace:: -5px
 
 	:bold-title:`Example:`
 
@@ -162,6 +163,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 	* ``text`` -- string value which is the license of the project.
 
 	These keys are mutually exclusive.
+
+	.. latex:vspace:: -5px
 
 	:bold-title:`Examples:`
 
@@ -330,6 +333,9 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		spam-gui = "spam.gui:main_gui"
 
 
+.. latex:clearpage::
+
+
 .. conf:: entry-points
 
 	**Type**: :toml:`Table` of :toml:`tables <!Table>`, with keys and values of :toml:`strings <String>`
@@ -396,6 +402,9 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		  "pytest < 5.0.0",
 		  "pytest-cov[all]"
 		]
+
+
+.. latex:clearpage::
 
 
 .. conf:: dynamic
@@ -559,7 +568,6 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		]
 
 
-
 .. conf:: platforms
 
 	**Type**: :toml:`Array` of :toml:`strings <String>`
@@ -587,8 +595,6 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		[tool.whey]
 		python-implementations = [ "CPython", "PyPy",]
 
-
-.. latex:clearpage::
 
 .. conf:: python-versions
 

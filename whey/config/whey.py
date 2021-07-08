@@ -221,10 +221,6 @@ class WheyParser(AbstractConfigParser):
 		Parse the ``python-implementations`` key, giving a list of supported Python implementations. Optional.
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
-
-		:rtype:
-
-		.. latex:clearpage::
 		"""
 
 		python_implementations = config["python-implementations"]
@@ -243,6 +239,10 @@ class WheyParser(AbstractConfigParser):
 		Ignored if :pep621:`classifiers` is not listed in :pep621:`dynamic`
 
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
+
+		:rtype:
+
+		.. latex:clearpage::
 		"""
 
 		parsed_classifiers = set()

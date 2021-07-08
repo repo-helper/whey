@@ -1,3 +1,5 @@
+.. _configuration:
+
 =====================
 Configuration
 =====================
@@ -29,14 +31,21 @@ Configuration
 
 The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`621`.
 
-As a minimum, the table MUST contain the keys ``name`` and ``version``.
+As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [1]_.
 
+.. [1] Other tools, such as flit_ and trampolim_, may support determining :conf:`version`
+       dynamically without specifying a value in ``pyproject.toml``.
+
+.. _flit: https://flit.readthedocs.io/en/latest/
+.. _trampolim: https://github.com/FFY00/trampolim
 
 .. conf:: name
 
 	**Type**: :toml:`String`
 
 	The name of the project.
+
+	Ideally, the name should be normalised to lowercase, with underscores replaced by hyphens.
 
 	This key is required, and MUST be defined statically.
 
@@ -54,9 +63,9 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	The version of the project as supported by :pep:`440`.
 
-	Ideally, the name should be normalised to lowercase, with underscores replaced by hyphens.
+	With ``whey`` this key is required, and must be defined statically.
+	Other backends may support determining this value automatically if it is listed in :conf:`dynamic`.
 
-	This key is required, and MUST be defined statically.
 
 	:bold-title:`Example:`
 
@@ -70,7 +79,9 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	**Type**: :toml:`String`
 
-	A summary description of the project.
+	A short summary description of the project.
+
+	A longer description can be provided as :conf:`readme`.
 
 	:bold-title:`Example:`
 
@@ -110,10 +121,12 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 		[project]
 		readme = "README.rst"
 
-		[project.readme]
-		file = "README.rst"
-		content-type = "text/x-rst"
-		encoding = "UTF-8"
+	.. code-block:: TOML
+
+		[project]
+		readme = {file = "README.md", content-type = "text/markdown", encoding = "UTF-8"}
+
+	.. code-block:: TOML
 
 		[project.readme]
 		text = "Spam is a brand of canned cooked pork made by Hormel Foods Corporation."
@@ -127,7 +140,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	**Type**: :toml:`String`
 
-	The Python version requirements of the project, as a :pep:`508` marker.
+	The Python version requirements of the project, as a :pep:`508` specifier.
 
 	:bold-title:`Example:`
 
@@ -150,15 +163,19 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 	These keys are mutually exclusive.
 
-	:bold-title:`Example:`
+	:bold-title:`Examples:`
+
+	.. code-block:: TOML
+
+		[project]
+		license = {file = "LICENSE.rst"}
 
 	.. code-block:: TOML
 
 		[project.license]
-		file = "LICENSE.rst"
-
-		[project.license]
 		file = "COPYING"
+
+	.. code-block:: TOML
 
 		[project.license]
 		text = """
@@ -169,7 +186,7 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 .. conf:: authors
 
-	**Type**: :toml:`Array` of :toml:`inline tables <Inline Table>` with string keys and values
+	**Type**: :toml:`Array` of :toml:`tables <Table>` with string keys and values
 
 	The tables list the people or organizations considered to be the "authors" of the project.
 
@@ -188,12 +205,17 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 
 		[project]
 		authors = [
-			{email = "hi@pradyunsg.me"},
-			{name = "Tzu-Ping Chung"}
+			{name = "Dominic Davis-Foster", email = "dominic@davis-foster.co.uk"},
+			{name = "The pip developers", email = "distutils-sig@python.org"}
 		]
+
+	.. code-block:: TOML
 
 		[[project.authors]]
 		name = "Tzu-Ping Chung"
+
+		[[project.authors]]
+		email = "hi@pradyunsg.me"
 
 
 .. conf:: maintainers
@@ -383,7 +405,8 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 	Specifies which fields listed by :pep:`621` were intentionally unspecified
 	so ``whey`` can provide such metadata dynamically.
 
-	Whey currently only supports ``classifiers``, ``dependencies``, and ``requires-python`` as dynamic fields.
+	Whey currently only supports :conf:`classifiers`, :conf:`dependencies`, and :conf:`requires-python` as dynamic fields.
+	Other tools may support different dynamic fields.
 
 
 	:bold-title:`Example:`
@@ -582,3 +605,16 @@ As a minimum, the table MUST contain the keys ``name`` and ``version``.
 			"3.6",
 			"3.7",
 		]
+
+
+Complete Example
+------------------
+
+This is an example of a complete ``pyproject.toml`` file for :pep:`621`.
+
+For an explanation of each field, see the :ref:`configuration` section.
+
+
+.. literalinclude:: pyproject.toml
+	:caption: :download:`pyproject.toml`
+	:language: toml

@@ -70,6 +70,7 @@ extensions = [
     "sphinx_toolbox_experimental.needspace",
     "sphinx_toolbox_experimental.peps",
     "sphinx_toolbox_experimental.toml",
+    "sphinx_toolbox_experimental.download_icon",
     "local_extension",
 ]
 sphinxemoji_style = "twemoji"

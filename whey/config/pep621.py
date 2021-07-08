@@ -32,10 +32,12 @@ from typing import Dict, cast
 # 3rd party
 import pyproject_parser.parsers
 from dom_toml.parser import TOML_TYPES, BadConfigError
-from domdf_python_tools.words import word_join
+from domdf_python_tools.words import Plural, word_join
 from pyproject_parser.type_hints import ProjectDict
 
 __all__ = ["PEP621Parser"]
+
+_field = Plural("field", "fields")
 
 
 class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True):
@@ -96,7 +98,7 @@ class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True)
 			will be set as defaults for the returned mapping.
 		"""
 
-		dynamic_fields = config.get("dynamic", [])
+		dynamic_fields = set(config.get("dynamic", []))
 
 		if "name" in dynamic_fields:
 			raise BadConfigError("The 'project.name' field may not be dynamic.")
@@ -107,11 +109,16 @@ class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True)
 			# TODO: Support the remaining fields as dynamic
 			# TODO: dynamic version numbers by parsing AST for __version__ in __init__.py
 
-			supported_dynamic = ("classifiers", "requires-python", "dependencies")
+			supported_dynamic = {"classifiers", "requires-python", "dependencies"}
+			unsupported_fields = dynamic_fields - supported_dynamic
 
-			if any(f not in supported_dynamic for f in dynamic_fields):
-				supported = word_join(supported_dynamic, oxford=True, use_repr=True)
-				raise BadConfigError(f"whey only supports {supported} as dynamic fields.")
+			if unsupported_fields:
+				supported = word_join(sorted(supported_dynamic), oxford=True, use_repr=True)
+				unsupported = word_join(sorted(unsupported_fields), oxford=True, use_repr=True)
+				raise BadConfigError(
+						f"Unsupported dynamic {_field(len(unsupported_fields))} {unsupported}.\n"
+						f"note: whey only supports {supported} as dynamic fields."
+						)
 
 		if "version" not in config:
 			raise BadConfigError("The 'project.version' field must be provided.")

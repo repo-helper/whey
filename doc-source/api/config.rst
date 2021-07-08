@@ -20,3 +20,12 @@
 ==========================
 
 .. automodule:: whey.config.whey
+	:no-members:
+	:autosummary-members:
+	:noindex:
+
+.. automodule:: whey.config.whey
+	:exclude-members: license_lookup
+
+.. autovariable:: whey.config.whey.license_lookup
+	:no-value:

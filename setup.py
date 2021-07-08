@@ -21,6 +21,7 @@ setup(
 		description="A simple Python wheel builder for simple projects.",
 		extras_require=extras_require,
 		install_requires=install_requires,
+		name="whey",
 		py_modules=[],
 		version=__version__,
 		)

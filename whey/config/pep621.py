@@ -62,7 +62,7 @@ class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True)
 		for key in self.keys:
 
 			if key in config and key in dynamic_fields:
-				raise BadConfigError(f"{key!r} was listed in 'project.dynamic-fields' but a value was given.")
+				raise BadConfigError(f"{key!r} was listed in 'project.dynamic' but a value was given.")
 			elif key not in config:
 				# Ignore absent values
 				pass

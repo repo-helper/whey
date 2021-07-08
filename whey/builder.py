@@ -146,6 +146,14 @@ class AbstractBuilder(ABC):
 
 		return self.project_dir / "dist"
 
+	@property
+	def code_directory(self) -> str:
+		"""
+		The directory containing the code in the build directory.
+		"""
+
+		return self.config["source-dir"]
+
 	def clear_build_dir(self) -> None:
 		"""
 		Clear the build directory of any residue from previous builds.
@@ -164,7 +172,12 @@ class AbstractBuilder(ABC):
 		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
 
 		if not pkgdir.is_dir():
-			raise FileNotFoundError(f"Package directory '{self.config['package']}' not found.")
+			message = f"Package directory {self.config['package']!r} not found"
+
+			if self.config["source-dir"]:
+				raise FileNotFoundError(f"{message} in {self.config['source-dir']!r}.")
+			else:
+				raise FileNotFoundError(f"{message}.")
 
 		found_file = False
 
@@ -183,7 +196,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		for py_file in self.iter_source_files():
-			target = self.build_dir / py_file.relative_to(self.project_dir / self.config["source-dir"])
+			target = self.build_dir / py_file.relative_to(self.project_dir / self.code_directory)
 			target.parent.maybe_make(parents=True)
 			target.write_clean(py_file.read_text())
 			shutil.copystat(py_file, target)
@@ -258,7 +271,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		def copy_file(filename):
-			target = self.build_dir / filename.relative_to(self.project_dir)
+			target = self.build_dir / filename.relative_to(self.project_dir / self.code_directory)
 			target.parent.maybe_make(parents=True)
 			shutil.copy2(src=filename, dst=target)
 			self.report_copied(filename, target)
@@ -446,8 +459,7 @@ class AbstractBuilder(ABC):
 			description = self.config["readme"].text
 
 		metadata_file.write_lines([
-				# TODO: https://github.com/python/typeshed/issues/5094
-				metadata.as_string(maxheaderlen=2048, policy=metadata.policy.clone(utf8=True)),  # type: ignore
+				metadata.as_string(maxheaderlen=2048, policy=metadata.policy.clone(utf8=True)),
 				description,
 				])
 
@@ -492,6 +504,14 @@ class SDistBuilder(AbstractBuilder):
 		"""
 
 		return self.project_dir / "build" / "sdist"
+
+	@property
+	def code_directory(self) -> str:
+		"""
+		The directory containing the code in the build and project directories.
+		"""
+
+		return ''
 
 	def create_sdist_archive(self) -> str:
 		"""
@@ -650,6 +670,17 @@ class WheelBuilder(AbstractBuilder):
 
 		return "py3-none-any"
 
+	@property
+	def generator(self) -> str:
+		"""
+		The value for the ``Generator`` field in ``*.dist-info/WHEEL``.
+		"""
+
+		# this package
+		from whey import __version__
+
+		return f"whey ({__version__})"
+
 	def write_entry_points(self) -> None:
 		"""
 		Write the list of entry points to the wheel, as specified in
@@ -691,12 +722,9 @@ class WheelBuilder(AbstractBuilder):
 		Write the metadata to the ``WHEEL`` file.
 		"""
 
-		# this package
-		from whey import __version__
-
 		wheel = EmailMessage()
 		wheel["Wheel-Version"] = "1.0"
-		wheel["Generator"] = f"whey ({__version__})"
+		wheel["Generator"] = self.generator
 		wheel["Root-Is-Purelib"] = "true"
 		wheel["Tag"] = self.tag
 

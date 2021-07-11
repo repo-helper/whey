@@ -9,7 +9,7 @@ keywords = ["egg", "bacon", "sausage", "tomatoes", "Lobster Thermidor"]
 dynamic = ["requires-python", "classifiers"]
 authors = [
   {email = "hi@pradyunsg.me"},
-  {name = "Tzu-Ping Chung"}
+  {name = "Tzu-ping Chung"}
 ]
 maintainers = [
   {name = "Brett Cannon", email = "brett@python.org"}

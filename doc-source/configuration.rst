@@ -216,7 +216,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 	.. code-block:: TOML
 
 		[[project.authors]]
-		name = "Tzu-Ping Chung"
+		name = "Tzu-ping Chung"
 
 		[[project.authors]]
 		email = "hi@pradyunsg.me"
@@ -237,7 +237,7 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		[project]
 		authors = [
 		  {email = "hi@pradyunsg.me"},
-		  {name = "Tzu-Ping Chung"}
+		  {name = "Tzu-ping Chung"}
 		]
 		maintainers = [
 		  {name = "Brett Cannon", email = "brett@python.org"}

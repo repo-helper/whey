@@ -38,11 +38,8 @@ import warnings
 from abc import ABC, abstractmethod
 from datetime import datetime
 from email.headerregistry import Address
-from email.message import EmailMessage
 from functools import partial
-from io import StringIO
 from typing import Any, Dict, Iterator, Mapping, Optional
-from zipfile import ZipFile
 
 # 3rd party
 import click
@@ -52,7 +49,6 @@ from consolekit.terminal_colours import Fore, resolve_color_default
 from dist_meta import entry_points, metadata, wheel
 from dist_meta.metadata_mapping import MetadataMapping
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
-from domdf_python_tools.stringlist import StringList
 from domdf_python_tools.typing import PathLike
 from domdf_python_tools.words import word_join
 from first import first
@@ -357,25 +353,15 @@ class AbstractBuilder(ABC):
 			target.write_clean(self.config["license"].text)
 			self.report_written(target)
 
-	def write_metadata(self, metadata_file: PathPlus):
+	def parse_authors(self) -> Dict[str, str]:
 		"""
-		Write `Core Metadata`_ to the given file.
-
-		.. _Core Metadata: https://packaging.python.org/specifications/core-metadata
-
-		:param metadata_file:
-		"""
-
-		metadata = EmailMessage()
-
-		# TODO: metadata 2.2
-		# Need to translate pep621 dynamic into core metadata field names
-		metadata["Metadata-Version"] = "2.1"
-		metadata["Name"] = self.config["name"]
-		metadata["Version"] = str(self.config["version"])
-
-		if self.config["description"] is not None:
-			metadata["Summary"] = self.config["description"]
+		Parse the :conf:`authors` and :conf:`maintainers` fields into :core-meta`Author`, 
+		:core-meta`Maintainer-Email` etc.
+		
+		:return: A mapping of field names to values.
+		
+		Possible field names are ``Author``, ``Author-Email``, ``Maintainer``, and ``Maintainer-Email``.  
+		"""  # noqa: D400
 
 		author = []
 		author_email = []
@@ -402,45 +388,73 @@ class AbstractBuilder(ABC):
 
 		# TODO: I'm not quite sure how PEP 621 expects a name for one author and the email for another to be handled.
 
+		output = {}
+
 		if author_email:
-			metadata["Author-email"] = ", ".join(author_email)
+			output["Author-email"] = ", ".join(author_email)
 		elif author:
-			metadata["Author"] = word_join(author)
+			output["Author"] = word_join(author)
 
 		if maintainer_email:
-			metadata["Author-email"] = ", ".join(maintainer_email)
+			output["Maintainer-email"] = ", ".join(maintainer_email)
 		elif maintainer:
-			metadata["Author"] = word_join(maintainer)
+			output["Maintainer"] = word_join(maintainer)
 
-		if self.config["license-key"] is not None:
-			metadata["License"] = self.config["license-key"]
+		return output
+
+	def write_metadata(self, metadata_file: PathPlus):
+		"""
+		Write `Core Metadata`_ to the given file.
+
+		.. _Core Metadata: https://packaging.python.org/specifications/core-metadata
+
+		:param metadata_file:
+		"""
+
+		metadata_mapping = MetadataMapping()
+
+		# TODO: metadata 2.2
+		# Need to translate pep621 dynamic into core metadata field names
+		metadata_mapping["Metadata-Version"] = "2.1"
+		metadata_mapping["Name"] = self.config["name"]
+		metadata_mapping["Version"] = str(self.config["version"])
+
+		def add_not_none(key: str, field: str):
+			if self.config[key] is not None:
+				metadata_mapping[field] = self.config[key]
+
+		def add_multiple(key: str, field: str):
+			for value in self.config[key]:
+				metadata_mapping[field] = str(value)
+
+		metadata_mapping.update(self.parse_authors())
+
+		add_not_none("description", "Summary")
+		add_not_none("license-key", "License")
+
+		add_multiple("classifiers", "Classifier")
+		add_multiple("dependencies", "Requires-Dist")
 
 		if self.config["keywords"]:
-			metadata["Keywords"] = ','.join(self.config["keywords"])
+			metadata_mapping["Keywords"] = ','.join(self.config["keywords"])
 
 		seen_hp = False
 
 		for category, url in self.config["urls"].items():
 			if category.lower() in {"homepage", "home page"} and not seen_hp:
-				metadata["Home-page"] = url
+				metadata_mapping["Home-page"] = url
 				seen_hp = True
 			else:
-				metadata["Project-URL"] = f"{category}, {url}"
+				metadata_mapping["Project-URL"] = f"{category}, {url}"
 
 		for platform in (self.config.get("platforms", None) or ()):
-			metadata["Platform"] = platform
-
-		for classifier in self.config["classifiers"]:
-			metadata["Classifier"] = classifier
+			metadata_mapping["Platform"] = platform
 
 		if self.config["requires-python"]:
-			metadata["Requires-Python"] = str(self.config["requires-python"])
-
-		for requirement in self.config["dependencies"]:
-			metadata["Requires-Dist"] = str(requirement)
+			metadata_mapping["Requires-Python"] = str(self.config["requires-python"])
 
 		for extra, requirements in self.config["optional-dependencies"].items():
-			metadata["Provides-Extra"] = extra
+			metadata_mapping["Provides-Extra"] = extra
 			for requirement in requirements:
 				requirement = ComparableRequirement(str(requirement))
 
@@ -449,24 +463,18 @@ class AbstractBuilder(ABC):
 				else:
 					requirement.marker = f"extra == {extra!r}"
 
-				metadata["Requires-Dist"] = str(requirement)
+				metadata_mapping["Requires-Dist"] = str(requirement)
 
 		# TODO:
 		#  https://packaging.python.org/specifications/core-metadata/#requires-external-multiple-use
 		#  https://packaging.python.org/specifications/core-metadata/#provides-dist-multiple-use
 		#  https://packaging.python.org/specifications/core-metadata/#obsoletes-dist-multiple-use
 
-		if self.config["readme"] is None:
-			description = ''
-		else:
-			metadata["Description-Content-Type"] = self.config["readme"].content_type
-			description = self.config["readme"].text
+		if self.config["readme"] is not None:
+			metadata_mapping["Description"] = self.config["readme"].text
+			metadata_mapping["Description-Content-Type"] = self.config["readme"].content_type
 
-		metadata_file.write_lines([
-				metadata.as_string(maxheaderlen=2048, policy=metadata.policy.clone(utf8=True)),
-				description,
-				])
-
+		metadata_file.write_text(metadata.dumps(metadata_mapping))
 		self.report_written(metadata_file)
 
 	def call_additional_hooks(self):
@@ -530,10 +538,8 @@ class SDistBuilder(AbstractBuilder):
 		with tarfile.open(sdist_filename, mode="w:gz", format=tarfile.PAX_FORMAT) as sdist_archive:
 			for file in self.build_dir.rglob('*'):
 				if file.is_file():
-					sdist_archive.add(
-							str(file),
-							arcname=posixpath.join(self.archive_name, file.relative_to(self.build_dir).as_posix()),
-							)
+					arcname = posixpath.join(self.archive_name, file.relative_to(self.build_dir).as_posix())
+					sdist_archive.add(str(file), arcname=arcname)
 
 		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve().as_posix()}"))
 		return os.path.basename(sdist_filename)
@@ -691,34 +697,18 @@ class WheelBuilder(AbstractBuilder):
 		``[project.scripts]``, ``[project.gui-scripts]`` and ``[project.entry-points]``
 		"""  # noqa: D400
 
-		buf = StringList()
-		if self.config["scripts"]:
-			buf.append("[console_scripts]")
+		ep_dict = {}
 
-			for name, func in self.config["scripts"].items():
-				buf.append(f"{name} = {func}")
+		if self.config["scripts"]:
+			ep_dict["console_scripts"] = self.config["scripts"]
 
 		if self.config["gui-scripts"]:
-			buf.append("[gui_scripts]")
+			ep_dict["gui_scripts"] = self.config["gui-scripts"]
 
-			for name, func in self.config["gui-scripts"].items():
-				buf.append(f"{name} = {func}")
-
-		for group, entry_points in self.config["entry-points"].items():
-
-			buf.append(f"[{group}]")
-
-			for name, func in entry_points.items():
-				buf.append(f"{name} = {func}")
-
-		cfg_parser = configparser.ConfigParser()
-		cfg_parser.optionxform = str  # type: ignore  # preserve case
-		cfg_parser.read_string(str(buf))
-		cfg_io = StringIO()
-		cfg_parser.write(cfg_io)
+		ep_dict.update(self.config["entry-points"])
 
 		entry_points_file = self.dist_info / "entry_points.txt"
-		entry_points_file.write_clean(cfg_io.getvalue())
+		entry_points.dump(ep_dict, entry_points_file)
 		self.report_written(entry_points_file)
 
 	def write_wheel(self) -> None:

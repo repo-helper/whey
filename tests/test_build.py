@@ -2,7 +2,6 @@
 import os
 import shutil
 import tempfile
-import zipfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
 from typing import List
@@ -140,7 +139,7 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 					assert zip_file.getinfo(entry_filename).file_size == int(size)
 
 					with zip_file.open(entry_filename) as fp:
-						sha256_hash = get_sha256_hash(fp)  # type: ignore
+						sha256_hash = get_sha256_hash(fp)
 
 					digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
 					assert expected_digest == digest

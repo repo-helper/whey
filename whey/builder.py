@@ -49,6 +49,8 @@ import click
 import dom_toml
 import handy_archives
 from consolekit.terminal_colours import Fore, resolve_color_default
+from dist_meta import entry_points, metadata, wheel
+from dist_meta.metadata_mapping import MetadataMapping
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.stringlist import StringList
 from domdf_python_tools.typing import PathLike
@@ -724,14 +726,17 @@ class WheelBuilder(AbstractBuilder):
 		Write the metadata to the ``WHEEL`` file.
 		"""
 
-		wheel = EmailMessage()
-		wheel["Wheel-Version"] = "1.0"
-		wheel["Generator"] = self.generator
-		wheel["Root-Is-Purelib"] = "true"
-		wheel["Tag"] = self.tag
-
 		wheel_file = self.dist_info / "WHEEL"
-		wheel_file.write_clean(str(wheel))
+
+		wheel_file.write_clean(
+				wheel.dumps({
+						"Wheel-Version": "1.0",
+						"Generator": self.generator,
+						"Root-Is-Purelib": True,
+						"Tag": [self.tag],
+						})
+				)
+
 		self.report_written(wheel_file)
 
 	def write_top_level(self, dist_info: PathPlus) -> None:

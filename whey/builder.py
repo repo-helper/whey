@@ -36,6 +36,7 @@ import shutil
 import tarfile
 import warnings
 from abc import ABC, abstractmethod
+from datetime import datetime
 from email.headerregistry import Address
 from email.message import EmailMessage
 from functools import partial
@@ -46,6 +47,7 @@ from zipfile import ZipFile
 # 3rd party
 import click
 import dom_toml
+import handy_archives
 from consolekit.terminal_colours import Fore, resolve_color_default
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.stringlist import StringList
@@ -743,6 +745,25 @@ class WheelBuilder(AbstractBuilder):
 		(dist_info / "top_level.txt").write_clean(top_level)
 		self.report_written(dist_info / "top_level.txt")
 
+	@staticmethod
+	def get_source_epoch() -> Optional[datetime]:
+		"""
+		Returns the parsed value of the :envvar:`SOURCE_DATE_EPOCH` environment variable, or :py:obj:`None` if unset.
+
+		See https://reproducible-builds.org/specs/source-date-epoch/ for the specification.
+
+		:raises ValueError: if the value is in an invalid format.
+		"""
+
+		# If SOURCE_DATE_EPOCH is set (e.g. by Debian), it's used for timestamps inside the wheel.
+		epoch: Optional[str] = os.environ.get("SOURCE_DATE_EPOCH")
+		if epoch is None:
+			return None
+		elif epoch.isdigit():
+			return datetime.utcfromtimestamp(int(epoch))
+		else:
+			raise ValueError(f"'SOURCE_DATE_EPOCH' must be an integer with no fractional component, not {epoch!r}")
+
 	def create_wheel_archive(self) -> str:
 		"""
 		Create the wheel archive.
@@ -753,26 +774,44 @@ class WheelBuilder(AbstractBuilder):
 		wheel_filename = self.out_dir / f"{self.archive_name}-{self.tag}.whl"
 		self.out_dir.maybe_make(parents=True)
 
-		with ZipFile(wheel_filename, mode='w') as wheel_archive:
+		mtime = self.get_source_epoch()
+
+		non_record_filenames = []
+		record_filenames = []
+
+		for file in self.build_dir.rglob('*'):
+			if not file.is_file():
+				continue
+			if "RECORD" in file.name and self.dist_info.name in file.parts:
+				record_filenames.append(file)
+				continue
+
+			non_record_filenames.append(file)
+
+		record_filenames = sort_paths(*record_filenames, self.dist_info / "RECORD")
+
+		with handy_archives.ZipFile(wheel_filename, mode='w') as wheel_archive:
 			with (self.dist_info / "RECORD").open('w') as fp:
-				for file in self.build_dir.rglob('*'):
-					if "RECORD" in file.name and self.dist_info.name in file.parts:
-						continue
-					if not file.is_file():
-						continue
+				for file in sort_paths(*non_record_filenames):
 
-					fp.write(get_record_entry(file, relative_to=self.build_dir))
-					fp.write('\n')
-					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
+					fp.write(f"{get_record_entry(file, relative_to=self.build_dir)}\n")
 
-				for file in self.dist_info.rglob("RECORD*"):
-					if file.is_file():
-						fp.write(f"{file.relative_to(self.build_dir).as_posix()},,\n")
+					wheel_archive.write_file(
+							file,
+							arcname=file.relative_to(self.build_dir),
+							mtime=mtime,
+							)
 
-			for file in self.dist_info.rglob("RECORD*"):
-				if file.is_file():
-					wheel_archive.write(file, arcname=file.relative_to(self.build_dir))
-					self.report_written(file)
+				for file in record_filenames:
+					fp.write(f"{file.relative_to(self.build_dir).as_posix()},,\n")
+
+			for file in record_filenames:
+				wheel_archive.write_file(
+						file,
+						arcname=file.relative_to(self.build_dir),
+						mtime=mtime,
+						)
+				self.report_written(file)
 
 		self._echo(Fore.GREEN(f"Wheel created at {wheel_filename.resolve().as_posix()}"))
 

@@ -27,9 +27,9 @@ stdout: 'Copying .../spam_spam/__init__.py -> spam_spam/__init__.py
 
   '
 wheel_content:
+- spam_spam/__init__.py
 - spam_spam-2020.0.0.dist-info/METADATA
-- spam_spam-2020.0.0.dist-info/RECORD
 - spam_spam-2020.0.0.dist-info/WHEEL
 - spam_spam-2020.0.0.dist-info/entry_points.txt
 - spam_spam-2020.0.0.dist-info/top_level.txt
-- spam_spam/__init__.py
+- spam_spam-2020.0.0.dist-info/RECORD

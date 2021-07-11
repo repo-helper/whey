@@ -73,13 +73,13 @@ stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 
   '
 wheel_content:
+- whey/static/foo.c
+- whey/static/foo.py
+- whey/__init__.py
+- whey/style.css
 - whey-2021.0.0.dist-info/LICENSE
 - whey-2021.0.0.dist-info/METADATA
-- whey-2021.0.0.dist-info/RECORD
 - whey-2021.0.0.dist-info/WHEEL
 - whey-2021.0.0.dist-info/entry_points.txt
 - whey-2021.0.0.dist-info/top_level.txt
-- whey/__init__.py
-- whey/static/foo.c
-- whey/static/foo.py
-- whey/style.css
+- whey-2021.0.0.dist-info/RECORD

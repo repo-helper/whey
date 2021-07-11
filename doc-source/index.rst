@@ -183,6 +183,8 @@ and in ``pyproject.toml``:
 	requires = [ "whey[readme]",]
 	build-backend = "whey"
 
+Once the dependencies are installed the validation can be disabled by setting the
+:envvar:`CHECK_README` environment variable to ``0``.
 
 Contents
 -----------

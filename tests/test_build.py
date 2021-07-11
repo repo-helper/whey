@@ -84,7 +84,7 @@ def test_build_success(
 		assert (tmp_pathplus / wheel).is_file()
 
 		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
-			data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = zip_file.namelist()
 
 			assert zip_file.read_text("spam/__init__.py") == "print('hello world')\n"
 			advanced_file_regression.check(zip_file.read_text("spam-2020.0.0.dist-info/METADATA"))
@@ -126,8 +126,9 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 
 		assert zip_file.read_text("whey/__init__.py") == "print('hello world')\n"
 		advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
+		advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/RECORD"), extension=".RECORD")
 
-		contents = sorted(zip_file.namelist())
+		contents = zip_file.namelist()
 
 		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as record_fp:
 			for line in record_fp.readlines():
@@ -144,7 +145,7 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 					digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
 					assert expected_digest == digest
 
-		return sorted(zip_file.namelist())
+		return zip_file.namelist()
 
 
 @pytest.mark.parametrize(
@@ -261,7 +262,7 @@ def test_build_additional_files(
 		assert (tmp_pathplus / wheel).is_file()
 
 		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
-			data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = zip_file.namelist()
 
 			assert zip_file.read_text("whey/__init__.py") == "print('hello world')\n"
 			assert zip_file.read_text("whey/style.css") == "This is the style.css file\n"
@@ -591,7 +592,7 @@ def test_build_underscore_name(
 		assert (tmp_pathplus / wheel).is_file()
 
 		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
-			data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = zip_file.namelist()
 
 			assert zip_file.read_text("spam_spam/__init__.py") == "print('hello world')\n"
 			advanced_file_regression.check(zip_file.read_text("spam_spam-2020.0.0.dist-info/METADATA"))
@@ -653,7 +654,7 @@ def test_build_stubs_name(
 		assert (tmp_pathplus / wheel).is_file()
 
 		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
-			data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = zip_file.namelist()
 
 			assert zip_file.read_text("spam_spam-stubs/__init__.pyi") == "print('hello world')\n"
 			advanced_file_regression.check(zip_file.read_text("spam_spam_stubs-2020.0.0.dist-info/METADATA"))
@@ -794,8 +795,12 @@ def test_build_source_dir_different_package(
 
 			assert zip_file.read_text("SpamSpam/__init__.py") == "print('hello world')\n"
 			advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
+			advanced_file_regression.check(
+					zip_file.read_text("whey-2021.0.0.dist-info/RECORD"),
+					extension=".RECORD",
+					)
 
-			contents = sorted(zip_file.namelist())
+			contents = zip_file.namelist()
 
 			with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
 				for line in fp.readlines():
@@ -807,7 +812,7 @@ def test_build_source_dir_different_package(
 						assert zip_file.getinfo(entry_filename).file_size == int(size)
 				# TODO: check digest
 
-			data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = zip_file.namelist()
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		sdist_builder = SDistBuilder(
@@ -952,7 +957,7 @@ def test_build_additional_files_source_dir(
 		assert (tmp_pathplus / wheel).is_file()
 
 		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
-			data["wheel_content"] = sorted(zip_file.namelist())
+			data["wheel_content"] = zip_file.namelist()
 
 			assert zip_file.read_text("whey/__init__.py") == "print('hello world')\n"
 			assert zip_file.read_text("whey/style.css") == "This is the style.css file\n"

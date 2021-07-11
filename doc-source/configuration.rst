@@ -629,6 +629,30 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 .. _trove classifiers: https://pypi.org/classifiers/
 
 
+Enironment Variables
+--------------------------
+
+.. envvar:: CHECK_README
+
+	Setting this to ``0`` disables the optional README validation feature, which checks the README will render correctly on PyPI.
+
+.. envvar:: SOURCE_DATE_EPOCH
+
+	To make reproducible builds, set this to a timestamp as a number of seconds since
+	1970-01-01 UTC, and document the value you used.
+	On Unix systems, you can get a value for the current time by running:
+
+	.. code-block:: bash
+
+		date +%s
+
+	.. note:: The timestamp cannot be before 1980-01-01 or after 2170-12-31.
+
+	.. seealso::
+
+		`The SOURCE_DATE_EPOCH specification <https://reproducible-builds.org/specs/source-date-epoch/>`_
+
+
 Complete Example
 ------------------
 

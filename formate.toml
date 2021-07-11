@@ -39,6 +39,7 @@ known_third_party = [
     "consolekit",
     "coverage",
     "coverage_pyver_pragma",
+    "dist_meta",
     "dom_toml",
     "domdf_python_tools",
     "email_validator",

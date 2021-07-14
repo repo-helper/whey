@@ -23,7 +23,6 @@ setup(
 		install_requires=install_requires,
 		name="whey",
 		py_modules=[],
-		version=__version__,
 		)
 
 shutil.rmtree("whey.egg-info", ignore_errors=True)

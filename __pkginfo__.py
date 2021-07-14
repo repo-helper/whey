@@ -11,12 +11,8 @@
 # This script based on https://github.com/rocky/python-uncompyle6/blob/master/__pkginfo__.py
 #
 
-__all__ = [
-		"__version__",
-		"extras_require",
-		]
+__all__ = ["extras_require"]
 
-__version__ = "0.0.17"
 extras_require = {
 		"readme": ["docutils==0.16", "pyproject-parser[readme]>=0.3.0"],
 		"all": ["docutils==0.16", "pyproject-parser[readme]>=0.3.0"]

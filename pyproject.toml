@@ -121,6 +121,21 @@ autodoc_exclude_members = [
     "__hash__",
 ]
 
+[tool.whey]
+base-classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Archiving :: Packaging",
+    "Typing :: Typed",
+]
+python-versions = [ "3.6", "3.7", "3.8", "3.9",]
+python-implementations = [ "CPython", "PyPy",]
+platforms = [ "Windows", "macOS", "Linux",]
+license-key = "MIT"
+
 [project.entry-points."whey.builder"]
 whey_sdist = "whey.builder:SDistBuilder"
 whey_wheel = "whey.builder:WheelBuilder"

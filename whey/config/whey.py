@@ -27,12 +27,11 @@ Parser for whey's own configuration.
 #
 
 # stdlib
-import itertools
-from typing import Dict, Iterable, List, Set, Type
+from typing import Dict, List, Set, Type
 
 # 3rd party
+import dist_meta.entry_points
 from dom_toml.parser import TOML_TYPES, AbstractConfigParser, BadConfigError
-from domdf_python_tools.compat import importlib_metadata
 from natsort import natsorted
 from shippinglabel.classifiers import validate_classifiers
 
@@ -265,7 +264,7 @@ class WheyParser(AbstractConfigParser):
 		parsed_builders = get_default_builders()
 		builders = config["builders"]
 
-		entry_points: Dict[str, importlib_metadata.EntryPoint] = get_entry_points()
+		entry_points: Dict[str, dist_meta.entry_points.EntryPoint] = get_entry_points()
 
 		self.assert_type(builders, dict, ["tool", "whey", "builders"])
 
@@ -350,21 +349,23 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	return natsorted(parsed_classifiers)
 
 
-def get_entry_points() -> Dict[str, importlib_metadata.EntryPoint]:
+def get_entry_points(group: str = "whey.builder") -> Dict[str, dist_meta.entry_points.EntryPoint]:
 	r"""
-	Returns an iterable over `EntryPoint`_ objects in the ``whey.builder`` group.
+	Returns an iterable over `EntryPoint`_ objects in the ``group`` group.
+
+	:param group:
 
 	:rtype: :class:`Iterable <typing.Iterable>`\[`EntryPoint`_\]
 
 	.. _EntryPoint: https://docs.python.org/3/library/importlib.metadata.html#entry-points
 	"""
 
-	eps = itertools.chain.from_iterable(dist.entry_points for dist in importlib_metadata.distributions())
+	eps = dist_meta.entry_points.get_entry_points(group)
 
-	entry_points: Dict[str, "importlib_metadata.EntryPoint"] = {}
+	entry_points: Dict[str, dist_meta.entry_points.EntryPoint] = {}
 
 	for entry_point in eps:
-		if entry_point.group == "whey.builder":
+		if entry_point.group == group:
 			entry_points[entry_point.name] = entry_point
 
 	return entry_points

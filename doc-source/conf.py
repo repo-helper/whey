@@ -79,7 +79,8 @@ def setup(app):
 
 nitpicky = True
 toml_spec_version = "0.5.0"
-toctree_plus_types.add("conf")
+toctree_plus_types.add("tconf")
 toctree_plus_types.add("envvar")
 needspace_amount = "4\\baselineskip"
 latex_elements["preamble"] = "\\usepackage{multicol}"
+tconf_show_full_name = False

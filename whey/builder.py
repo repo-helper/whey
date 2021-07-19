@@ -355,7 +355,7 @@ class AbstractBuilder(ABC):
 
 	def parse_authors(self) -> Dict[str, str]:
 		"""
-		Parse the :conf:`authors` and :conf:`maintainers` fields into :core-meta:`Author`,
+		Parse the :tconf:`project.authors` and :tconf:`~project.maintainers` fields into :core-meta:`Author`,
 		:core-meta:`Maintainer-Email` etc.
 
 		:return: A mapping of field names to values.

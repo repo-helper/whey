@@ -34,17 +34,17 @@ python_versions:
 sphinx_conf_epilogue:
  - nitpicky = True
  - toml_spec_version = "0.5.0"
- - toctree_plus_types.add("conf")
+ - toctree_plus_types.add("tconf")
  - toctree_plus_types.add("envvar")
  - needspace_amount = "4\\baselineskip"
  - latex_elements["preamble"] = "\\usepackage{multicol}"
+ - tconf_show_full_name = False
 
 console_scripts:
  - whey = whey.__main__:main
 
 extra_sphinx_extensions:
  - cli_extension
- - configconfig.autoconfig
  - sphinx_toolbox_experimental.html_section
  - sphinx_toolbox_experimental.autosummary_widths
  - sphinx_toolbox_experimental.needspace

@@ -31,17 +31,18 @@ Configuration
 
 The metadata used by ``whey`` is defined in the ``[project]`` table, per :pep:`621`.
 
-As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [1]_.
+As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:`~project.version` [1]_.
 
-.. [1] Other tools, such as flit_ and trampolim_, may support determining :conf:`version`
+.. [1] Other tools, such as flit_ and trampolim_, may support determining :tconf:`project.version`
        dynamically without specifying a value in ``pyproject.toml``.
 
 .. _flit: https://flit.readthedocs.io/en/latest/
 .. _trampolim: https://github.com/FFY00/trampolim
 
-.. conf:: name
 
-	**Type**: :toml:`String`
+.. tconf:: project.name
+	:type: :toml:`String`
+	:required: True
 
 	The name of the project.
 
@@ -59,14 +60,13 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 .. latex:clearpage::
 
-.. conf:: version
-
-	**Type**: :toml:`String`
+.. tconf:: project.version
+	:type: :toml:`String`
 
 	The version of the project as supported by :pep:`440`.
 
 	With ``whey`` this key is required, and must be defined statically.
-	Other backends may support determining this value automatically if it is listed in :conf:`dynamic`.
+	Other backends may support determining this value automatically if it is listed in :tconf:`project.dynamic`.
 
 
 	:bold-title:`Example:`
@@ -77,13 +77,13 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		version = "2020.0.0"
 
 
-.. conf:: description
-
-	**Type**: :toml:`String`
+.. tconf:: project.description
+	:type: :toml:`String`
 
 	A short summary description of the project.
 
-	PyPI will display this towards the top of the `project page`_. A longer description can be provided as :conf:`readme`.
+	PyPI will display this towards the top of the `project page`_.
+	A longer description can be provided as :tconf:`~project.readme`.
 
 	:bold-title:`Example:`
 
@@ -93,9 +93,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		description = "Lovely Spam! Wonderful Spam!"
 
 
-.. conf:: readme
-
-	**Type**: :toml:`String` or :toml:`table <Table>`
+.. tconf:: project.readme
+	:type: :toml:`String` or :toml:`table <Table>`
 
 	The full description of the project (i.e. the README).
 
@@ -137,9 +136,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		content-type = "text/x-rst"
 
 
-.. conf:: requires-python
-
-	**Type**: :toml:`String`
+.. tconf:: project.requires-python
+	:type: :toml:`String`
 
 	The Python version requirements of the project, as a :pep:`508` specifier.
 
@@ -153,9 +151,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		requires-python = ">=3.6"
 
 
-.. conf:: license
-
-	**Type**: :toml:`Table`
+.. tconf:: project.license
+	:type: :toml:`Table`
 
 
 	The table may have one of two keys:
@@ -189,9 +186,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		"""
 
 
-.. conf:: authors
-
-	**Type**: :toml:`Array` of :toml:`tables <Table>` with string keys and values
+.. tconf:: project.authors
+	:type: :toml:`Array` of :toml:`tables <Table>` with string keys and values
 
 	The tables list the people or organizations considered to be the "authors" of the project.
 
@@ -222,13 +218,12 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		email = "hi@pradyunsg.me"
 
 
-.. conf:: maintainers
-
-	**Type**: :toml:`Array` of :toml:`tables <Table>` with string keys and values
+.. tconf:: project.maintainers
+	:type: :toml:`Array` of :toml:`tables <Table>` with string keys and values
 
 	The tables list the people or organizations considered to be the "maintainers" of the project.
 
-	This field otherwise functions the same as :conf:`authors`.
+	This field otherwise functions the same as :tconf:`~project.authors`.
 
 	:bold-title:`Example:`
 
@@ -244,9 +239,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		]
 
 
-.. conf:: keywords
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: project.keywords
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	The keywords for the project.
 
@@ -260,9 +254,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		keywords = [ "egg", "bacon", "sausage", "tomatoes", "Lobster Thermidor",]
 
 
-.. conf:: classifiers
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: project.classifiers
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	The `trove classifiers`_ which apply to the project.
 
@@ -280,9 +273,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		]
 
 
-.. conf:: urls
-
-	**Type**: :toml:`Table`, with keys and values of :toml:`strings <String>`
+.. tconf:: project.urls
+	:type: :toml:`Table`, with keys and values of :toml:`strings <String>`
 
 	A table of URLs where the key is the URL label and the value is the URL itself.
 
@@ -297,9 +289,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 
-.. conf:: scripts
-
-	**Type**: :toml:`Table`, with keys and values of :toml:`strings <String>`
+.. tconf:: project.scripts
+	:type: :toml:`Table`, with keys and values of :toml:`strings <String>`
 
 	The console scripts provided by the project.
 
@@ -318,9 +309,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		foobar = "foomod:main_bar [bar,baz]"
 
 
-.. conf:: gui-scripts
-
-	**Type**: :toml:`Table`, with keys and values of :toml:`strings <String>`
+.. tconf:: project.gui-scripts
+	:type: :toml:`Table`, with keys and values of :toml:`strings <String>`
 
 	The graphical application scripts provided by the project.
 
@@ -340,9 +330,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 .. latex:clearpage::
 
 
-.. conf:: entry-points
-
-	**Type**: :toml:`Table` of :toml:`tables <!Table>`, with keys and values of :toml:`strings <String>`
+.. tconf:: project.entry-points
+	:type: :toml:`Table` of :toml:`tables <!Table>`, with keys and values of :toml:`strings <String>`
 
 	Each sub-table's name is an entry point group.
 
@@ -367,9 +356,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 .. _entry point specification: https://packaging.python.org/specifications/entry-points/
 
 
-.. conf:: dependencies
-
-	**Type**: :toml:`Array` of :pep:`508` strings
+.. tconf:: project.dependencies
+	:type: :toml:`Array` of :pep:`508` strings
 
 	The dependencies of the project.
 
@@ -388,9 +376,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		]
 
 
-.. conf:: optional-dependencies
-
-	**Type**: :toml:`Table` with values of :toml:`arrays <Array>` of :pep:`508` strings
+.. tconf:: project.optional-dependencies
+	:type: :toml:`Table` with values of :toml:`arrays <Array>` of :pep:`508` strings
 
 	The optional dependencies of the project.
 
@@ -411,14 +398,14 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 .. latex:clearpage::
 
 
-.. conf:: dynamic
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: project.dynamic
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	Specifies which fields listed by :pep:`621` were intentionally unspecified
 	so ``whey`` can provide such metadata dynamically.
 
-	Whey currently only supports :conf:`classifiers`, :conf:`dependencies`, and :conf:`requires-python` as dynamic fields.
+	Whey currently only supports :tconf:`~project.classifiers`, :tconf:`~project.dependencies`,
+	and :tconf:`~project.requires-python` as dynamic fields.
 	Other tools may support different dynamic fields.
 
 
@@ -439,12 +426,11 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 ``[tool.whey]``
 -------------------
 
-.. conf:: package
-
-	**Type**: :toml:`String`
+.. tconf:: tool.whey.package
+	:type: :toml:`String`
 
 	The path to the package to distribute, relative to the directory containing ``pyproject.toml``.
-	This defaults to :conf:`project.name <name>` if unspecified.
+	This defaults to :tconf:`project.name` if unspecified.
 
 	:bold-title:`Example:`
 
@@ -457,9 +443,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		package = "domdf_python_tools"
 
 
-.. conf:: source-dir
-
-	**Type**: :toml:`String`
+.. tconf:: tool.whey.source-dir
+	:type: :toml:`String`
 
 	The name of the directory containing the project's source.
 	This defaults to ``'.'`` if unspecified.
@@ -477,9 +462,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		source_dir = "src/flake8"
 
 
-.. conf:: additional-files
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: tool.whey.additional-files
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	A list of `MANIFEST.in <https://packaging.python.org/guides/using-manifest-in/>`_-style
 	entries for additional files to include in distributions.
@@ -499,10 +483,10 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 	.. note::
 
-		If using :conf:`source-dir`, the entries for files within the package
-		must start with the value of :conf:`source-dir`.
+		If using :tconf:`tool.whey.source-dir`, the entries for files within the package
+		must start with the value of :tconf:`~tool.whey.source-dir`.
 
-		For example, if :conf:`source-dir` is ``'src'`` and the package
+		For example, if :tconf:`~tool.whey.source-dir` is ``'src'`` and the package
 		is at ``src/spam`` an entry might be ``include src/spam/template.scss``.
 
 	.. raw:: latex
@@ -532,9 +516,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 
 		\end{minipage}
 
-.. conf:: license-key
-
-	**Type**: :toml:`String`
+.. tconf:: tool.whey.license-key
+	:type: :toml:`String`
 
 	An identifier giving the project's license.
 
@@ -551,16 +534,16 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		license-key = "MIT"
 
 
-.. conf:: base-classifiers
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: tool.whey.base-classifiers
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	A list of `trove classifiers <https://pypi.org/classifiers/>`_.
 
-	This list will be extended with the appropriate classifiers for the :conf:`license-key`
-	and the supported :conf:`platforms`, :conf:`python-implementations` and :conf:`python-versions`.
+	This list will be extended with the appropriate classifiers for the :tconf:`~tool.whey.license-key`
+	and the supported :tconf:`~tool.whey.platforms`, :tconf:`~tool.whey.python-implementations`
+	and :tconf:`~tool.whey.python-versions`.
 
-	This field is ignored if :conf:`classifiers` is not listed in :conf:`dynamic`
+	This field is ignored if :tconf:`~project.classifiers` is not listed in :tconf:`project.dynamic`
 
 	:bold-title:`Example:`
 
@@ -576,9 +559,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		]
 
 
-.. conf:: platforms
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: tool.whey.platforms
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	A list of supported platforms. This is used to add appropriate `trove classifiers`_
 	and is listed under :core-meta:`Platform` in the Core Metadata.
@@ -591,9 +573,8 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		platforms = [ "Windows", "Linux",]
 
 
-.. conf:: python-implementations
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: tool.whey.python-implementations
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	A list of supported Python implementations. This can be used to add appropriate `trove classifiers`_.
 
@@ -605,12 +586,11 @@ As a minimum, the table MUST contain the keys :conf:`name` and :conf:`version` [
 		python-implementations = [ "CPython", "PyPy",]
 
 
-.. conf:: python-versions
-
-	**Type**: :toml:`Array` of :toml:`strings <String>`
+.. tconf:: tool.whey.python-versions
+	:type: :toml:`Array` of :toml:`strings <String>`
 
 	A list of supported Python versions. This can be used to add appropriate `trove classifiers`_
-	and dynamically determine the minimum required Python version for :conf:`requires-python`.
+	and dynamically determine the minimum required Python version for :tconf:`project.requires-python`.
 
 	:bold-title:`Example:`
 

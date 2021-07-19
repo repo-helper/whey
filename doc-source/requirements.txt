@@ -2,7 +2,7 @@ git+https://github.com/domdfcoding/sphinx-click.git
 git+https://github.com/sphinx-toolbox/sphinx-toolbox-experimental.git
 autodocsumm>=0.2.0
 configconfig>=0.5.0
-default-values>=0.5.0b1
+default-values>=0.5.0
 extras-require>=0.2.0
 furo>=2020.11.19b18
 seed-intersphinx-mapping>=0.3.1
@@ -10,9 +10,10 @@ sphinx>=3.0.3
 sphinx-copybutton>=0.2.12
 sphinx-debuginfo>=0.1.0
 sphinx-notfound-page>=0.5
+sphinx-packaging>=0.1.0
 sphinx-prompt>=1.1.0
 sphinx-pyproject>=0.1.0
 sphinx-tabs>=1.1.13
-sphinx-toolbox>=2.13.0b2
+sphinx-toolbox>=2.13.0
 sphinxemoji>=0.1.6
-toctree-plus>=0.5.0b1
+toctree-plus>=0.5.0

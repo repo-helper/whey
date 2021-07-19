@@ -45,7 +45,7 @@ from typing import Any, Dict, Iterator, Mapping, Optional
 import click
 import dom_toml
 import handy_archives
-from consolekit.terminal_colours import Fore, resolve_color_default
+from consolekit.terminal_colours import ColourTrilean, Fore, resolve_color_default
 from dist_meta import entry_points, metadata, wheel
 from dist_meta.metadata_mapping import MetadataMapping
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
@@ -98,7 +98,7 @@ class AbstractBuilder(ABC):
 			out_dir: Optional[PathLike] = None,
 			*,
 			verbose: bool = False,
-			colour: bool = None,
+			colour: ColourTrilean = None,
 			):
 
 		# Walk up the tree until a "pyproject.toml" file is found.

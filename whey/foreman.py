@@ -30,6 +30,7 @@ The foreman is responsible for loading the configuration calling the builders.
 from typing import Optional, Type
 
 # 3rd party
+from consolekit.terminal_colours import ColourTrilean
 from domdf_python_tools.paths import PathPlus, traverse_to_file
 from domdf_python_tools.typing import PathLike
 
@@ -69,7 +70,7 @@ class Foreman:
 			out_dir: Optional[PathLike] = None,
 			*args,
 			verbose: bool = False,
-			colour: bool = None,
+			colour: ColourTrilean = None,
 			**kwargs,
 			):
 		"""
@@ -96,7 +97,7 @@ class Foreman:
 			out_dir: Optional[PathLike] = None,
 			*args,
 			verbose: bool = False,
-			colour: bool = None,
+			colour: ColourTrilean = None,
 			**kwargs,
 			):
 		"""
@@ -123,7 +124,7 @@ class Foreman:
 			out_dir: Optional[PathLike] = None,
 			*args,
 			verbose: bool = False,
-			colour: bool = None,
+			colour: ColourTrilean = None,
 			**kwargs,
 			):
 		"""

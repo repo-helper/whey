@@ -78,6 +78,8 @@ extras_require:
  readme:
   - pyproject-parser[readme]>=0.3.0
   - docutils==0.16
+ editable:
+  - editables>=0.2
 
 exclude_files:
  - contributing

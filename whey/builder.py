@@ -807,6 +807,43 @@ class WheelBuilder(AbstractBuilder):
 
 		return wheel_filename.name
 
+	def create_editables_files(self) -> Iterator[ComparableRequirement]:
+		"""
+		Generate files with `editables`_ for use in a :pep:`660` wheel.
+
+		.. _editables: https://pypi.org/project/editables/
+
+		.. extras-require:: editable
+			:scope: method
+			:pyproject:
+
+		:returns: A list of additional runtime requirements which should be added to the wheel's ``METADATA`` file.
+		"""
+
+		# 3rd party
+		from editables import EditableProject  # type: ignore  # nodep
+
+		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
+
+		if not pkgdir.is_dir():
+			message = f"Package directory {self.config['package']!r} not found"
+
+			if self.config["source-dir"]:
+				raise FileNotFoundError(f"{message} in {self.config['source-dir']!r}.")
+			else:
+				raise FileNotFoundError(f"{message}.")
+
+		my_project = EditableProject(self.config["package"], pkgdir.parent)
+		my_project.map(self.config["package"], pkgdir)
+
+		for name, content in my_project.files():
+			target = self.build_dir / name
+			target.parent.maybe_make(parents=True)
+			target.write_clean(content)
+			self.report_written(target)
+
+		yield from map(ComparableRequirement, my_project.dependencies())
+
 	def build_wheel(self) -> str:
 		"""
 		Build the binary wheel distribution.
@@ -830,3 +867,45 @@ class WheelBuilder(AbstractBuilder):
 		return self.create_wheel_archive()
 
 	build = build_wheel
+
+	def build_editable(self) -> str:
+		"""
+		Build an editable wheel.
+
+		An "editable" wheel uses the wheel format not for distribution but as ephemeral communication
+		between the build system and the front end.
+		This avoids having the build backend install anything directly.
+		This wheel must not be exposed to end users, nor cached, nor distributed.
+
+		You should use a different ``build_dir`` and ``out_dir`` to those used for standard wheel builds.
+
+		The default implementation of this method does not call
+		:meth:`~.AbstractBuilder.copy_source` or :meth:`~.AbstractBuilder.copy_additional_files`.
+
+		:return: The filename of the created archive.
+		"""
+
+		if self.build_dir.is_dir():
+			shutil.rmtree(self.build_dir)
+
+		self.build_dir.maybe_make(parents=True)
+
+		extra_deps = self.create_editables_files()
+		self.write_license(self.dist_info)
+		self.write_entry_points()
+
+		metadata = self.get_metadata_map()
+
+		for dep in extra_deps:
+			if not any(dep.name in req for req in metadata.get_all("Requires-Dist", ())):
+				# Additional runtime requirement for editable wheels.
+				metadata["Requires-Dist"] = str(dep)
+
+		# Prevents uploading to PyPI, which you shouldn't do with an editable wheel.
+		metadata["Classifier"] = "Private :: Do Not Upload"
+
+		self.write_metadata(self.dist_info / "METADATA", metadata)
+		self.write_wheel()
+		self.call_additional_hooks()
+
+		return self.create_wheel_archive()

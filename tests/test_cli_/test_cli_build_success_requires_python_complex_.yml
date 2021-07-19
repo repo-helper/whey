@@ -6,14 +6,12 @@ stdout: "Using the following builders:\n    sdist: whey.builder.SDistBuilder\n  
   \ wheel: whey.builder.WheelBuilder\n\nBuilding ...\nCopying .../spam/__init__.py\
   \ -> spam/__init__.py\nWriting spam-2020.0.0.dist-info/entry_points.txt\nWriting\
   \ spam-2020.0.0.dist-info/METADATA\nWriting spam-2020.0.0.dist-info/WHEEL\nWriting\
-  \ spam-2020.0.0.dist-info/top_level.txt\nWriting spam-2020.0.0.dist-info/RECORD\n\
-  Wheel created at .../spam-2020.0.0-py3-none-any.whl\nCopying .../spam/__init__.py\
-  \ -> spam/__init__.py\nCopying .../pyproject.toml -> pyproject.toml\nWriting PKG-INFO\n\
-  Source distribution created at .../spam-2020.0.0.tar.gz"
+  \ spam-2020.0.0.dist-info/RECORD\nWheel created at .../spam-2020.0.0-py3-none-any.whl\n\
+  Copying .../spam/__init__.py -> spam/__init__.py\nCopying .../pyproject.toml ->\
+  \ pyproject.toml\nWriting PKG-INFO\nSource distribution created at .../spam-2020.0.0.tar.gz"
 wheel_content:
 - spam-2020.0.0.dist-info/METADATA
 - spam-2020.0.0.dist-info/RECORD
 - spam-2020.0.0.dist-info/WHEEL
 - spam-2020.0.0.dist-info/entry_points.txt
-- spam-2020.0.0.dist-info/top_level.txt
 - spam/__init__.py

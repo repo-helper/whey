@@ -11,8 +11,6 @@ stdout: 'Copying .../spam/__init__.py -> spam/__init__.py
 
   Writing spam-2020.0.0.dist-info/WHEEL
 
-  Writing spam-2020.0.0.dist-info/top_level.txt
-
   Writing spam-2020.0.0.dist-info/RECORD
 
   Wheel created at .../spam-2020.0.0-py3-none-any.whl
@@ -31,5 +29,4 @@ wheel_content:
 - spam-2020.0.0.dist-info/RECORD
 - spam-2020.0.0.dist-info/WHEEL
 - spam-2020.0.0.dist-info/entry_points.txt
-- spam-2020.0.0.dist-info/top_level.txt
 - spam/__init__.py

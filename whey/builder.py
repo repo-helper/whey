@@ -729,17 +729,6 @@ class WheelBuilder(AbstractBuilder):
 
 		self.report_written(wheel_file)
 
-	def write_top_level(self, dist_info: PathPlus) -> None:
-		"""
-		Write the ``top_level.txt`` file to the ``*.dist-info`` directory.
-
-		:param dist_info: The absolute path to the ``*.dist-info`` directory.
-		"""
-
-		top_level = first(posixpath.split(self.config["package"]), default=self.config["package"])
-		(dist_info / "top_level.txt").write_clean(top_level)
-		self.report_written(dist_info / "top_level.txt")
-
 	@staticmethod
 	def get_source_epoch() -> Optional[datetime]:
 		"""
@@ -830,7 +819,6 @@ class WheelBuilder(AbstractBuilder):
 		self.write_entry_points()
 		self.write_metadata(self.dist_info / "METADATA")
 		self.write_wheel()
-		self.write_top_level(self.dist_info)
 		self.call_additional_hooks()
 
 		return self.create_wheel_archive()

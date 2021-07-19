@@ -16,8 +16,6 @@ stdout: 'Copying .../src/SpamSpam/__init__.py -> SpamSpam/__init__.py
 
   Writing whey-2021.0.0.dist-info/WHEEL
 
-  Writing whey-2021.0.0.dist-info/top_level.txt
-
   Writing whey-2021.0.0.dist-info/RECORD
 
   Wheel created at .../whey-2021.0.0-py3-none-any.whl
@@ -43,5 +41,4 @@ wheel_content:
 - whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/WHEEL
 - whey-2021.0.0.dist-info/entry_points.txt
-- whey-2021.0.0.dist-info/top_level.txt
 - whey-2021.0.0.dist-info/RECORD

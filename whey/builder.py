@@ -402,13 +402,9 @@ class AbstractBuilder(ABC):
 
 		return output
 
-	def write_metadata(self, metadata_file: PathPlus):
+	def get_metadata_map(self) -> MetadataMapping:
 		"""
-		Write `Core Metadata`_ to the given file.
-
-		.. _Core Metadata: https://packaging.python.org/specifications/core-metadata
-
-		:param metadata_file:
+		Generate the content of the ``METADATA`` / ``PKG-INFo`` file.
 		"""
 
 		metadata_mapping = MetadataMapping()
@@ -473,6 +469,17 @@ class AbstractBuilder(ABC):
 		if self.config["readme"] is not None:
 			metadata_mapping["Description"] = self.config["readme"].text
 			metadata_mapping["Description-Content-Type"] = self.config["readme"].content_type
+
+		return metadata_mapping
+
+	def write_metadata(self, metadata_file: PathPlus, metadata_mapping: MetadataMapping):
+		"""
+		Write `Core Metadata`_ to the given file.
+
+		.. _Core Metadata: https://packaging.python.org/specifications/core-metadata
+
+		:param metadata_file:
+		"""
 
 		metadata_file.write_text(metadata.dumps(metadata_mapping))
 		self.report_written(metadata_file)
@@ -610,7 +617,7 @@ class SDistBuilder(AbstractBuilder):
 				self.report_copied(source, dest)
 
 		self.write_readme()
-		self.write_metadata(self.build_dir / "PKG-INFO")
+		self.write_metadata(self.build_dir / "PKG-INFO", self.get_metadata_map())
 		self.call_additional_hooks()
 
 		return self.create_sdist_archive()
@@ -817,7 +824,7 @@ class WheelBuilder(AbstractBuilder):
 		self.copy_additional_files()
 		self.write_license(self.dist_info)
 		self.write_entry_points()
-		self.write_metadata(self.dist_info / "METADATA")
+		self.write_metadata(self.dist_info / "METADATA", self.get_metadata_map())
 		self.write_wheel()
 		self.call_additional_hooks()
 

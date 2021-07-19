@@ -80,3 +80,41 @@ def build_sdist(sdist_directory, config_settings=None):
 
 def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover
 	return []
+
+
+def get_requires_for_build_editable(config_settings=None):
+	return ["editables>=0.2"]
+
+
+def build_editable(wheel_directory, config_settings=None, metadata_directory=None):
+	"""
+	:pep:`517` hook to build an editable wheel.
+
+	.. seealso:: :pep:`660`
+
+	:param wheel_directory:
+	:param config_settings:
+	:param metadata_directory:
+	"""
+
+	# stdlib
+	from typing import Type, cast
+
+	# 3rd party
+	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
+
+	# this package
+	from whey.builder import WheelBuilder
+	from whey.foreman import Foreman
+
+	with TemporaryPathPlus() as tmpdir:
+		foreman = Foreman(project_dir=PathPlus.cwd())
+		builder_cls: Type[WheelBuilder] = cast(Type[WheelBuilder], foreman.get_builder("wheel"))
+		builder = builder_cls(
+				foreman.project_dir,
+				foreman.config,
+				build_dir=tmpdir,
+				out_dir=wheel_directory,
+				verbose=True,
+				)
+		return builder.build_editable()

@@ -27,7 +27,6 @@ The actual wheel builder.
 #
 
 # stdlib
-import configparser
 import os
 import pathlib
 import posixpath

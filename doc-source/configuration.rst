@@ -622,7 +622,7 @@ Enironment Variables
 	1970-01-01 UTC, and document the value you used.
 	On Unix systems, you can get a value for the current time by running:
 
-	.. code-block:: bash
+	.. prompt:: bash
 
 		date +%s
 

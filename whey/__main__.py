@@ -41,7 +41,7 @@ from consolekit.options import (
 		)
 from consolekit.tracebacks import handle_tracebacks, traceback_option
 
-if False:  # TYPE_CHECKING:
+if False:  # TYPE_CHECKING:  # pylint: disable=using-constant-test
 	# stdlib
 	from typing import Iterable, Optional
 

@@ -46,7 +46,6 @@ spam-cli = "spam:main_cli"
 # One which depends on extras:
 foobar = "foomod:main_bar [bar,baz]"
 
-
 [project.gui-scripts]
 spam-gui = "spam:main_gui"
 

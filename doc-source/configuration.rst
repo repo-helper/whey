@@ -614,7 +614,8 @@ Enironment Variables
 
 .. envvar:: CHECK_README
 
-	Setting this to ``0`` disables the optional README validation feature, which checks the README will render correctly on PyPI.
+	Setting this to ``0`` disables the optional README validation feature,
+	which checks the README will render correctly on PyPI.
 
 .. envvar:: SOURCE_DATE_EPOCH
 

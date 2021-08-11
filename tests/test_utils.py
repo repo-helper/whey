@@ -84,4 +84,4 @@ def test_parse_custom_builders(advanced_data_regression: AdvancedDataRegressionF
 			click.BadArgumentUsage,
 			match=f"Unknown builder 'foo'. \nIs it registered as an entry point under 'whey.builder'?"
 			):
-		parse_custom_builders(["foo"]) == {"whey_conda": CondaBuilder}
+		parse_custom_builders(["foo"])

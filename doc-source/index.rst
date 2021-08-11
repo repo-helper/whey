@@ -204,6 +204,7 @@ Contents
 	configuration
 	cli
 	Source
+	license
 
 .. toctree::
 	:maxdepth: 3

@@ -1,0 +1,62 @@
+# This file is managed by 'repo_helper'. Don't edit it directly.
+---
+name: Smoke Test
+
+on:
+  push:
+#    branches: ["master"]
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: "Test"
+    runs-on: ubuntu-latest
+
+    strategy:
+        fail-fast: False
+        matrix:
+          config:
+            - {repo: "sphinx-toolbox/default_values", name: "default_values"}
+            - {repo: "sphinx-toolbox/dict2css", name: "dict2css"}
+            - {repo: "sphinx-toolbox/extras_require", name: "extras_require"}
+            - {repo: "sphinx-toolbox/seed_intersphinx_mapping", name: "seed_intersphinx_mapping"}
+            - {repo: "sphinx-toolbox/sphinx-debuginfo", name: "sphinx-debuginfo"}
+            - {repo: "sphinx-toolbox/sphinx-highlights", name: "sphinx-highlights"}
+            - {repo: "sphinx-toolbox/sphinx-toolbox", name: "sphinx-toolbox"}
+            - {repo: "sphinx-toolbox/toctree_plus", name: "toctree_plus"}
+            - {repo: "repo-helper/mkrecipe", name: "mkrecipe"}
+            - {repo: "domdfcoding/consolekit", name: "consolekit"}
+            - {repo: "domdfcoding/mathematical", name: "mathematical"}
+            - {repo: "python-coincidence/coincidence", name: "coincidence"}
+            - {repo: "python-formate/formate", name: "formate"}
+
+    steps:
+      - name: Checkout 🛎️
+        uses: "actions/checkout@v2"
+
+      - name: Setup Python 🐍
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.8"
+
+      - name: Install dependencies 🔧
+        run: |
+          python -VV
+          python -m site
+          python -m pip install --upgrade pip setuptools wheel virtualenv
+          python -m pip install .[editable]
+
+      - name: "Clone ${{ matrix.config.name }}"
+        run: |
+          git clone https://github.com/${{ matrix.config.repo }} /tmp/${{ matrix.config.name }}
+
+      - name: "Build ${{ matrix.config.name }}"
+        run: |
+          python3 -m virtualenv venv
+          python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
+          venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1
+          venv/bin/python -c "assert __import__('${{ matrix.config.name }}').__file__ is '/tmp/${{ matrix.config.name }}'"
+          venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt || exit 1
+          venv/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1

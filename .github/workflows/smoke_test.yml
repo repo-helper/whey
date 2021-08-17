@@ -11,53 +11,26 @@ permissions:
 
 jobs:
   tests:
-    name: "Test"
+    name: " ${{ matrix.config.repo }}"
     runs-on: ubuntu-latest
 
     strategy:
         fail-fast: False
         matrix:
           config:
-            - repo: "sphinx-toolbox/default_values"
-              name: "default_values"
-              modname: "sphinxcontrib/default_values"
-            - repo: "sphinx-toolbox/dict2css"
-              name: "dict2css"
-              modname: "dict2css"
-            - repo: "sphinx-toolbox/extras_require"
-              name: "extras_require"
-              modname: "sphinxcontrib/extras_require"
-            - repo: "sphinx-toolbox/seed_intersphinx_mapping"
-              name: "seed_intersphinx_mapping"
-              modname: "seed_intersphinx_mapping"
-            - repo: "sphinx-toolbox/sphinx-debuginfo"
-              name: "sphinx-debuginfo"
-              modname: "sphinx_debuginfo"
-            - repo: "sphinx-toolbox/sphinx-highlights"
-              name: "sphinx-highlights"
-              modname: "sphinx_highlights"
-            - repo: "sphinx-toolbox/sphinx-toolbox"
-              name: "sphinx-toolbox"
-              modname: "sphinx_toolbox"
-            - repo: "sphinx-toolbox/toctree_plus"
-              name: "toctree_plus"
-              modname: "sphinxcontrib/toctree_plus"
-            - repo: "repo-helper/mkrecipe"
-              name: "mkrecipe"
-              modname: "mkrecipe"
-            - repo: "domdfcoding/consolekit"
-              name: "consolekit"
-              modname: "consolekit"
-              extra-install-args: "--extra-index-url https://domdfcoding.github.io/wheelhouse/"
-            - repo: "domdfcoding/mathematical"
-              name: "mathematical"
-              modname: "mathematical"
-            - repo: "python-coincidence/coincidence"
-              name: "coincidence"
-              modname: "coincidence"
-            - repo: "python-formate/formate"
-              name: "formate"
-              modname: "formate"
+            - {repo: "sphinx-toolbox/default_values", name: "default_values", modname: "sphinxcontrib/default_values"}
+            - {repo: "sphinx-toolbox/dict2css", name: "dict2css", modname: "dict2css"}
+            - {repo: "sphinx-toolbox/extras_require", name: "extras_require", modname: "sphinxcontrib/extras_require"}
+            - {repo: "sphinx-toolbox/seed_intersphinx_mapping", name: "seed_intersphinx_mapping", modname: "seed_intersphinx_mapping"}
+            - {repo: "sphinx-toolbox/sphinx-debuginfo", name: "sphinx-debuginfo", modname: "sphinx_debuginfo"}
+            - {repo: "sphinx-toolbox/sphinx-highlights", name: "sphinx-highlights", modname: "sphinx_highlights"}
+            - {repo: "sphinx-toolbox/sphinx-toolbox", name: "sphinx-toolbox", modname: "sphinx_toolbox"}
+            - {repo: "sphinx-toolbox/toctree_plus", name: "toctree_plus", modname: "sphinxcontrib/toctree_plus"}
+            - {repo: "repo-helper/mkrecipe", name: "mkrecipe", modname: "mkrecipe"}
+            - {repo: "domdfcoding/consolekit", name: "consolekit", modname: "consolekit"}
+            - {repo: "domdfcoding/mathematical", name: "mathematical", modname: "mathematical"}
+            - {repo: "python-coincidence/coincidence", name: "coincidence", modname: "coincidence"}
+            - {repo: "python-formate/formate", name: "formate", modname: "formate"}
 
     steps:
       - name: Checkout 🛎️
@@ -72,26 +45,27 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install "check-wheel-contents>=0.1.0" "twine>=3.2.0" virtualenv
+          python -m pip install --upgrade pip setuptools wheel virtualenv
           python -m pip install .[editable]
 
-      - name: "Clone ${{ matrix.config.name }}"
+      - name: Clone
         run: |
           git clone https://github.com/${{ matrix.config.repo }} /tmp/${{ matrix.config.name }}
 
-      - name: "Build ${{ matrix.config.name }}"
+      - name: Build
         run: |
           python3 -m virtualenv venv
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
           venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1
-          venv/bin/python -c "import importlib; file = importlib.import_module('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file != '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
-          venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt ${{ matrix.config.extra-install-args }} || exit 1
+          venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt --extra-index-url https://domdfcoding.github.io/wheelhouse/ || exit 1
           venv/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1
 
-      - name: "Check wheel"
+      - name: Build Editable
         run: |
-          python3 -m whey
-          python3 -m twine check dist/*.tar.gz dist/*.whl
-          python3 -m check_wheel_contents dist/
-        working-directory: /tmp/${{ matrix.config.name }}
+          python3 -m pip install git+https://github.com/sbidoul/pip@pep517-editable-sbi --force-reinstall
+          python3 -m virtualenv venv-editable
+          python3 -m pip install --editable /tmp/${{ matrix.config.name }} --prefix venv-editable -I --no-build-isolation
+          venv-editable/bin/python -c "file = __import__('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file == '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
+          venv-editable/bin/python -m pip show ${{ matrix.config.name }} || exit 1
+          venv-editable/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt --extra-index-url https://domdfcoding.github.io/wheelhouse/ || exit 1
+          venv-editable/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1

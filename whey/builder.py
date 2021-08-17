@@ -818,6 +818,8 @@ class WheelBuilder(AbstractBuilder):
 			:pyproject:
 
 		:returns: A list of additional runtime requirements which should be added to the wheel's ``METADATA`` file.
+
+		.. attention:: Implicit Namespace packages (:pep:`420`) are not currently supported.
 		"""
 
 		# 3rd party

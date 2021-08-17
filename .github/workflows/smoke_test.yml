@@ -57,5 +57,6 @@ jobs:
           python3 -m virtualenv venv
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
           venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1
+          venv/bin/python -c "assert __import__('${{ matrix.config.name }}').__file__ != '/tmp/${{ matrix.config.name }}'"
           venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt || exit 1
           venv/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1

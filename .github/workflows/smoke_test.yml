@@ -65,7 +65,7 @@ jobs:
           python3 -m pip install git+https://github.com/sbidoul/pip@pep517-editable-sbi --force-reinstall
           python3 -m virtualenv venv-editable
           python3 -m pip install --editable /tmp/${{ matrix.config.name }} --prefix venv-editable -I --no-build-isolation
-          venv-editable/bin/python -c "file = __import__('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file == '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
+          venv-editable/bin/python -c "import importlib; file = importlib.import_module('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file == '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
           venv-editable/bin/python -m pip show ${{ matrix.config.name }} || exit 1
           venv-editable/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt --extra-index-url https://domdfcoding.github.io/wheelhouse/ || exit 1
           venv-editable/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1

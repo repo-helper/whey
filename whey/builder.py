@@ -818,12 +818,10 @@ class WheelBuilder(AbstractBuilder):
 			:pyproject:
 
 		:returns: A list of additional runtime requirements which should be added to the wheel's ``METADATA`` file.
-
-		.. attention:: Implicit Namespace packages (:pep:`420`) are not currently supported.
 		"""
 
 		# 3rd party
-		from editables import EditableProject  # type: ignore  # nodep
+		from editables import EditableProject, EditableException  # type: ignore  # nodep
 
 		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
 
@@ -835,8 +833,16 @@ class WheelBuilder(AbstractBuilder):
 			else:
 				raise FileNotFoundError(f"{message}.")
 
-		my_project = EditableProject(self.config["package"], pkgdir.parent)
-		my_project.map(self.config["package"], pkgdir)
+		my_project = EditableProject(
+				self.config["name"].replace("-", "_"),
+				pkgdir.parent,
+				)
+
+		if (pkgdir / "__init__.py").is_file():
+			my_project.map(self.config["package"], pkgdir)
+		else:
+			# namespace package
+			my_project.add_to_path(pkgdir.parent)
 
 		for name, content in my_project.files():
 			target = self.build_dir / name

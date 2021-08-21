@@ -82,7 +82,7 @@ def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover
 	return []
 
 
-def get_requires_for_build_editable(config_settings=None):
+def get_requires_for_build_editable(config_settings=None):  # pragma: no cover
 	return ["editables>=0.2"]
 
 

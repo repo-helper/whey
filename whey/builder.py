@@ -821,7 +821,7 @@ class WheelBuilder(AbstractBuilder):
 		"""
 
 		# 3rd party
-		from editables import EditableProject, EditableException  # type: ignore  # nodep
+		from editables import EditableException, EditableProject  # type: ignore  # nodep
 
 		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
 
@@ -834,7 +834,7 @@ class WheelBuilder(AbstractBuilder):
 				raise FileNotFoundError(f"{message}.")
 
 		my_project = EditableProject(
-				self.config["name"].replace("-", "_"),
+				self.config["name"].replace('-', '_'),
 				pkgdir.parent,
 				)
 

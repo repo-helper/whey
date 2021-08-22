@@ -18,19 +18,19 @@ jobs:
         fail-fast: False
         matrix:
           config:
-            - {repo: "sphinx-toolbox/default_values", name: "default_values"}
-            - {repo: "sphinx-toolbox/dict2css", name: "dict2css"}
-            - {repo: "sphinx-toolbox/extras_require", name: "extras_require"}
-            - {repo: "sphinx-toolbox/seed_intersphinx_mapping", name: "seed_intersphinx_mapping"}
-            - {repo: "sphinx-toolbox/sphinx-debuginfo", name: "sphinx-debuginfo"}
-            - {repo: "sphinx-toolbox/sphinx-highlights", name: "sphinx-highlights"}
-            - {repo: "sphinx-toolbox/sphinx-toolbox", name: "sphinx-toolbox"}
-            - {repo: "sphinx-toolbox/toctree_plus", name: "toctree_plus"}
-            - {repo: "repo-helper/mkrecipe", name: "mkrecipe"}
-            - {repo: "domdfcoding/consolekit", name: "consolekit"}
-            - {repo: "domdfcoding/mathematical", name: "mathematical"}
-            - {repo: "python-coincidence/coincidence", name: "coincidence"}
-            - {repo: "python-formate/formate", name: "formate"}
+            - {repo: "sphinx-toolbox/default_values", name: "default_values", modname: "sphinxcontrib/default_values"}
+            - {repo: "sphinx-toolbox/dict2css", name: "dict2css", modname: "dict2css"}
+            - {repo: "sphinx-toolbox/extras_require", name: "extras_require", modname: "sphinxcontrib/extras_require"}
+            - {repo: "sphinx-toolbox/seed_intersphinx_mapping", name: "seed_intersphinx_mapping", modname: "seed_intersphinx_mapping"}
+            - {repo: "sphinx-toolbox/sphinx-debuginfo", name: "sphinx-debuginfo", modname: "sphinx_debuginfo"}
+            - {repo: "sphinx-toolbox/sphinx-highlights", name: "sphinx-highlights", modname: "sphinx_highlights"}
+            - {repo: "sphinx-toolbox/sphinx-toolbox", name: "sphinx-toolbox", modname: "sphinx_toolbox"}
+            - {repo: "sphinx-toolbox/toctree_plus", name: "toctree_plus", modname: "sphinxcontrib/toctree_plus"}
+            - {repo: "repo-helper/mkrecipe", name: "mkrecipe", modname: "mkrecipe"}
+            - {repo: "domdfcoding/consolekit", name: "consolekit", modname: "consolekit"}
+            - {repo: "domdfcoding/mathematical", name: "mathematical", modname: "mathematical"}
+            - {repo: "python-coincidence/coincidence", name: "coincidence", modname: "coincidence"}
+            - {repo: "python-formate/formate", name: "formate", modname: "formate"}
 
     steps:
       - name: Checkout 🛎️

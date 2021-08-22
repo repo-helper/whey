@@ -45,7 +45,8 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade pip setuptools wheel virtualenv
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install "check-wheel-contents>=0.1.0" "twine>=3.2.0" virtualenv
           python -m pip install .[editable]
 
       - name: "Clone ${{ matrix.config.name }}"
@@ -57,6 +58,12 @@ jobs:
           python3 -m virtualenv venv
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
           venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1
-          venv/bin/python -c "assert __import__('${{ matrix.config.name }}').__file__ != '/tmp/${{ matrix.config.name }}'"
+          venv/bin/python -c "import importlib; file = importlib.import_module('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file != '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
           venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt || exit 1
           venv/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1
+
+      - name: "Check wheel"
+        run: |
+          python3 -m twine check dist/*.tar.gz dist/*.whl
+          python3 -m check_wheel_contents dist/
+        working-directory: /tmp/${{ matrix.config.name }}

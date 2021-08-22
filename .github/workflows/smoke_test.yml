@@ -64,6 +64,7 @@ jobs:
 
       - name: "Check wheel"
         run: |
+          python3 -m whey
           python3 -m twine check dist/*.tar.gz dist/*.whl
           python3 -m check_wheel_contents dist/
         working-directory: /tmp/${{ matrix.config.name }}

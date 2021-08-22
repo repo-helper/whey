@@ -216,6 +216,228 @@ def test_build_complete(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.parametrize(
+		"config",
+		[
+				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
+				]
+		)
+def test_build_complete_epoch(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		monkeypatch,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	monkeypatch.setenv("SOURCE_DATE_EPOCH", "1629644172")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_wheel()
+		data["wheel_content"] = check_built_wheel(tmp_pathplus / wheel, advanced_file_regression)
+
+		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+			for filename in data["wheel_content"]:
+				assert zip_file.getinfo(filename).date_time == (2021, 8, 22, 14, 56, 12)
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
+				]
+		)
+def test_build_editable(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_editable()
+
+	assert (tmp_pathplus / wheel).is_file()
+
+	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+		data["wheel_content"] = zip_file.namelist()
+		data["pth"] = zip_file.read_text("whey.pth")
+		data["code"] = zip_file.read_text("_whey.py").replace(tmp_pathplus.as_posix(), "...")
+
+		advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
+
+		contents = zip_file.namelist()
+
+		with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as record_fp:
+			for line in record_fp.readlines():
+				entry_filename, expected_digest, size, *_ = line.decode("UTF-8").strip().split(',')
+				assert entry_filename in contents, entry_filename
+				contents.remove(entry_filename)
+
+				if "RECORD" not in entry_filename:
+					assert zip_file.getinfo(entry_filename).file_size == int(size)
+
+					with zip_file.open(entry_filename) as fp:
+						sha256_hash = get_sha256_hash(fp)
+
+					digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
+					assert expected_digest == digest
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+NAMESPACE = """\
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"
+
+[project]
+name = "default_values"
+version = "0.5.0"
+description = "Sphinx extension to show default values in documentation."
+readme = "README.rst"
+keywords = [ "documentation", "sphinx",]
+dynamic = [ "classifiers", "requires-python",]
+dependencies = [
+  "httpx",
+  "gidgethub[httpx]>4.0.0",
+  "django>2.1; os_name != 'nt'",
+  "django>2.0; os_name == 'nt'"
+]
+
+[project.license]
+file = "LICENSE"
+
+[[project.authors]]
+email = "dominic@davis-foster.co.uk"
+name = "Dominic Davis-Foster"
+
+[project.urls]
+Homepage = "https://whey.readthedocs.io/en/latest"
+Documentation = "https://whey.readthedocs.io/en/latest"
+"Issue Tracker" = "https://github.com/repo-helper/whey/issues"
+"Source Code" = "https://github.com/repo-helper/whey"
+
+[tool.whey]
+base-classifiers = [ "Development Status :: 4 - Beta",]
+python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
+python-implementations = [ "CPython", "PyPy",]
+platforms = [ "Windows", "macOS", "Linux",]
+license-key = "MIT"
+package = "sphinxcontrib"
+"""
+
+
+def test_build_editable_namespace(
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(NAMESPACE)
+	(tmp_pathplus / "sphinxcontrib/default_values").mkdir(parents=True)
+	(tmp_pathplus / "sphinxcontrib/default_values" / "__init__.py").write_clean("print('hello world')")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+
+	data = {}
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		wheel = wheel_builder.build_editable()
+
+	assert (tmp_pathplus / wheel).is_file()
+
+	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+		data["wheel_content"] = zip_file.namelist()
+		assert zip_file.read_text("default_values.pth") == tmp_pathplus.as_posix() + '\n'
+
+		advanced_file_regression.check(zip_file.read_text("default_values-0.5.0.dist-info/METADATA"))
+
+		contents = zip_file.namelist()
+
+		with zip_file.open("default_values-0.5.0.dist-info/RECORD", mode='r') as record_fp:
+			for line in record_fp.readlines():
+				entry_filename, expected_digest, size, *_ = line.decode("UTF-8").strip().split(',')
+				assert entry_filename in contents, entry_filename
+				contents.remove(entry_filename)
+
+				if "RECORD" not in entry_filename:
+					assert zip_file.getinfo(entry_filename).file_size == int(size)
+
+					with zip_file.open(entry_filename) as fp:
+						sha256_hash = get_sha256_hash(fp)
+
+					digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
+					assert expected_digest == digest
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
 def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
@@ -410,6 +632,23 @@ def test_build_empty_dir(tmp_pathplus: PathPlus):
 
 		with pytest.raises(FileNotFoundError, match="No Python source files found in"):
 			sdist_builder.build_sdist()
+
+
+def test_build_editable_missing_dir(tmp_pathplus: PathPlus):
+	(tmp_pathplus / "pyproject.toml").write_clean(MINIMAL_CONFIG)
+
+	with tempfile.TemporaryDirectory() as tmpdir:
+		wheel_builder = WheelBuilder(
+				project_dir=tmp_pathplus,
+				config=load_toml(tmp_pathplus / "pyproject.toml"),
+				build_dir=tmpdir,
+				out_dir=tmp_pathplus,
+				verbose=True,
+				colour=False,
+				)
+
+		with pytest.raises(FileNotFoundError, match="Package directory 'spam' not found."):
+			wheel_builder.build_editable()
 
 
 @pytest.mark.parametrize(

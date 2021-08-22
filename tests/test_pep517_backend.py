@@ -293,8 +293,6 @@ def test_build_editable(
 		data["pth"] = zip_file.read_text("whey.pth")
 		data["code"] = zip_file.read_text("_whey.py").replace(tmp_pathplus.as_posix(), "...")
 
-		# assert zip_file.read_text("whey/__init__.py") == "print('hello world)\n"
-
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
 	data["stderr"] = outerr.err

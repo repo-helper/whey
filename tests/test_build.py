@@ -4,7 +4,7 @@ import shutil
 import tempfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
-from typing import List
+from typing import Any, Dict, List
 
 # 3rd party
 import handy_archives
@@ -291,7 +291,7 @@ def test_build_editable(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(

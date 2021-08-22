@@ -1,3 +1,6 @@
+# stdlib
+from typing import Any, Dict
+
 # 3rd party
 import handy_archives
 import pytest
@@ -281,7 +284,7 @@ def test_build_editable(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with in_directory(tmp_pathplus):
 		wheel = whey.build_editable(tmp_pathplus)

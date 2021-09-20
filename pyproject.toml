@@ -142,6 +142,22 @@ check_untyped_defs = true
 warn_unused_ignores = true
 no_implicit_optional = true
 
+[tool.snippet-fmt]
+directives = [ "code-block",]
+
 [project.entry-points."whey.builder"]
 whey_sdist = "whey.builder:SDistBuilder"
 whey_wheel = "whey.builder:WheelBuilder"
+
+
+[tool.snippet-fmt.languages.python]
+reformat = true
+
+[tool.snippet-fmt.languages.toml]
+
+[tool.snippet-fmt.languages.TOML]
+reformat = true
+
+[tool.snippet-fmt.languages.ini]
+
+[tool.snippet-fmt.languages.json]

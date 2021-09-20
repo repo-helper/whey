@@ -124,7 +124,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 		[project]
 		readme = "README.rst"
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		readme = {file = "README.md", content-type = "text/markdown", encoding = "UTF-8"}
@@ -167,7 +167,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Examples:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		license = {file = "LICENSE.rst"}
@@ -177,7 +177,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 		[project.license]
 		file = "COPYING"
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project.license]
 		text = """
@@ -201,7 +201,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Examples:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		authors = [
@@ -209,7 +209,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 			{name = "The pip developers", email = "distutils-sig@python.org"}
 		]
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[[project.authors]]
 		name = "Tzu-ping Chung"
@@ -227,7 +227,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		authors = [
@@ -264,7 +264,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		classifiers = [
@@ -301,7 +301,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project.scripts]
 		spam-cli = "spam:main_cli"
@@ -344,7 +344,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project.entry-points."spam.magical"]
 		tomatoes = "spam:main_tomatoes"
@@ -365,7 +365,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		dependencies = [
@@ -386,7 +386,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project.optional-dependencies]
 		test = [
@@ -411,7 +411,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		dynamic = [ "classifiers",]
@@ -495,7 +495,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Examples:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[tool.whey]
 		additional-files = [
@@ -503,7 +503,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 			"recursive-exclude domdf_python_tools *.json",
 		]
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[tool.whey]
 		source-dir = "src"
@@ -547,7 +547,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[project]
 		dynamic = [ "classifiers", ]
@@ -594,7 +594,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	:bold-title:`Example:`
 
-	.. code-block:: TOML
+	.. code-block:: toml
 
 		[tool.whey]
 		python-versions = [

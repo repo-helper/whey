@@ -820,8 +820,8 @@ class WheelBuilder(AbstractBuilder):
 		:returns: A list of additional runtime requirements which should be added to the wheel's ``METADATA`` file.
 		"""
 
-		# 3rd party
-		from editables import EditableException, EditableProject  # type: ignore  # nodep
+		# this package
+		from whey._editable import EditableProject
 
 		pkgdir = self.project_dir / self.config["source-dir"] / self.config["package"]
 
@@ -838,11 +838,7 @@ class WheelBuilder(AbstractBuilder):
 				pkgdir.parent,
 				)
 
-		if (pkgdir / "__init__.py").is_file():
-			my_project.map(self.config["package"], pkgdir)
-		else:
-			# namespace package
-			my_project.add_to_path(pkgdir.parent)
+		my_project.map_or_add_to_path(self.config["package"], pkgdir)
 
 		for name, content in my_project.files():
 			target = self.build_dir / name

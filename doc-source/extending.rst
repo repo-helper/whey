@@ -6,7 +6,7 @@ Extending whey
 
 Custom builders must be registered as an entry point in the ``whey.builder`` group. For example:
 
-.. code-block:: TOML
+.. code-block:: toml
 
 	# pyproject.toml
 

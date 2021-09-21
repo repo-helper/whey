@@ -459,7 +459,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 	.. code-block:: TOML
 
 		[tool.whey]
-		source_dir = "src/flake8"
+		source-dir = "src/flake8"
 
 
 .. tconf:: tool.whey.additional-files

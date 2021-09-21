@@ -101,6 +101,7 @@ add_module_names = false
 hide_none_rtype = true
 all_typevars = true
 overloads_location = "bottom"
+html_codeblock_linenos_style = "table"
 autodoc_exclude_members = [
     "__dict__",
     "__class__",
@@ -141,6 +142,7 @@ namespace_packages = true
 check_untyped_defs = true
 warn_unused_ignores = true
 no_implicit_optional = true
+show_error_codes = true
 
 [tool.snippet-fmt]
 directives = [ "code-block",]
@@ -149,6 +151,16 @@ directives = [ "code-block",]
 whey_sdist = "whey.builder:SDistBuilder"
 whey_wheel = "whey.builder:WheelBuilder"
 
+[tool.dependency-dash."requirements.txt"]
+order = 10
+
+[tool.dependency-dash."tests/requirements.txt"]
+order = 20
+include = false
+
+[tool.dependency-dash."doc-source/requirements.txt"]
+order = 30
+include = false
 
 [tool.snippet-fmt.languages.python]
 reformat = true

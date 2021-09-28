@@ -410,7 +410,7 @@ def test_build_editable_namespace(
 
 	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
 		data["wheel_content"] = zip_file.namelist()
-		assert zip_file.read_text("default_values.pth") == tmp_pathplus.as_posix() + '\n'
+		assert zip_file.read_text("default_values.pth") == str(tmp_pathplus) + '\n'
 
 		advanced_file_regression.check(zip_file.read_text("default_values-0.5.0.dist-info/METADATA"))
 

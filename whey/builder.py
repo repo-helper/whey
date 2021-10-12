@@ -817,7 +817,7 @@ class WheelBuilder(AbstractBuilder):
 			:scope: method
 			:pyproject:
 
-		:returns: A list of additional runtime requirements which should be added to the wheel's ``METADATA`` file.
+		:returns: An iterator of additional runtime requirements which should be added to the wheel's ``METADATA`` file.
 		"""
 
 		# this package

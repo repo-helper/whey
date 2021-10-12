@@ -45,7 +45,8 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade pip setuptools wheel virtualenv
+          python -m pip install --upgrade setuptools wheel virtualenv
+          python -m pip install "pip>=21.3"
           python -m pip install .[editable]
 
       - name: Clone
@@ -62,7 +63,6 @@ jobs:
 
       - name: Build Editable
         run: |
-          python3 -m pip install git+https://github.com/sbidoul/pip@pep517-editable-sbi --force-reinstall
           python3 -m virtualenv venv-editable
           python3 -m pip install --editable /tmp/${{ matrix.config.name }} --prefix venv-editable -I --no-build-isolation
           venv-editable/bin/python -c "import importlib; file = importlib.import_module('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file == '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"

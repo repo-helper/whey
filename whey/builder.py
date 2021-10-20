@@ -886,6 +886,10 @@ class WheelBuilder(AbstractBuilder):
 		The default implementation of this method does not call
 		:meth:`~.AbstractBuilder.copy_source` or :meth:`~.AbstractBuilder.copy_additional_files`.
 
+		.. extras-require:: editable
+			:scope: method
+			:pyproject:
+
 		:return: The filename of the created archive.
 		"""
 

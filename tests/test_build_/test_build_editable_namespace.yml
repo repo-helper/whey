@@ -1,0 +1,23 @@
+stderr: ''
+stdout: 'Writing default_values-0.5.0.dist-info/LICENSE
+
+  Writing default_values-0.5.0.dist-info/entry_points.txt
+
+  Writing default_values.pth
+
+  Writing default_values-0.5.0.dist-info/METADATA
+
+  Writing default_values-0.5.0.dist-info/WHEEL
+
+  Writing default_values-0.5.0.dist-info/RECORD
+
+  Wheel created at .../default_values-0.5.0-py3-none-any.whl
+
+  '
+wheel_content:
+- default_values-0.5.0.dist-info/LICENSE
+- default_values-0.5.0.dist-info/METADATA
+- default_values-0.5.0.dist-info/WHEEL
+- default_values-0.5.0.dist-info/entry_points.txt
+- default_values.pth
+- default_values-0.5.0.dist-info/RECORD

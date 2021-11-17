@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   tests:
-    name: "Test"
+    name: " ${{ matrix.config.repo }}"
     runs-on: ubuntu-latest
 
     strategy:
@@ -72,15 +72,15 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install "check-wheel-contents>=0.1.0" "twine>=3.2.0" virtualenv
+          python -m pip install --upgrade "pip>=21.3" setuptools wheel virtualenv
+          python -m pip install "check-wheel-contents>=0.1.0" "twine>=3.2.0"
           python -m pip install .[editable]
 
-      - name: "Clone ${{ matrix.config.name }}"
+      - name: Clone
         run: |
           git clone https://github.com/${{ matrix.config.repo }} /tmp/${{ matrix.config.name }}
 
-      - name: "Build ${{ matrix.config.name }}"
+      - name: Build
         run: |
           python3 -m virtualenv venv
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
@@ -95,3 +95,12 @@ jobs:
           python3 -m twine check dist/*.tar.gz dist/*.whl
           python3 -m check_wheel_contents dist/
         working-directory: /tmp/${{ matrix.config.name }}
+
+      - name: Build Editable
+        run: |
+          python3 -m virtualenv venv-editable
+          python3 -m pip install --editable /tmp/${{ matrix.config.name }} --prefix venv-editable -I --no-build-isolation
+          venv-editable/bin/python -c "import importlib; file = importlib.import_module('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file == '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
+          venv-editable/bin/python -m pip show ${{ matrix.config.name }} || exit 1
+          venv-editable/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt ${{ matrix.config.extra-install-args }} || exit 1
+          venv-editable/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1

@@ -1,0 +1,36 @@
+code: 'from editables.redirector import RedirectingFinder as F
+
+  F.install()
+
+  F.map_module(''whey'', ''.../whey/__init__.py'')
+
+  '
+pth: 'import _whey
+
+  '
+stderr: ''
+stdout: 'Writing whey-2021.0.0.dist-info/LICENSE
+
+  Writing whey-2021.0.0.dist-info/entry_points.txt
+
+  Writing whey.pth
+
+  Writing _whey.py
+
+  Writing whey-2021.0.0.dist-info/METADATA
+
+  Writing whey-2021.0.0.dist-info/WHEEL
+
+  Writing whey-2021.0.0.dist-info/RECORD
+
+  Wheel created at .../whey-2021.0.0-py3-none-any.whl
+
+  '
+wheel_content:
+- _whey.py
+- whey-2021.0.0.dist-info/LICENSE
+- whey-2021.0.0.dist-info/METADATA
+- whey-2021.0.0.dist-info/RECORD
+- whey-2021.0.0.dist-info/WHEEL
+- whey-2021.0.0.dist-info/entry_points.txt
+- whey.pth

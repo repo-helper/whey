@@ -1,3 +1,6 @@
+# stdlib
+from typing import Any, Dict
+
 # 3rd party
 import handy_archives
 import pytest
@@ -252,6 +255,46 @@ def test_build_complete(
 		assert tar.read_text("whey-2021.0.0/README.rst") == "Spam Spam Spam Spam\n"
 		assert tar.read_text("whey-2021.0.0/LICENSE") == "This is the license\n"
 		assert tar.read_text("whey-2021.0.0/requirements.txt") == "domdf_python_tools\n"
+
+	outerr = capsys.readouterr()
+	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")
+	data["stderr"] = outerr.err
+
+	advanced_data_regression.check(data)
+
+
+@pytest.mark.parametrize(
+		"config",
+		[
+				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
+				pytest.param(COMPLETE_A, id="COMPLETE_A"),
+				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				]
+		)
+def test_build_editable(
+		config: str,
+		tmp_pathplus: PathPlus,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		capsys,
+		):
+	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "whey").mkdir()
+	(tmp_pathplus / "whey" / "__init__.py").write_clean("print('hello world)")
+	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
+	(tmp_pathplus / "LICENSE").write_clean("This is the license")
+	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
+
+	data: Dict[str, Any] = {}
+
+	with in_directory(tmp_pathplus):
+		wheel = whey.build_editable(tmp_pathplus)
+
+	assert (tmp_pathplus / wheel).is_file()
+
+	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+		data["wheel_content"] = sorted(zip_file.namelist())
+		data["pth"] = zip_file.read_text("whey.pth")
+		data["code"] = zip_file.read_text("_whey.py").replace(tmp_pathplus.as_posix(), "...")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

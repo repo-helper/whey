@@ -65,6 +65,7 @@ extensions = [
     "sphinx_debuginfo",
     "sphinx_licenseinfo",
     "seed_intersphinx_mapping",
+    "html_section",
     "cli_extension",
     "sphinx_toolbox_experimental.html_section",
     "sphinx_toolbox_experimental.autosummary_widths",

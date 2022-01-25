@@ -67,7 +67,6 @@ extensions = [
     "seed_intersphinx_mapping",
     "html_section",
     "cli_extension",
-    "sphinx_toolbox_experimental.html_section",
     "sphinx_toolbox_experimental.autosummary_widths",
     "sphinx_toolbox_experimental.needspace",
     "sphinx_toolbox_experimental.download_icon",

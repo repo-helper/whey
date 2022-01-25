@@ -1,3 +1,6 @@
+# stdlib
+from typing import Any, Dict, TYPE_CHECKING
+
 # 3rd party
 from coincidence.regressions import AdvancedDataRegressionFixture
 from domdf_python_tools.paths import PathPlus, TemporaryPathPlus, sort_paths
@@ -7,11 +10,15 @@ from tests.example_configs import COMPLETE_A
 from whey.builder import WheelBuilder
 from whey.config import load_toml
 
+if TYPE_CHECKING:
+	# 3rd party
+	from _pytest.capture import CaptureFixture
+
 
 def test_create_editables_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(COMPLETE_A)
 	(tmp_pathplus / "whey").mkdir()
@@ -20,7 +27,7 @@ def test_create_editables_files(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with TemporaryPathPlus() as tmpdir:
 		wheel_builder = WheelBuilder(

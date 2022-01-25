@@ -4,7 +4,7 @@ import shutil
 import tempfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 # 3rd party
 import handy_archives
@@ -31,6 +31,10 @@ from shippinglabel.checksum import get_sha256_hash
 from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey.builder import SDistBuilder, WheelBuilder
 from whey.config import load_toml
+
+if TYPE_CHECKING:
+	# 3rd party
+	from _pytest.capture import CaptureFixture
 
 
 @pytest.mark.parametrize(
@@ -59,7 +63,7 @@ def test_build_success(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "spam").mkdir()
@@ -67,7 +71,7 @@ def test_build_success(
 	now = datetime.now()
 	os.utime(tmp_pathplus / "spam" / "__init__.py", (now.timestamp(), now.timestamp()))
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -161,7 +165,7 @@ def test_build_complete(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -170,7 +174,7 @@ def test_build_complete(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -230,7 +234,7 @@ def test_build_complete_epoch(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		monkeypatch,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -242,7 +246,7 @@ def test_build_complete_epoch(
 
 	monkeypatch.setenv("SOURCE_DATE_EPOCH", "1629644172")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -282,7 +286,7 @@ def test_build_editable(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -384,7 +388,7 @@ def test_build_editable_namespace(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(NAMESPACE)
 	(tmp_pathplus / "sphinxcontrib/default_values").mkdir(parents=True)
@@ -392,7 +396,7 @@ def test_build_editable_namespace(
 	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -442,7 +446,7 @@ def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -467,7 +471,7 @@ def test_build_additional_files(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -521,7 +525,7 @@ def test_build_markdown_readme(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_clean(COMPLETE_B.replace(".rst", ".md"))
@@ -531,7 +535,7 @@ def test_build_markdown_readme(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -665,7 +669,7 @@ def test_build_wheel_from_sdist(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -697,7 +701,7 @@ def test_build_wheel_from_sdist(
 		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
 
 	capsys.readouterr()
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -807,14 +811,14 @@ def test_build_underscore_name(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		config: List[str]
 		):
 	(tmp_pathplus / "pyproject.toml").write_lines(config)
 	(tmp_pathplus / "spam_spam").mkdir()
 	(tmp_pathplus / "spam_spam" / "__init__.py").write_clean("print('hello world')")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -866,7 +870,7 @@ def test_build_stubs_name(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_lines([
 			"[project]",
@@ -876,7 +880,7 @@ def test_build_stubs_name(
 	(tmp_pathplus / "spam_spam-stubs").mkdir()
 	(tmp_pathplus / "spam_spam-stubs" / "__init__.pyi").write_clean("print('hello world')")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -943,7 +947,7 @@ def test_build_source_dir_complete(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "src/whey").mkdir(parents=True)
@@ -952,7 +956,7 @@ def test_build_source_dir_complete(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -1002,7 +1006,7 @@ def test_build_source_dir_different_package(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_lines([
 			COMPLETE_A,
@@ -1015,7 +1019,7 @@ def test_build_source_dir_different_package(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -1097,7 +1101,7 @@ def test_build_wheel_from_sdist_source_dir(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "src/whey").mkdir(parents=True)
@@ -1129,7 +1133,7 @@ def test_build_wheel_from_sdist_source_dir(
 		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
 
 	capsys.readouterr()
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -1154,7 +1158,7 @@ def test_build_additional_files_source_dir(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -1179,7 +1183,7 @@ def test_build_additional_files_source_dir(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with tempfile.TemporaryDirectory() as tmpdir:
 		wheel_builder = WheelBuilder(
@@ -1243,7 +1247,7 @@ def test_custom_wheel_builder(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -1252,7 +1256,7 @@ def test_custom_wheel_builder(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	class CustomWheelBuilder(WheelBuilder):
 

@@ -1,5 +1,5 @@
 # stdlib
-from typing import Dict, Type
+from typing import TYPE_CHECKING, Dict, Type
 
 # 3rd party
 import click
@@ -14,6 +14,10 @@ from whey_pth import PthWheelBuilder
 from whey.builder import AbstractBuilder, SDistBuilder, WheelBuilder
 from whey.foreman import Foreman
 from whey.utils import parse_custom_builders, print_builder_names
+
+if TYPE_CHECKING:
+	# 3rd party
+	from _pytest.capture import CaptureFixture
 
 
 @pytest.mark.parametrize(
@@ -51,11 +55,11 @@ from whey.utils import parse_custom_builders, print_builder_names
 		)
 def test_print_builder_names(
 		tmp_pathplus: PathPlus,
-		config,
+		config: str,
 		builders: Dict[str, bool],
 		custom_builders: Dict[str, Type[AbstractBuilder]],
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 

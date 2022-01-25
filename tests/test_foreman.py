@@ -1,5 +1,6 @@
 # stdlib
 import tempfile
+from typing import Any, Dict, TYPE_CHECKING
 
 # 3rd party
 import handy_archives
@@ -24,6 +25,10 @@ from pytest_regressions.file_regression import FileRegressionFixture
 # this package
 from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey.foreman import Foreman
+
+if TYPE_CHECKING:
+	# 3rd party
+	from _pytest.capture import CaptureFixture
 
 
 @pytest.mark.parametrize(
@@ -52,13 +57,13 @@ def test_build_success(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		file_regression: FileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "spam").mkdir()
 	(tmp_pathplus / "spam" / "__init__.py").write_clean("print('hello world)")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	foreman = Foreman(project_dir=tmp_pathplus)
 
@@ -111,7 +116,7 @@ def test_build_complete(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		file_regression: FileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -120,7 +125,7 @@ def test_build_complete(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	foreman = Foreman(project_dir=tmp_pathplus)
 
@@ -167,7 +172,7 @@ def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		file_regression: FileRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -192,7 +197,7 @@ def test_build_additional_files(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	foreman = Foreman(project_dir=tmp_pathplus)
 

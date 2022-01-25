@@ -1,6 +1,6 @@
 # stdlib
 import re
-from typing import Any, Dict, List, Type
+from typing import Any, Dict, List, Type, TYPE_CHECKING
 
 # 3rd party
 import handy_archives
@@ -27,6 +27,10 @@ from pyproject_examples.utils import file_not_found_regex
 from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey.__main__ import main
 
+if TYPE_CHECKING:
+	# 3rd party
+	from _pytest.capture import CaptureFixture
+
 
 @pytest.mark.parametrize(
 		"config",
@@ -52,7 +56,7 @@ def test_cli_build_success(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "spam").mkdir()
@@ -118,7 +122,7 @@ def test_build_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -156,7 +160,7 @@ def test_build_sdist_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -193,7 +197,7 @@ def test_build_wheel_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -230,7 +234,7 @@ def test_build_wheel_via_builder_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -267,7 +271,7 @@ def test_build_binary_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	# TODO: e.g. conda, RPM, DEB
@@ -300,7 +304,7 @@ def test_build_binary_complete(
 def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([

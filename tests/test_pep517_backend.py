@@ -1,5 +1,5 @@
 # stdlib
-from typing import Any, Dict
+from typing import TYPE_CHECKING, Any, Dict
 
 # 3rd party
 import handy_archives
@@ -21,6 +21,10 @@ from pyproject_examples.example_configs import (
 # this package
 import whey
 from whey.__main__ import main
+
+if TYPE_CHECKING:
+	# 3rd party
+	from _pytest.capture import CaptureFixture
 
 COMPLETE_PROJECT_A = """\
 [project]
@@ -176,13 +180,13 @@ def test_cli_build_success(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "spam").mkdir()
 	(tmp_pathplus / "spam" / "__init__.py").write_clean("print('hello world)")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with in_directory(tmp_pathplus):
 		wheel = whey.build_wheel(tmp_pathplus)
@@ -222,7 +226,7 @@ def test_build_complete(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -231,7 +235,7 @@ def test_build_complete(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with in_directory(tmp_pathplus):
 		wheel = whey.build_wheel(tmp_pathplus)
@@ -275,7 +279,7 @@ def test_build_editable(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -306,7 +310,7 @@ def test_build_editable(
 def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
-		capsys,
+		capsys: "CaptureFixture[str]",
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -331,7 +335,7 @@ def test_build_additional_files(
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
-	data = {}
+	data: Dict[str, Any] = {}
 
 	with in_directory(tmp_pathplus):
 		wheel = whey.build_wheel(tmp_pathplus)

@@ -158,7 +158,10 @@ additional-files = [
 """
 
 
-def check_config(config, data_regression: AdvancedDataRegressionFixture):
+def check_config(
+		config: Dict[str, Any],
+		data_regression: AdvancedDataRegressionFixture,
+		):
 	assert "builders" in config
 	builders = config.pop("builders")
 	assert all(isinstance(name, str) for name in builders)
@@ -334,7 +337,7 @@ def test_parse_valid_config_readme(
 				]
 		)
 def test_parse_valid_config_readme_dict(
-		readme,
+		readme: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		):

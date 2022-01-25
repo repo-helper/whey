@@ -20,7 +20,10 @@ tox_testenv_extras: all
 conda_channels:
  - conda-forge
 
-# Versions to run tests for
+conda_extras:
+ - none
+
+ # Versions to run tests for
 python_versions:
  - '3.6'
  - '3.7'

@@ -34,7 +34,7 @@ all = [ "docutils==0.16", "editables>=0.2", "pyproject-parser[readme]>=0.3.0",]
 
 [tool.mkrecipe]
 conda-channels = [ "conda-forge", "domdfcoding",]
-extras = "all"
+extras = []
 license-key = "MIT"
 
 [tool.sphinx-pyproject]

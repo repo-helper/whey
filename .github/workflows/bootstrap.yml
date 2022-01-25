@@ -1,0 +1,32 @@
+---
+name: Bootstrapping Check
+
+on:
+  push:
+    branches: ["master"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎️
+        uses: "actions/checkout@v2"
+
+      - name: Setup Python 🐍
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies 🔧
+        run: |
+          python -VV
+          python -m site
+          python -m pip install --upgrade "pip>=21.3" setuptools wheel
+
+      - name: Build from source
+        run: |
+          python -m pip wheel . --no-binary :all:

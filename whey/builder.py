@@ -95,9 +95,10 @@ class AbstractBuilder(ABC):
 			config: Mapping[str, Any],
 			build_dir: Optional[PathLike] = None,
 			out_dir: Optional[PathLike] = None,
-			*,
+			*args,
 			verbose: bool = False,
 			colour: ColourTrilean = None,
+			**kwargs,
 			):
 
 		# Walk up the tree until a "pyproject.toml" file is found.

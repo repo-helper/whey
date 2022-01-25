@@ -79,16 +79,16 @@ class Foreman:
 		:returns: The filename of the created archive.
 		"""
 
-		builder = self.get_builder("sdist")(  # type: ignore
-			self.project_dir,
-			self.config,
-			build_dir,
-			out_dir,
-			*args,
-			verbose=verbose,
-			colour=colour,
-			**kwargs,
-			)
+		builder = self.get_builder("sdist")(
+				self.project_dir,
+				self.config,
+				build_dir,
+				out_dir,
+				*args,
+				verbose=verbose,
+				colour=colour,
+				**kwargs,
+				)
 		return builder.build()
 
 	def build_binary(
@@ -106,16 +106,16 @@ class Foreman:
 		:returns: The filename of the created archive.
 		"""
 
-		builder = self.get_builder("binary")(  # type: ignore
-			self.project_dir,
-			self.config,
-			build_dir,
-			out_dir,
-			*args,
-			verbose=verbose,
-			colour=colour,
-			**kwargs,
-			)
+		builder = self.get_builder("binary")(
+				self.project_dir,
+				self.config,
+				build_dir,
+				out_dir,
+				*args,
+				verbose=verbose,
+				colour=colour,
+				**kwargs,
+				)
 		return builder.build()
 
 	def build_wheel(
@@ -133,14 +133,14 @@ class Foreman:
 		:returns: The filename of the created archive.
 		"""
 
-		builder = self.get_builder("wheel")(  # type: ignore
-			self.project_dir,
-			self.config,
-			build_dir,
-			out_dir,
-			*args,
-			verbose=verbose,
-			colour=colour,
-			**kwargs,
-			)
+		builder = self.get_builder("wheel")(
+				self.project_dir,
+				self.config,
+				build_dir,
+				out_dir,
+				*args,
+				verbose=verbose,
+				colour=colour,
+				**kwargs,
+				)
 		return builder.build()

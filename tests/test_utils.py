@@ -70,7 +70,7 @@ def test_parse_custom_builders(advanced_data_regression: AdvancedDataRegressionF
 	assert parse_custom_builders([]) == {}
 	assert parse_custom_builders(()) == {}
 	assert parse_custom_builders(iter([])) == {}
-	assert parse_custom_builders(x for x in ()) == {}  # type: ignore
+	assert parse_custom_builders(_ for _ in ()) == {}
 
 	assert parse_custom_builders(["whey_sdist"]) == {"whey_sdist": SDistBuilder}
 	assert parse_custom_builders(["whey_wheel"]) == {"whey_wheel": WheelBuilder}

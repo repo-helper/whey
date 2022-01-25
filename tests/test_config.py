@@ -1,6 +1,6 @@
 # stdlib
 from textwrap import dedent
-from typing import Any, Dict, Type
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 # 3rd party
 import dom_toml
@@ -8,7 +8,9 @@ import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
 from dom_toml.parser import BadConfigError
 from domdf_python_tools.paths import PathPlus, in_directory
+from packaging.markers import Marker
 from packaging.requirements import InvalidRequirement
+from packaging.version import Version
 from pyproject_examples import bad_pep621_config
 from pyproject_examples.example_configs import (
 		AUTHORS,
@@ -22,6 +24,10 @@ from pyproject_examples.example_configs import (
 		UNICODE,
 		URLS
 		)
+from pyproject_parser.classes import License, Readme
+from pyproject_parser.type_hints import Author, Dynamic
+from shippinglabel.requirements import ComparableRequirement
+from typing_extensions import TypedDict
 
 # this package
 from whey.builder import AbstractBuilder
@@ -209,6 +215,30 @@ def test_parse_valid_config(
 	check_config(config, advanced_data_regression)
 
 
+ProjectDictPureClasses = TypedDict(
+		"ProjectDictPureClasses",
+		{
+				"name": str,
+				"version": Union[Version, str, None],
+				"description": Optional[str],
+				"readme": Optional[Readme],
+				"requires-python": Union[Marker, str, None],
+				"license": Optional[License],
+				"authors": List[Author],
+				"maintainers": List[Author],
+				"keywords": List[str],
+				"classifiers": List[str],
+				"urls": Dict[str, str],
+				"scripts": Dict[str, str],
+				"gui-scripts": Dict[str, str],
+				"entry-points": Dict[str, Dict[str, str]],
+				"dependencies": Union[List[ComparableRequirement], List[str]],
+				"optional-dependencies": Union[Dict[str, List[ComparableRequirement]], Dict[str, List[str]]],
+				"dynamic": List[Dynamic],
+				}
+		)
+
+
 @pytest.mark.parametrize(
 		"toml_config",
 		[
@@ -242,20 +272,23 @@ def test_pep621_class_valid_config(
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 
 	with in_directory(tmp_pathplus):
-		config = PEP621Parser().parse(dom_toml.load(tmp_pathplus / "pyproject.toml")["project"])
+		config = cast(
+				ProjectDictPureClasses,
+				PEP621Parser().parse(dom_toml.load(tmp_pathplus / "pyproject.toml")["project"]),
+				)
 
 	if "dependencies" in config:
-		config["dependencies"] = list(map(str, config["dependencies"]))  # type: ignore
+		config["dependencies"] = list(map(str, config["dependencies"]))
 	if "optional-dependencies" in config:
 		config["optional-dependencies"] = {
-				k: list(map(str, v))  # type: ignore
+				k: list(map(str, v))
 				for k, v in config["optional-dependencies"].items()
 				}
 
 	if "requires-python" in config and config["requires-python"] is not None:
-		config["requires-python"] = str(config["requires-python"])  # type: ignore
+		config["requires-python"] = str(config["requires-python"])
 	if "version" in config and config["version"] is not None:
-		config["version"] = str(config["version"])  # type: ignore
+		config["version"] = str(config["version"])
 
 	advanced_data_regression.check(config)
 

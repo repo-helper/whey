@@ -34,7 +34,7 @@ from pathlib import Path
 from typing import Dict, List
 
 # 3rd party
-import editables  # type: ignore  # nodep
+import editables  # type: ignore[import]  # nodep
 from domdf_python_tools.typing import PathLike
 
 __all__ = ["EditableProject"]

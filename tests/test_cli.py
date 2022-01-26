@@ -1,6 +1,6 @@
 # stdlib
 import re
-from typing import Any, Dict, List, Type, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Type
 
 # 3rd party
 import handy_archives

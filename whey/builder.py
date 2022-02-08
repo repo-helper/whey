@@ -403,7 +403,7 @@ class AbstractBuilder(ABC):
 
 	def get_metadata_map(self) -> MetadataMapping:
 		"""
-		Generate the content of the ``METADATA`` / ``PKG-INFo`` file.
+		Generate the content of the ``METADATA`` / ``PKG-INFO`` file.
 		"""
 
 		metadata_mapping = MetadataMapping()

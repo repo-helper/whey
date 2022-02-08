@@ -28,6 +28,7 @@ from pyproject_examples.example_configs import (
 from shippinglabel.checksum import get_sha256_hash
 
 # this package
+import whey
 from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey.builder import SDistBuilder, WheelBuilder
 from whey.config import load_toml
@@ -35,6 +36,11 @@ from whey.config import load_toml
 if TYPE_CHECKING:
 	# 3rd party
 	from _pytest.capture import CaptureFixture
+
+
+@pytest.fixture()
+def fixed_whey_version(monkeypatch):
+	monkeypatch.setattr(whey, "__version__", "0.0.17")
 
 
 @pytest.mark.parametrize(
@@ -151,6 +157,7 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 		return zip_file.namelist()
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -220,6 +227,7 @@ def test_build_complete(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -521,6 +529,7 @@ def test_build_additional_files(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 def test_build_markdown_readme(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
@@ -655,6 +664,7 @@ def test_build_editable_missing_dir(tmp_pathplus: PathPlus):
 			wheel_builder.build_editable()
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -933,6 +943,7 @@ def test_build_stubs_name(
 # TODO: test some bad configurations
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -1087,6 +1098,7 @@ def test_build_source_dir_different_package(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -1233,6 +1245,7 @@ def test_build_additional_files_source_dir(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 @pytest.mark.parametrize(
 		"config",
 		[

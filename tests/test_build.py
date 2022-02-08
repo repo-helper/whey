@@ -1013,6 +1013,7 @@ def test_build_source_dir_complete(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.usefixtures("fixed_whey_version")
 def test_build_source_dir_different_package(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,

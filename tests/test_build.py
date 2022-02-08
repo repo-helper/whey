@@ -43,35 +43,14 @@ def fixed_whey_version(monkeypatch):
 	monkeypatch.setattr(whey, "__version__", "0.0.17")
 
 
-@pytest.mark.parametrize(
-		"config",
-		[
-				pytest.param(MINIMAL_CONFIG, id="minimal"),
-				pytest.param(f'{MINIMAL_CONFIG}\ndescription = "Lovely Spam! Wonderful Spam!"', id="description"),
-				pytest.param(f'{MINIMAL_CONFIG}\nrequires-python = ">=3.8"', id="requires-python"),
-				pytest.param(
-						f'{MINIMAL_CONFIG}\nrequires-python = ">=2.7,!=3.0.*,!=3.2.*"',
-						id="requires-python_complex"
-						),
-				pytest.param(KEYWORDS, id="keywords"),
-				pytest.param(AUTHORS, id="authors"),
-				pytest.param(MAINTAINERS, id="maintainers"),
-				pytest.param(CLASSIFIERS, id="classifiers"),
-				pytest.param(DEPENDENCIES, id="dependencies"),
-				pytest.param(OPTIONAL_DEPENDENCIES, id="optional-dependencies"),
-				pytest.param(URLS, id="urls"),
-				pytest.param(ENTRY_POINTS, id="entry_points"),
-				pytest.param(UNICODE, id="unicode"),
-				]
-		)
 def test_build_success(
-		config: str,
+		good_config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys: "CaptureFixture[str]",
 		):
-	(tmp_pathplus / "pyproject.toml").write_clean(config)
+	(tmp_pathplus / "pyproject.toml").write_clean(good_config)
 	(tmp_pathplus / "spam").mkdir()
 	(tmp_pathplus / "spam" / "__init__.py").write_clean("print('hello world')")
 	now = datetime.now()

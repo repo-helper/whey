@@ -11,20 +11,7 @@ import handy_archives
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileRegressionFixture
 from domdf_python_tools.paths import PathPlus, compare_dirs
-from pyproject_examples.example_configs import (
-		AUTHORS,
-		CLASSIFIERS,
-		DEPENDENCIES,
-		DYNAMIC_REQUIREMENTS,
-		ENTRY_POINTS,
-		KEYWORDS,
-		LONG_REQUIREMENTS,
-		MAINTAINERS,
-		MINIMAL_CONFIG,
-		OPTIONAL_DEPENDENCIES,
-		UNICODE,
-		URLS
-		)
+from pyproject_examples.example_configs import DYNAMIC_REQUIREMENTS, LONG_REQUIREMENTS, MINIMAL_CONFIG
 from shippinglabel.checksum import get_sha256_hash
 
 # this package

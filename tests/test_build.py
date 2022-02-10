@@ -1035,15 +1035,20 @@ def test_build_source_dir_different_package(
 
 			contents = zip_file.namelist()
 
-			with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as fp:
-				for line in fp.readlines():
-					entry_filename, digest, size, *_ = line.decode("UTF-8").strip().split(',')
+			with zip_file.open("whey-2021.0.0.dist-info/RECORD", mode='r') as record_:
+				for line in record_.readlines():
+					entry_filename, expected_digest, size, *_ = line.decode("UTF-8").strip().split(',')
 					assert entry_filename in contents, entry_filename
 					contents.remove(entry_filename)
 
 					if "RECORD" not in entry_filename:
 						assert zip_file.getinfo(entry_filename).file_size == int(size)
-				# TODO: check digest
+
+						with zip_file.open(entry_filename) as fp:
+							sha256_hash = get_sha256_hash(fp)
+
+						digest = "sha256=" + urlsafe_b64encode(sha256_hash.digest()).decode("latin1").rstrip('=')
+						assert expected_digest == digest
 
 			data["wheel_content"] = zip_file.namelist()
 

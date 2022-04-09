@@ -1,5 +1,5 @@
 [build-system]
-requires = [ "setuptools>=40.6.0", "wheel>=0.34.2",]
+requires = [ "setuptools!=61.*,>=40.6.0", "wheel>=0.34.2",]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -29,7 +29,7 @@ classifiers = [
     "Topic :: System :: Archiving :: Packaging",
     "Typing :: Typed",
 ]
-dynamic = []
+dynamic = [ "dependencies",]
 
 [[project.authors]]
 name = "Dominic Davis-Foster"

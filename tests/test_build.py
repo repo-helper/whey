@@ -1,6 +1,7 @@
 # stdlib
 import os
 import shutil
+import sys
 import tempfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
@@ -10,6 +11,7 @@ from typing import TYPE_CHECKING, Any, Dict, List
 import handy_archives
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileRegressionFixture
+from coincidence.selectors import min_version, only_version
 from domdf_python_tools.paths import PathPlus, compare_dirs
 from pyproject_examples.example_configs import DYNAMIC_REQUIREMENTS, LONG_REQUIREMENTS, MINIMAL_CONFIG
 from shippinglabel.checksum import get_sha256_hash
@@ -255,12 +257,19 @@ def test_build_complete_epoch(
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
 				]
 		)
+@pytest.mark.parametrize(
+		"editables_version", [
+				pytest.param("0.2", marks=only_version("3.6")),
+				pytest.param("0.3", marks=min_version("3.7")),
+				]
+		)
 def test_build_editable(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys: "CaptureFixture[str]",
+		editables_version: str
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -288,7 +297,11 @@ def test_build_editable(
 	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
 		data["wheel_content"] = zip_file.namelist()
 		data["pth"] = zip_file.read_text("whey.pth")
-		data["code"] = zip_file.read_text("_whey.py").replace(tmp_pathplus.as_posix(), "...")
+
+		if sys.version_info >= (3, 7):
+			data["code"] = zip_file.read_text("_editable_impl_whey.py").replace(tmp_pathplus.as_posix(), "...")
+		else:
+			data["code"] = zip_file.read_text("_whey.py").replace(tmp_pathplus.as_posix(), "...")
 
 		advanced_file_regression.check(zip_file.read_text("whey-2021.0.0.dist-info/METADATA"))
 

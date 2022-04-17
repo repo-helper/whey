@@ -1,0 +1,19 @@
+code: 'from editables.redirector import RedirectingFinder as F
+
+  F.install()
+
+  F.map_module(''whey'', ''.../whey/__init__.py'')
+
+  '
+listdir:
+- _editable_impl_whey.py
+- whey.pth
+pth: 'import _editable_impl_whey
+
+  '
+stderr: ''
+stdout: 'Writing whey.pth
+
+  Writing _editable_impl_whey.py
+
+  '

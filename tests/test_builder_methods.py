@@ -1,8 +1,11 @@
 # stdlib
+import sys
 from typing import TYPE_CHECKING, Any, Dict
 
 # 3rd party
+import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture
+from coincidence.selectors import min_version, only_version
 from domdf_python_tools.paths import PathPlus, TemporaryPathPlus, sort_paths
 
 # this package
@@ -15,10 +18,17 @@ if TYPE_CHECKING:
 	from _pytest.capture import CaptureFixture
 
 
+@pytest.mark.parametrize(
+		"editables_version", [
+				pytest.param("0.2", marks=only_version("3.6")),
+				pytest.param("0.3", marks=min_version("3.7")),
+				]
+		)
 def test_create_editables_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
+		editables_version: str,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(COMPLETE_A)
 	(tmp_pathplus / "whey").mkdir()
@@ -47,6 +57,10 @@ def test_create_editables_files(
 
 		data["listdir"] = [p.relative_to(tmpdir).as_posix() for p in sort_paths(*tmpdir.iterdir())]
 		data["pth"] = (tmpdir / "whey.pth").read_text()
-		data["code"] = (tmpdir / "_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
+
+		if sys.version_info >= (3, 7):
+			data["code"] = (tmpdir / "_editable_impl_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
+		else:
+			data["code"] = (tmpdir / "_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
 
 	advanced_data_regression.check(data)

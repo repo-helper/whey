@@ -118,12 +118,12 @@ whey
 		:wheel:
 		:alt: PyPI - Wheel
 
-	.. |conda-version| image:: https://img.shields.io/conda/v/domdfcoding/whey?logo=anaconda
-		:target: https://anaconda.org/domdfcoding/whey
+	.. |conda-version| image:: https://img.shields.io/conda/v/conda-forge/whey?logo=anaconda
+		:target: https://anaconda.org/conda-forge/whey
 		:alt: Conda - Package Version
 
-	.. |conda-platform| image:: https://img.shields.io/conda/pn/domdfcoding/whey?label=conda%7Cplatform
-		:target: https://anaconda.org/domdfcoding/whey
+	.. |conda-platform| image:: https://img.shields.io/conda/pn/conda-forge/whey?label=conda%7Cplatform
+		:target: https://anaconda.org/conda-forge/whey
 		:alt: Conda - Platform
 
 	.. |license| github-shield::
@@ -161,7 +161,7 @@ Installation
 	:pypi:
 	:github:
 	:anaconda:
-	:conda-channels: conda-forge, domdfcoding
+	:conda-channels: conda-forge
 
 .. end installation
 

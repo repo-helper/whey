@@ -42,6 +42,7 @@ known_third_party = [
     "dist_meta",
     "dom_toml",
     "domdf_python_tools",
+    "editables",
     "email_validator",
     "first",
     "handy_archives",

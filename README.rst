@@ -104,12 +104,12 @@ See `the documentation`_ for configuration_ and usage_ information.
 	:target: https://pypi.org/project/whey/
 	:alt: PyPI - Wheel
 
-.. |conda-version| image:: https://img.shields.io/conda/v/conda-forge/whey?logo=anaconda
-	:target: https://anaconda.org/conda-forge/whey
+.. |conda-version| image:: https://img.shields.io/conda/v/domdfcoding/whey?logo=anaconda
+	:target: https://anaconda.org/domdfcoding/whey
 	:alt: Conda - Package Version
 
-.. |conda-platform| image:: https://img.shields.io/conda/pn/conda-forge/whey?label=conda%7Cplatform
-	:target: https://anaconda.org/conda-forge/whey
+.. |conda-platform| image:: https://img.shields.io/conda/pn/domdfcoding/whey?label=conda%7Cplatform
+	:target: https://anaconda.org/domdfcoding/whey
 	:alt: Conda - Platform
 
 .. |license| image:: https://img.shields.io/github/license/repo-helper/whey
@@ -156,6 +156,7 @@ To install with ``conda``:
 	.. code-block:: bash
 
 		$ conda config --add channels https://conda.anaconda.org/conda-forge
+		$ conda config --add channels https://conda.anaconda.org/domdfcoding
 
 	* Then install
 

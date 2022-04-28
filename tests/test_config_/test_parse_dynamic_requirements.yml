@@ -26,10 +26,7 @@ dependencies:
 - shippinglabel>=0.10.0
 - toml>=0.10.2
 description: A simple Python wheel builder for simple projects.
-dynamic:
-- classifiers
-- requires-python
-- dependencies
+dynamic: []
 entry-points: {}
 gui-scripts: {}
 keywords:

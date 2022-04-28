@@ -36,9 +36,7 @@ dependencies:
 - gidgethub[httpx]>4.0.0
 - httpx
 description: A simple Python wheel builder for simple projects.
-dynamic:
-- classifiers
-- requires-python
+dynamic: []
 entry-points: {}
 gui-scripts: {}
 keywords:

@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: whey
 Version: 2021.0.0
 Summary: A simple Python wheel builder for simple projects.

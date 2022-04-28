@@ -390,9 +390,7 @@ class AbstractBuilder(ABC):
 
 		metadata_mapping = MetadataMapping()
 
-		# TODO: metadata 2.2
-		# Need to translate pep621 dynamic into core metadata field names
-		metadata_mapping["Metadata-Version"] = "2.1"
+		metadata_mapping["Metadata-Version"] = "2.2"
 		metadata_mapping["Name"] = self.config["name"]
 		metadata_mapping["Version"] = str(self.config["version"])
 

@@ -8,6 +8,7 @@ version = "2021.0.0"
 description = "A simple Python wheel builder for simple projects."
 readme = "README.rst"
 dynamic = []
+requires-python = ">=3.6.1"
 dependencies = [
     "httpx",
     "gidgethub[httpx]>4.0.0",
@@ -20,7 +21,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
 ]
-requires-python = "None"
 
 [[project.authors]]
 email = "dominic@davis-foster.co.uk"

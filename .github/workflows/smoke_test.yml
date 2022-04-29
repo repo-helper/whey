@@ -116,10 +116,10 @@ jobs:
       - name: Build
         run: |
           python3 -m virtualenv venv
+          venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt ${{ matrix.config.extra-install-args }} || exit 1
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
           venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1
           venv/bin/python -c "import importlib; file = importlib.import_module('${{ matrix.config.modname }}'.replace('/', '.')).__file__; assert file != '/tmp/${{ matrix.config.name }}/${{ matrix.config.modname }}/__init__.py', file"
-          venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt ${{ matrix.config.extra-install-args }} || exit 1
           venv/bin/python -m pytest /tmp/${{ matrix.config.name }}/tests || exit 1
 
       - name: "Check wheel"

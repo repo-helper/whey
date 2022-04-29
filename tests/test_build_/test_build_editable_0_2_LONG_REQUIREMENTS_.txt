@@ -8,6 +8,7 @@ Classifier: Development Status :: 4 - Beta
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python
 Classifier: Private :: Do Not Upload
+Requires-Python: >=3.6.1
 Requires-Dist: django>2.1; os_name != "nt"
 Requires-Dist: django>2.0; os_name == "nt"
 Requires-Dist: gidgethub[httpx]>4.0.0

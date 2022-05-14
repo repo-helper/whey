@@ -3,7 +3,6 @@
 ======================
 
 .. autosummary-widths:: 6/16
-	:html: 35/100
 
 .. automodule:: whey.config
 	:members: load_toml

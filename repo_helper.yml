@@ -49,8 +49,7 @@ console_scripts:
 
 extra_sphinx_extensions:
  - cli_extension
- - sphinx_toolbox_experimental.autosummary_widths
- - sphinx_toolbox_experimental.needspace
+ - sphinx_toolbox.more_autosummary.column_widths
  - sphinx_toolbox_experimental.download_icon
  - sphinx_packaging
  - local_extension

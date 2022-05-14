@@ -1,0 +1,49 @@
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"
+
+[project]
+name = "Whey"
+version = "2021.0.0"
+description = "A simple Python wheel builder for simple projects."
+readme = "README.rst"
+keywords = [ "pep517", "pep621", "build", "sdist", "wheel", "packaging", "distribution",]
+dynamic = []
+dependencies = [ "httpx", "gidgethub[httpx]>4.0.0", "django>2.1; os_name != 'nt'", "django>2.0; os_name == 'nt'",]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+requires-python = ">=3.6"
+
+[project.license]
+file = "LICENSE"
+
+[[project.authors]]
+email = "dominic@davis-foster.co.uk"
+name = "Dominic Davis-Foster"
+
+[project.urls]
+Homepage = "https://whey.readthedocs.io/en/latest"
+"Home Page" = "https://whey.readthedocs.io/en/latest"
+Documentation = "https://whey.readthedocs.io/en/latest"
+"Issue Tracker" = "https://github.com/repo-helper/whey/issues"
+"Source Code" = "https://github.com/repo-helper/whey"
+
+[tool.whey]
+base-classifiers = [ "Development Status :: 4 - Beta",]
+python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
+python-implementations = [ "CPython", "PyPy",]
+platforms = [ "Windows", "macOS", "Linux",]
+license-key = "GPL-3.0+"
+package = "whey"

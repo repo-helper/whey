@@ -532,12 +532,23 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 
 	It is recommended to use an `SPDX Identifier`_, but note that not all map to classifiers.
 
-	:bold-title:`Example:`
+	.. versionchanged:: $VERSION
+
+		:tconf:`license-key` may now be an SPDX expression, e.g. ``MIT OR Apache-2.0``.
+
+	.. latex:clearpage::
+
+	:bold-title:`Examples:`
 
 	.. code-block:: TOML
 
 		[tool.whey]
 		license-key = "MIT"
+
+	.. code-block:: TOML
+
+		[tool.whey]
+		license-key = "MIT OR Apache-2.0"
 
 
 .. tconf:: tool.whey.base-classifiers

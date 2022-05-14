@@ -54,6 +54,7 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None) 
 	# 3rd party
 	from consolekit.tracebacks import handle_tracebacks
 	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
+	from pyproject_parser.cli import prettify_deprecation_warning
 
 	# this package
 	from whey.foreman import Foreman
@@ -61,6 +62,8 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None) 
 
 	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
 	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
+
+	prettify_deprecation_warning()
 
 	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyBackendTBHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
@@ -82,6 +85,7 @@ def build_sdist(sdist_directory, config_settings=None) -> str:  # noqa: MAN001
 	# 3rd party
 	from consolekit.tracebacks import handle_tracebacks
 	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
+	from pyproject_parser.cli import prettify_deprecation_warning
 
 	# this package
 	from whey.foreman import Foreman
@@ -89,6 +93,8 @@ def build_sdist(sdist_directory, config_settings=None) -> str:  # noqa: MAN001
 
 	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
 	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
+
+	prettify_deprecation_warning()
 
 	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyBackendTBHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
@@ -120,6 +126,7 @@ def build_editable(wheel_directory, config_settings=None, metadata_directory=Non
 	# 3rd party
 	from consolekit.tracebacks import handle_tracebacks
 	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
+	from pyproject_parser.cli import prettify_deprecation_warning
 
 	# this package
 	from whey.builder import WheelBuilder
@@ -128,6 +135,8 @@ def build_editable(wheel_directory, config_settings=None, metadata_directory=Non
 
 	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
 	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
+
+	prettify_deprecation_warning()
 
 	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyBackendTBHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())

@@ -129,10 +129,14 @@ def main(
 
 	# 3rd party
 	from domdf_python_tools.paths import PathPlus
+	from pyproject_parser.cli import prettify_deprecation_warning
 
 	# this package
 	from whey.foreman import Foreman
 	from whey.utils import WheyTracebackHandler, parse_custom_builders, print_builder_names
+
+	if not show_traceback:
+		prettify_deprecation_warning()
 
 	if not any((binary, sdist, wheel, builder)):
 		wheel = True

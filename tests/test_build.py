@@ -132,6 +132,22 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(
+						COMPLETE_B.replace('license-key = "MIT"', 'license-key = "MIT OR Apache-2.0"'),
+						id="COMPLETE_B_EXPRESSION_1",
+						),
+				pytest.param(
+						COMPLETE_B.replace('license-key = "MIT"', 'license-key = "GPL-3.0+"'),
+						id="COMPLETE_B_EXPRESSION_2",
+						),
+				pytest.param(
+						COMPLETE_B.replace('license-key = "MIT"', 'license-key = "MIT OR Apahe"'),
+						id="COMPLETE_B_INVALID_EXPRESSION_1",
+						),
+				pytest.param(
+						COMPLETE_B.replace('license-key = "MIT"', 'license-key = "(MIT OR Apache-2.0"'),
+						id="COMPLETE_B_SYNTAX_ERROR_EXPRESSION_1",
+						),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
 				]
 		)

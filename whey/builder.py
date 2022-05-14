@@ -34,18 +34,21 @@ import re
 import shutil
 import sys
 import tarfile
+import textwrap
+import warnings
 import zipfile
 from abc import ABC, abstractmethod
 from email.headerregistry import Address
 from functools import partial
 from posixpath import join as posixpath_join
-from typing import TYPE_CHECKING, Any, Dict, Iterator, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, Iterable, Iterator, Mapping, Optional
 from warnings import warn as warnings_warn
 
 # 3rd party
 import click
 import dom_toml
 import handy_archives
+import license_expression
 from consolekit.terminal_colours import ColourTrilean, Fore, resolve_color_default
 from dist_meta import entry_points, metadata, wheel
 from dist_meta.metadata_mapping import MetadataMapping
@@ -53,6 +56,7 @@ from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.typing import PathLike
 from domdf_python_tools.words import word_join
 from pyproject_parser import PyProjectTomlEncoder
+from pyproject_parser.utils import PyProjectDeprecationWarning
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
@@ -223,9 +227,9 @@ class AbstractBuilder(ABC):
 		:param target: The file in the build directory.
 		"""
 
-		self._echo_if_v(
-				f"Copying {source.resolve().as_posix()} -> {target.relative_to(self.build_dir).as_posix()}"
-				)
+		source_posix = source.resolve().as_posix()
+		target_posix = target.relative_to(self.build_dir).as_posix()
+		self._echo_if_v(f"Copying {source_posix} -> {target_posix}")
 
 	def report_removed(self, removed_file: pathlib.Path) -> None:
 		"""
@@ -288,7 +292,7 @@ class AbstractBuilder(ABC):
 					exclude_file.unlink()
 					self.report_removed(exclude_file)
 			else:  # pragma: no cover
-				warnings_warn(f"Unsupported command in 'additional-files': {entry}")
+				warnings.warn(f"'tool.whey.additional-files': Unsupported command {entry!r}")
 
 		#
 		# elif parts[0] == "global-include":
@@ -391,7 +395,7 @@ class AbstractBuilder(ABC):
 
 		metadata_mapping = MetadataMapping()
 
-		metadata_mapping["Metadata-Version"] = "2.2"
+		metadata_mapping["Metadata-Version"] = "2.4"
 		metadata_mapping["Name"] = self.config["name"]
 		metadata_mapping["Version"] = str(self.config["version"])
 
@@ -407,7 +411,24 @@ class AbstractBuilder(ABC):
 		metadata_mapping.update(self.parse_authors())
 
 		add_not_none("description", "Summary")
-		add_not_none("license-key", "License")
+
+		# if license-key is a valid SPDX Identifier (or PD or proprietary)
+		# add it as License-Expression. Otherwise add it as License
+		if self.config["license-key"] is None:
+			pass
+		elif self.config["license-key"] in {"LicenseRef-Public-Domain", "LicenseRef-Proprietary"}:
+			metadata_mapping["License-Expression"] = self.config["license-key"]
+		else:
+			licensing = license_expression.get_spdx_licensing()
+			validated_spdx = licensing.validate(self.config["license-key"])
+			if validated_spdx.errors:
+				# validated_spdx.errors.append("Another Error")
+				warning_msg = "'project.license-key' is not a valid SPDX Expression: "
+				warning_msg += indent_join(validated_spdx.errors)
+				warnings.warn(warning_msg, PyProjectDeprecationWarning)
+				metadata_mapping["License"] = self.config["license-key"]
+			else:
+				metadata_mapping["License-Expression"] = self.config["license-key"]
 
 		add_multiple("classifiers", "Classifier")
 		add_multiple("dependencies", "Requires-Dist")
@@ -640,7 +661,6 @@ class WheelBuilder(AbstractBuilder):
 	:param verbose: Enable verbose output.
 
 	.. autosummary-widths:: 11/32
-
 	.. latex:vspace:: -10px
 	"""
 
@@ -904,3 +924,37 @@ class WheelBuilder(AbstractBuilder):
 		self.call_additional_hooks()
 
 		return self.create_wheel_archive()
+
+
+def indent_join(iterable: Iterable[str]) -> str:
+	"""
+	Join an iterable of strings with newlines,
+	and indent each line with a tab if there is more then one element.
+
+	:param iterable:
+	"""  # noqa: D400
+
+	iterable = list(iterable)
+	if len(iterable) > 1:
+		if not iterable[0] == '':
+			iterable.insert(0, '')
+
+	return indent_with_tab(textwrap.dedent('\n'.join(iterable)))
+
+
+def indent_with_tab(
+		text: str,
+		depth: int = 1,
+		predicate: Optional[Callable[[str], bool]] = None,
+		) -> str:
+	r"""
+	Adds ``'\t'`` to the beginning of selected lines in 'text'.
+
+	:param text: The text to indent.
+	:param depth: The depth of the indentation.
+	:param predicate: If given, ``'\t'``  will only be added to the lines where ``predicate(line)``
+		is :py:obj`True`. If ``predicate`` is not provided, it will default to adding ``'\t'``
+		to all non-empty lines that do not consist solely of whitespace characters.
+	"""
+
+	return textwrap.indent(text, '\t' * depth, predicate=predicate)

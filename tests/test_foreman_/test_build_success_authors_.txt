@@ -1,4 +1,4 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: spam
 Version: 2020.0.0
 Author-email: hi@pradyunsg.me

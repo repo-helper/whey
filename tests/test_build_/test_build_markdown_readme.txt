@@ -1,9 +1,9 @@
-Metadata-Version: 2.2
+Metadata-Version: 2.4
 Name: whey
 Version: 2021.0.0
 Summary: A simple Python wheel builder for simple projects.
 Author-email: Dominic Davis-Foster <dominic@davis-foster.co.uk>
-License: MIT
+License-Expression: MIT
 Keywords: build,distribution,packaging,pep517,pep621,sdist,wheel
 Home-page: https://whey.readthedocs.io/en/latest
 Project-URL: Home Page, https://whey.readthedocs.io/en/latest

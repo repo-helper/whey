@@ -27,10 +27,12 @@ Parser for whey's own configuration.
 #
 
 # stdlib
-from typing import Dict, List, Set, Type, cast
+from contextlib import suppress
+from typing import Dict, List, Optional, Set, Type, cast
 
 # 3rd party
 import dist_meta.entry_points
+import license_expression
 from dom_toml.parser import TOML_TYPES, AbstractConfigParser, BadConfigError
 from natsort import natsorted
 from shippinglabel.classifiers import validate_classifiers
@@ -318,17 +320,22 @@ def backfill_classifiers(config: Dict[str, TOML_TYPES]) -> List[str]:
 	# TODO: Typing :: Typed
 
 	parsed_classifiers = set(config["base-classifiers"])
+	licensing = license_expression.get_spdx_licensing()
+
+	project_licenses: Optional = None
+	with suppress(license_expression.ExpressionParseError):
+		project_licenses = licensing.parse(config["license-key"])
 
 	platforms = config["platforms"]
-	license_key = config["license-key"]
 	python_versions = config["python-versions"]
 	python_implementations = config["python-implementations"]
 
-	if license_key in license_lookup:
-		parsed_classifiers.add(f"License :: OSI Approved :: {license_lookup[license_key]}")
+	if project_licenses is not None:
+		for license_key in project_licenses.objects:
+			if license_key in license_lookup:
+				parsed_classifiers.add(f"License :: OSI Approved :: {license_lookup[license_key]}")
 
 	if platforms:
-
 		if set(platforms) == {"Windows", "macOS", "Linux"}:
 			parsed_classifiers.add("Operating System :: OS Independent")
 		else:

@@ -74,7 +74,6 @@ class AbstractBuilder(ABC):
 	:param colour: Whether to use coloured output.
 
 	.. autosummary-widths:: 1/2
-		:html: 3/10
 
 	.. autoclasssumm:: AbstractBuilder
 		:autosummary-sections: Attributes
@@ -82,7 +81,6 @@ class AbstractBuilder(ABC):
 	.. latex:clearpage::
 
 	.. autosummary-widths:: 7/16
-		:html: 4/10
 
 	.. autoclasssumm:: AbstractBuilder
 		:autosummary-sections: Methods
@@ -655,7 +653,6 @@ class WheelBuilder(AbstractBuilder):
 	:param verbose: Enable verbose output.
 
 	.. autosummary-widths:: 11/32
-		:html: 4/10
 
 	.. latex:vspace:: -10px
 	"""

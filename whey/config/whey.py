@@ -102,7 +102,6 @@ class WheyParser(AbstractConfigParser):
 	Parser for the ``[tool.whey]`` table from ``pyproject.toml``.
 
 	.. autosummary-widths:: 1/2
-		:html: 45/100
 	"""
 
 	defaults = {

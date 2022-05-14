@@ -32,6 +32,7 @@ from typing import Dict, Iterable, Optional, Type
 # 3rd party
 import click
 from consolekit.utils import abort
+from dom_toml.parser import BadConfigError
 from domdf_python_tools.words import Plural
 from packaging.requirements import InvalidRequirement
 from pyproject_parser.cli import ConfigTracebackHandler
@@ -53,6 +54,12 @@ class WheyTracebackHandler(ConfigTracebackHandler):
 	"""  # noqa: D400
 
 	def handle_InvalidRequirement(self, e: InvalidRequirement) -> bool:  # noqa: D102
+		raise abort(f"{e.__class__.__name__}: {e}", colour=False)
+
+	def handle_TypeError(self, e: TypeError) -> bool:  # noqa: D102
+		raise abort(f"{e.__class__.__name__}: {e}", colour=False)
+
+	def handle_BadConfigError(self, e: BadConfigError) -> bool:  # noqa: D102
 		raise abort(f"{e.__class__.__name__}: {e}", colour=False)
 
 

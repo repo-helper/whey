@@ -47,6 +47,8 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 	The name of the project.
 
 	Ideally, the name should be normalised to lowercase, with underscores replaced by hyphens.
+	The name may only contain ASCII letters, numbers, and the following symbols: ``._-`` .
+	It must start and end with a letter or number.
 
 	This key is required, and MUST be defined statically.
 
@@ -197,7 +199,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 	  before an email, in :rfc:`822`) and not contain commas.
 	* The ``email`` value MUST be a valid email address.
 
-	.. latex:vspace:: -5px
+	.. latex:clearpage::
 
 	:bold-title:`Examples:`
 
@@ -262,6 +264,8 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 	Classifiers describe who the project is for, what systems it can run on, and how mature it is.
 	These can then be used by community members to find projects based on their desired criteria.
 
+	.. latex:clearpage::
+
 	:bold-title:`Example:`
 
 	.. code-block:: toml
@@ -277,6 +281,8 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 	:type: :toml:`Table`, with keys and values of :toml:`strings <String>`
 
 	A table of URLs where the key is the URL label and the value is the URL itself.
+
+	The URL labels are free text, but may not exceed 32 characters.
 
 	:bold-title:`Example:`
 

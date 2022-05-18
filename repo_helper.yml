@@ -79,7 +79,7 @@ entry_points:
 
 extras_require:
  readme:
-  - pyproject-parser[readme]>=0.3.0
+  - pyproject-parser[readme]>=0.6.0b2
   - docutils==0.16
  editable:
   - editables>=0.2

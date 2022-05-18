@@ -49,18 +49,8 @@ _builder = Plural("builder", "builders")
 
 class WheyTracebackHandler(ConfigTracebackHandler):
 	"""
-	Custom :class:`consolekit.tracebacks.TracebackHandler` which handles :exc:`dom_toml.parser.BadConfigError`
-	and :exc:`packaging.requirements.InvalidRequirement`.
-	"""  # noqa: D400
-
-	def handle_InvalidRequirement(self, e: InvalidRequirement) -> bool:  # noqa: D102
-		raise abort(f"{e.__class__.__name__}: {e}", colour=False)
-
-	def handle_TypeError(self, e: TypeError) -> bool:  # noqa: D102
-		raise abort(f"{e.__class__.__name__}: {e}", colour=False)
-
-	def handle_BadConfigError(self, e: BadConfigError) -> bool:  # noqa: D102
-		raise abort(f"{e.__class__.__name__}: {e}", colour=False)
+	Custom :class:`consolekit.tracebacks.TracebackHandler`.
+	"""
 
 
 def parse_custom_builders(builders: Optional[Iterable[str]]) -> Dict[str, Type[AbstractBuilder]]:

@@ -369,55 +369,73 @@ def test_build_additional_files(
 		[
 				pytest.param(
 						'[project]\nname = "spam"',
-						textwrap.dedent("""\
+						textwrap.dedent(
+								"""\
 						BadConfigError: The 'project.version' field must be provided.
 						    Use '--traceback' to view the full traceback.
-						Aborted!"""),
+						Aborted!"""
+								),
 						id="no_version"
 						),
 				pytest.param(
 						'[project]\n\nversion = "2020.0.0"',
-						textwrap.dedent("""\
+						textwrap.dedent(
+								"""\
 						BadConfigError: The 'project.name' field must be provided.
 						    Use '--traceback' to view the full traceback.
-						Aborted!"""),
+						Aborted!"""
+								),
 						id="no_name"
 						),
 				pytest.param(
 						'[project]\ndynamic = ["name"]',
-						textwrap.dedent("""\
+						textwrap.dedent(
+								"""\
 						BadConfigError: The 'project.name' field may not be dynamic.
 						    Use '--traceback' to view the full traceback.
-						Aborted!"""),
+						Aborted!"""
+								),
 						id="dynamic_name"
 						),
 				pytest.param(
 						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"',
-						re.escape(textwrap.dedent("""\
+						re.escape(
+								textwrap.dedent(
+										"""\
 						BadConfigError: The value '???????12345=============☃' for 'project.name' is invalid.
 						    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.name
 						    Use '--traceback' to view the full traceback.
-						Aborted!""")),
+						Aborted!"""
+										)
+								),
 						id="bad_name"
 						),
 				pytest.param(
 						'[project]\nname = "spam"\nversion = "???????12345=============☃"',
-						re.escape(textwrap.dedent("""\
+						re.escape(
+								textwrap.dedent(
+										"""\
 						InvalidVersion: '???????12345=============☃'
 						    Note: versions must follow PEP 440
 						    Documentation: https://peps.python.org/pep-0440/
 						    Use '--traceback' to view the full traceback.
-						Aborted!""")),
+						Aborted!"""
+										)
+								),
 						id="bad_version"
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
-						re.escape(textwrap.dedent("""\
+						re.escape(
+								textwrap.dedent(
+										"""\
 						InvalidSpecifier: '???????12345=============☃'
 						    Note: specifiers must follow PEP 508
 						    Documentation: https://peps.python.org/pep-0508/
 						    Use '--traceback' to view the full traceback.
-						Aborted!""")),
+						Aborted!"""
+										)
+								),
 						id="bad_requires_python"
 						),
 				pytest.param(

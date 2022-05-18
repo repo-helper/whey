@@ -1,6 +1,6 @@
 # stdlib
 import sys
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 # 3rd party
 import handy_archives
@@ -216,6 +216,7 @@ def test_cli_build_success(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.parametrize("verbosity", [None, '0', '1'])
 @pytest.mark.parametrize(
 		"config",
 		[
@@ -229,6 +230,8 @@ def test_build_complete(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
+		verbosity: Optional[str],
+		monkeypatch
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -238,6 +241,9 @@ def test_build_complete(
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
 	data: Dict[str, Any] = {}
+
+	if verbosity is not None:
+		monkeypatch.setenv("WHEY_VERBOSE", verbosity)
 
 	with in_directory(tmp_pathplus):
 		wheel = whey.build_wheel(tmp_pathplus)
@@ -320,10 +326,13 @@ def test_build_editable(
 	advanced_data_regression.check(data)
 
 
+@pytest.mark.parametrize("verbosity", [None, '0', '1'])
 def test_build_additional_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
+		verbosity: Optional[str],
+		monkeypatch
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -349,6 +358,9 @@ def test_build_additional_files(
 	(tmp_pathplus / "requirements.txt").write_clean("domdf_python_tools")
 
 	data: Dict[str, Any] = {}
+
+	if verbosity is not None:
+		monkeypatch.setenv("WHEY_VERBOSE", verbosity)
 
 	with in_directory(tmp_pathplus):
 		wheel = whey.build_wheel(tmp_pathplus)

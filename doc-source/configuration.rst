@@ -615,7 +615,7 @@ As a minimum, the table MUST contain the keys :tconf:`~project.name` and :tconf:
 .. _trove classifiers: https://pypi.org/classifiers/
 
 
-Enironment Variables
+Environment Variables
 --------------------------
 
 .. envvar:: CHECK_README
@@ -638,6 +638,25 @@ Enironment Variables
 	.. seealso::
 
 		`The SOURCE_DATE_EPOCH specification <https://reproducible-builds.org/specs/source-date-epoch/>`_
+
+
+.. envvar:: WHEY_VERBOSE
+
+	Run whey in verbose mode. This includes printing the names of the files being added to the sdist or wheel.
+
+	If using whey's command-line interface, this option defaults to ``0``.
+	Setting it to ``1`` has the same meaning as the :option:`-v / --verbose <whey -v>` option.
+
+	If using whey's :pep:`517` backend, this option defaults to ``1``.
+	Setting it to ``0`` disables the verbose output.
+
+
+.. envvar:: WHEY_TRACEBACK
+
+	Show the complete traceback on error.
+
+	This option defaults to ``0``.
+	Setting it to ``1`` has the same meaning as the :option:`-T / --traceback <whey -T>` option, both for the command-line interface and the :pep:`517` backend.
 
 
 Complete Example

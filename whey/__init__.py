@@ -26,6 +26,9 @@ A simple Python wheel builder for simple projects.
 #  OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
+# stdlib
+import os
+
 __author__: str = "Dominic Davis-Foster"
 __copyright__: str = "2021 Dominic Davis-Foster"
 __license__: str = "MIT License"
@@ -47,14 +50,19 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 	"""
 
 	# 3rd party
+	from consolekit.tracebacks import handle_tracebacks
 	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
 
 	# this package
 	from whey.foreman import Foreman
+	from whey.utils import WheyTracebackHandler
 
-	with TemporaryPathPlus() as tmpdir:
+	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
+	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
+
+	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyTracebackHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
-		return foreman.build_wheel(build_dir=tmpdir, out_dir=wheel_directory, verbose=True)
+		return foreman.build_wheel(build_dir=tmpdir, out_dir=wheel_directory, verbose=verbose)
 
 
 def build_sdist(sdist_directory, config_settings=None):
@@ -68,14 +76,19 @@ def build_sdist(sdist_directory, config_settings=None):
 	"""
 
 	# 3rd party
+	from consolekit.tracebacks import handle_tracebacks
 	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
 
 	# this package
 	from whey.foreman import Foreman
+	from whey.utils import WheyTracebackHandler
 
-	with TemporaryPathPlus() as tmpdir:
+	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
+	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
+
+	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyTracebackHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
-		return foreman.build_sdist(build_dir=tmpdir, out_dir=sdist_directory, verbose=True)
+		return foreman.build_sdist(build_dir=tmpdir, out_dir=sdist_directory, verbose=verbose)
 
 
 def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover
@@ -101,13 +114,18 @@ def build_editable(wheel_directory, config_settings=None, metadata_directory=Non
 	from typing import Type, cast
 
 	# 3rd party
+	from consolekit.tracebacks import handle_tracebacks
 	from domdf_python_tools.paths import PathPlus, TemporaryPathPlus
 
 	# this package
 	from whey.builder import WheelBuilder
 	from whey.foreman import Foreman
+	from whey.utils import WheyTracebackHandler
 
-	with TemporaryPathPlus() as tmpdir:
+	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
+	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
+
+	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyTracebackHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
 		builder_cls: Type[WheelBuilder] = cast(Type[WheelBuilder], foreman.get_builder("wheel"))
 		builder = builder_cls(
@@ -115,6 +133,6 @@ def build_editable(wheel_directory, config_settings=None, metadata_directory=Non
 				foreman.config,
 				build_dir=tmpdir,
 				out_dir=wheel_directory,
-				verbose=True,
+				verbose=verbose,
 				)
 		return builder.build_editable()

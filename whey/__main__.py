@@ -39,7 +39,7 @@ from consolekit.options import (
 		colour_option,
 		flag_option
 		)
-from consolekit.tracebacks import handle_tracebacks, traceback_option
+from consolekit.tracebacks import handle_tracebacks
 
 if False:  # TYPE_CHECKING:  # pylint: disable=using-constant-test
 	# stdlib
@@ -52,10 +52,16 @@ if False:  # TYPE_CHECKING:  # pylint: disable=using-constant-test
 __all__ = ["main"]
 
 
+@flag_option(
+		"-T",
+		"--traceback",
+		"show_traceback",
+		help="Show the complete traceback on error.",
+		envvar="WHEY_TRACEBACK",
+		)
 @colour_option()
-@traceback_option()
 @flag_option("-S", "--show-builders", help="Show the builders which will be used, and exit.")
-@flag_option("-v", "--verbose", help="Enable verbose output.")
+@flag_option("-v", "--verbose", help="Enable verbose output.", envvar="WHEY_VERBOSE")
 @auto_default_option(
 		"-o",
 		"--out-dir",

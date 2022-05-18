@@ -1,0 +1,20 @@
+sdist_content:
+- whey-2021.0.0/LICENSE
+- whey-2021.0.0/PKG-INFO
+- whey-2021.0.0/README.rst
+- whey-2021.0.0/pyproject.toml
+- whey-2021.0.0/requirements.txt
+- whey-2021.0.0/whey/__init__.py
+stderr: ''
+stdout: 'Wheel created at .../whey-2021.0.0-py3-none-any.whl
+
+  Source distribution created at .../whey-2021.0.0.tar.gz
+
+  '
+wheel_content:
+- whey-2021.0.0.dist-info/LICENSE
+- whey-2021.0.0.dist-info/METADATA
+- whey-2021.0.0.dist-info/RECORD
+- whey-2021.0.0.dist-info/WHEEL
+- whey-2021.0.0.dist-info/entry_points.txt
+- whey/__init__.py

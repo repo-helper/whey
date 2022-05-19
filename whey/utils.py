@@ -51,6 +51,7 @@ class WheyTracebackHandler(ConfigTracebackHandler):
 
 
 class WheyBackendTBHandler(WheyTracebackHandler):
+
 	def __init__(self, exception: BaseException = SystemExit(1)):
 		super().__init__(exception)
 

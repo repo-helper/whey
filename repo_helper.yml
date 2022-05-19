@@ -12,7 +12,7 @@ license: 'MIT'
 short_desc: 'A simple Python wheel builder for simple projects.'
 
 python_deploy_version: 3.6
-min_coverage: 90
+min_coverage: 95
 docs_fail_on_warning: true
 sphinx_html_theme: furo
 tox_testenv_extras: all

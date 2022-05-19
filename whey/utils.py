@@ -31,10 +31,7 @@ from typing import Dict, Iterable, Optional, Type
 
 # 3rd party
 import click
-from consolekit.utils import abort
-from dom_toml.parser import BadConfigError
 from domdf_python_tools.words import Plural
-from packaging.requirements import InvalidRequirement
 from pyproject_parser.cli import ConfigTracebackHandler
 
 # this package
@@ -51,6 +48,11 @@ class WheyTracebackHandler(ConfigTracebackHandler):
 	"""
 	Custom :class:`consolekit.tracebacks.TracebackHandler`.
 	"""
+
+
+class WheyBackendTBHandler(WheyTracebackHandler):
+	def __init__(self, exception: BaseException = SystemExit(1)):
+		super().__init__(exception)
 
 
 def parse_custom_builders(builders: Optional[Iterable[str]]) -> Dict[str, Type[AbstractBuilder]]:

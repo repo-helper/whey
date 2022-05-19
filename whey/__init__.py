@@ -55,12 +55,12 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 
 	# this package
 	from whey.foreman import Foreman
-	from whey.utils import WheyTracebackHandler
+	from whey.utils import WheyBackendTBHandler
 
 	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
 	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
 
-	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyTracebackHandler):
+	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyBackendTBHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
 		return foreman.build_wheel(build_dir=tmpdir, out_dir=wheel_directory, verbose=verbose)
 
@@ -81,12 +81,12 @@ def build_sdist(sdist_directory, config_settings=None):
 
 	# this package
 	from whey.foreman import Foreman
-	from whey.utils import WheyTracebackHandler
+	from whey.utils import WheyBackendTBHandler
 
 	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
 	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
 
-	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyTracebackHandler):
+	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyBackendTBHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
 		return foreman.build_sdist(build_dir=tmpdir, out_dir=sdist_directory, verbose=verbose)
 
@@ -120,12 +120,12 @@ def build_editable(wheel_directory, config_settings=None, metadata_directory=Non
 	# this package
 	from whey.builder import WheelBuilder
 	from whey.foreman import Foreman
-	from whey.utils import WheyTracebackHandler
+	from whey.utils import WheyBackendTBHandler
 
 	show_traceback = bool(int(os.getenv("WHEY_TRACEBACK", 0)))
 	verbose = bool(int(os.getenv("WHEY_VERBOSE", 1)))
 
-	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyTracebackHandler):
+	with TemporaryPathPlus() as tmpdir, handle_tracebacks(show_traceback, WheyBackendTBHandler):
 		foreman = Foreman(project_dir=PathPlus.cwd())
 		builder_cls: Type[WheelBuilder] = cast(Type[WheelBuilder], foreman.get_builder("wheel"))
 		builder = builder_cls(

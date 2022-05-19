@@ -1,5 +1,5 @@
 click>=7.1.2
-consolekit>=1.2.2
+consolekit>=1.4.1
 dist-meta>=0.1.0
 dom-toml>=0.4.0
 domdf-python-tools>=2.8.0

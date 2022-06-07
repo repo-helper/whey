@@ -35,7 +35,7 @@ __license__: str = "MIT License"
 __version__: str = "0.0.23"
 __email__: str = "dominic@davis-foster.co.uk"
 
-__all__ = ["build_sdist", "build_wheel"]
+__all__ = ("build_sdist", "build_wheel")
 
 
 def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):

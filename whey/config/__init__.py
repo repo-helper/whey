@@ -45,12 +45,12 @@ from shippinglabel.requirements import combine_requirements, read_requirements
 from whey.config.pep621 import PEP621Parser
 from whey.config.whey import WheyParser, backfill_classifiers
 
-__all__ = [
+__all__ = (
 		"PEP621Parser",
 		"WheyParser",
 		"backfill_classifiers",
 		"load_toml",
-		]
+		)
 
 _name_to_package_re = re.compile("-(?!stubs)")
 

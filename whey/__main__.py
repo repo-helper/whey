@@ -49,7 +49,7 @@ if False:  # TYPE_CHECKING:  # pylint: disable=using-constant-test
 	from consolekit.terminal_colours import ColourTrilean
 	from domdf_python_tools.typing import PathLike
 
-__all__ = ["main"]
+__all__ = ("main", )
 
 
 @flag_option(

@@ -38,7 +38,7 @@ from domdf_python_tools.typing import PathLike
 from whey.builder import AbstractBuilder
 from whey.config import load_toml
 
-__all__ = ["Foreman"]
+__all__ = ("Foreman", )
 
 
 class Foreman:

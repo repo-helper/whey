@@ -38,13 +38,13 @@ from shippinglabel.classifiers import validate_classifiers
 # this package
 from whey.builder import AbstractBuilder, SDistBuilder, WheelBuilder
 
-__all__ = [
+__all__ = (
 		"WheyParser",
 		"backfill_classifiers",
 		"get_default_builders",
 		"get_entry_points",
 		"license_lookup",
-		]
+		)
 
 #: Mapping of license short codes to license names used in trove classifiers.
 license_lookup = {

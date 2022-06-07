@@ -37,7 +37,7 @@ from typing import Dict, List
 import editables  # type: ignore[import]  # nodep
 from domdf_python_tools.typing import PathLike
 
-__all__ = ["EditableProject"]
+__all__ = ("EditableProject", )
 
 
 class EditableProject(editables.EditableProject):  # noqa: D101

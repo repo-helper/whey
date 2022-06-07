@@ -35,7 +35,7 @@ from dom_toml.parser import TOML_TYPES, BadConfigError
 from domdf_python_tools.words import Plural, word_join
 from pyproject_parser.type_hints import ProjectDict
 
-__all__ = ["PEP621Parser"]
+__all__ = ("PEP621Parser", )
 
 _field = Plural("field", "fields")
 

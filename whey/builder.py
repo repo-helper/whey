@@ -53,7 +53,7 @@ from domdf_python_tools.words import word_join
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
-__all__ = ["AbstractBuilder", "SDistBuilder", "WheelBuilder"]
+__all__ = ("AbstractBuilder", "SDistBuilder", "WheelBuilder")
 
 archive_name_sub_re = re.compile(
 		r"[^\w\d.]+",

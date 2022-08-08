@@ -27,7 +27,7 @@ Parser for whey's own configuration.
 #
 
 # stdlib
-from typing import Dict, List, Set, Type
+from typing import Dict, List, Set, Type, cast
 
 # 3rd party
 import dist_meta.entry_points
@@ -276,7 +276,7 @@ class WheyParser(AbstractConfigParser):
 							f"Is it registered as an entry point under 'whey.builder'?"
 							)
 
-				parsed_builders[builder_type] = entry_points[entry_point_name].load()
+				parsed_builders[builder_type] = cast(Type[AbstractBuilder], entry_points[entry_point_name].load())
 
 		return parsed_builders
 
@@ -363,7 +363,7 @@ def get_entry_points(group: str = "whey.builder") -> Dict[str, dist_meta.entry_p
 
 	entry_points: Dict[str, dist_meta.entry_points.EntryPoint] = {}
 
-	for entry_point in eps:
+	for entry_point in eps:  # pylint: disable=use-dict-comprehension
 		if entry_point.group == group:
 			entry_points[entry_point.name] = entry_point
 

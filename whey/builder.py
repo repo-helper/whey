@@ -29,16 +29,16 @@ The actual wheel builder.
 # stdlib
 import os
 import pathlib
-import posixpath
 import re
 import shutil
 import tarfile
-import warnings
 from abc import ABC, abstractmethod
 from datetime import datetime
 from email.headerregistry import Address
 from functools import partial
+from posixpath import join as posixpath_join
 from typing import Any, Dict, Iterator, Mapping, Optional
+from warnings import warn as warnings_warn
 
 # 3rd party
 import click
@@ -196,7 +196,7 @@ class AbstractBuilder(ABC):
 			target = self.build_dir / py_file.relative_to(self.project_dir / self.code_directory)
 			target.parent.maybe_make(parents=True)
 			target.write_clean(py_file.read_text())
-			shutil.copystat(py_file, target)
+			shutil.copystat(py_file, target)  # pylint: disable=dotted-import-in-loop
 			self.report_copied(py_file, target)
 
 	def _echo_if_v(self, *args, **kwargs):
@@ -274,6 +274,7 @@ class AbstractBuilder(ABC):
 			self.report_copied(filename, target)
 
 		for entry in entries:
+			# pylint: disable=loop-invariant-statement
 			parts = entry.split(' ')
 
 			if parts[0] == "include":
@@ -304,7 +305,7 @@ class AbstractBuilder(ABC):
 						self.report_removed(exclude_file)
 
 			else:  # pragma: no cover
-				warnings.warn(f"Unsupported command in 'additional-files': {entry}")
+				warnings_warn(f"Unsupported command in 'additional-files': {entry}")
 
 		#
 		# elif parts[0] == "global-include":
@@ -334,6 +335,7 @@ class AbstractBuilder(ABC):
 		# 				prune_file.unlink()
 		# 				self.report_removed(exclude_file)
 
+		# pylint: enable=loop-invariant-statement
 		return
 
 	def write_license(self, dest_dir: PathPlus, dest_filename: str = "LICENSE"):
@@ -418,7 +420,7 @@ class AbstractBuilder(ABC):
 
 		def add_multiple(key: str, field: str):
 			for value in self.config[key]:
-				metadata_mapping[field] = str(value)
+				metadata_mapping[field] = str(value)  # pylint: disable=loop-invariant-statement
 
 		metadata_mapping.update(self.parse_authors())
 
@@ -433,6 +435,7 @@ class AbstractBuilder(ABC):
 
 		seen_hp = False
 
+		# pylint: disable=loop-invariant-statement
 		for category, url in self.config["urls"].items():
 			if category.lower() in {"homepage", "home page"} and not seen_hp:
 				metadata_mapping["Home-page"] = url
@@ -457,6 +460,8 @@ class AbstractBuilder(ABC):
 					requirement.marker = f"extra == {extra!r}"
 
 				metadata_mapping["Requires-Dist"] = str(requirement)
+
+		# pylint: enable=loop-invariant-statement
 
 		# TODO:
 		#  https://packaging.python.org/specifications/core-metadata/#requires-external-multiple-use
@@ -542,7 +547,7 @@ class SDistBuilder(AbstractBuilder):
 		with tarfile.open(sdist_filename, mode="w:gz", format=tarfile.PAX_FORMAT) as sdist_archive:
 			for file in self.build_dir.rglob('*'):
 				if file.is_file():
-					arcname = posixpath.join(self.archive_name, file.relative_to(self.build_dir).as_posix())
+					arcname = posixpath_join(self.archive_name, file.relative_to(self.build_dir).as_posix())
 					sdist_archive.add(str(file), arcname=arcname)
 
 		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve().as_posix()}"))
@@ -779,7 +784,7 @@ class WheelBuilder(AbstractBuilder):
 
 		with handy_archives.ZipFile(wheel_filename, mode='w') as wheel_archive:
 			with (self.dist_info / "RECORD").open('w') as fp:
-				for file in sort_paths(*non_record_filenames):
+				for file in sort_paths(*non_record_filenames):  # pylint: disable=loop-invariant-statement
 
 					fp.write(f"{get_record_entry(file, relative_to=self.build_dir)}\n")
 

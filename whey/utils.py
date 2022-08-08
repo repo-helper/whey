@@ -27,7 +27,7 @@ General utilities.
 #
 
 # stdlib
-from typing import Dict, Iterable, Optional, Type
+from typing import Dict, Iterable, Optional, Type, cast
 
 # 3rd party
 import click
@@ -76,7 +76,7 @@ def parse_custom_builders(builders: Optional[Iterable[str]]) -> Dict[str, Type[A
 					f"Is it registered as an entry point under 'whey.builder'?"
 					)
 		else:
-			custom_builders[builder_name] = entry_points[builder_name].load()
+			custom_builders[builder_name] = cast(Type[AbstractBuilder], entry_points[builder_name].load())
 
 	return custom_builders
 
@@ -95,10 +95,10 @@ def print_builder_names(foreman: Foreman, custom_builders: Dict[str, Type[Abstra
 
 	for builder_name, enabled in opts.items():
 		if enabled:
-			builder_obj = foreman.config["builders"][builder_name]
+			builder_obj = foreman.config["builders"][builder_name]  # pylint: disable=loop-invariant-statement
 			builders.append(f"    {builder_name}: {builder_obj.__module__}.{builder_obj.__qualname__}")
 
-	for builder_name, builder_obj in custom_builders.items():
+	for builder_name, builder_obj in custom_builders.items():  # pylint: disable=use-list-copy
 		builders.append(f"    {builder_name}: {builder_obj.__module__}.{builder_obj.__qualname__}")
 
 	click.echo(f"Using the following {_builder(len(builders))}:")

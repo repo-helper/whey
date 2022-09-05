@@ -88,8 +88,8 @@ whey
 		:workflow: mypy
 		:alt: mypy status
 
-	.. |requires| image:: https://dependency-dash.herokuapp.com/github/repo-helper/whey/badge.svg
-		:target: https://dependency-dash.herokuapp.com/github/repo-helper/whey/
+	.. |requires| image:: https://dependency-dash.repo-helper.uk/github/repo-helper/whey/badge.svg
+		:target: https://dependency-dash.repo-helper.uk/github/repo-helper/whey/
 		:alt: Requirements Status
 
 	.. |coveralls| coveralls-shield::

@@ -633,7 +633,7 @@ Environment Variables
 
 		date +%s
 
-	.. note:: The timestamp cannot be before 1980-01-01 or after 2170-12-31.
+	.. note:: The timestamp cannot be before 1980-01-01 or after 2107-12-31.
 
 	.. seealso::
 

@@ -90,7 +90,7 @@ def test_cli_build_success(
 	advanced_data_regression.check(data)
 
 
-def check_built_wheel(filename: PathPlus):
+def check_built_wheel(filename: PathPlus) -> List[str]:
 	assert (filename).is_file()
 
 	with handy_archives.ZipFile(filename) as zip_file:
@@ -99,7 +99,7 @@ def check_built_wheel(filename: PathPlus):
 		return sorted(zip_file.namelist())
 
 
-def check_built_sdist(filename: PathPlus):
+def check_built_sdist(filename: PathPlus) -> List[str]:
 	assert (filename).is_file()
 
 	with handy_archives.TarFile.open(filename) as tar:

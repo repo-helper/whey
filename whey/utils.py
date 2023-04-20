@@ -81,7 +81,11 @@ def parse_custom_builders(builders: Optional[Iterable[str]]) -> Dict[str, Type[A
 	return custom_builders
 
 
-def print_builder_names(foreman: Foreman, custom_builders: Dict[str, Type[AbstractBuilder]], **opts: bool):
+def print_builder_names(
+		foreman: Foreman,
+		custom_builders: Dict[str, Type[AbstractBuilder]],
+		**opts: bool,
+		) -> None:
 	"""
 	Prints the name(s) of the builders which will be used.
 

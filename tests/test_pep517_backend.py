@@ -22,7 +22,7 @@ from pyproject_examples.example_configs import (
 
 # this package
 import whey
-from whey.__main__ import main
+from whey.__main__ import main  # noqa: F401
 
 if TYPE_CHECKING:
 	# 3rd party

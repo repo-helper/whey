@@ -161,7 +161,7 @@ additional-files = [
 def check_config(
 		config: Dict[str, Any],
 		data_regression: AdvancedDataRegressionFixture,
-		):
+		) -> None:
 	assert "builders" in config
 	builders = config.pop("builders")
 	assert all(isinstance(name, str) for name in builders)

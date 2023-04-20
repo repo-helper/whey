@@ -199,7 +199,7 @@ class AbstractBuilder(ABC):
 			shutil.copystat(py_file, target)  # pylint: disable=dotted-import-in-loop
 			self.report_copied(py_file, target)
 
-	def _echo_if_v(self, *args, **kwargs):
+	def _echo_if_v(self, *args, **kwargs) -> None:
 		if self.verbose:
 			self._echo(*args, **kwargs)
 
@@ -267,7 +267,7 @@ class AbstractBuilder(ABC):
 		:param \*entries:
 		"""
 
-		def copy_file(filename: PathPlus):
+		def copy_file(filename: PathPlus) -> None:
 			target = self.build_dir / filename.relative_to(self.project_dir / self.code_directory)
 			target.parent.maybe_make(parents=True)
 			shutil.copy2(src=filename, dst=target)
@@ -338,7 +338,7 @@ class AbstractBuilder(ABC):
 		# pylint: enable=loop-invariant-statement
 		return
 
-	def write_license(self, dest_dir: PathPlus, dest_filename: str = "LICENSE"):
+	def write_license(self, dest_dir: PathPlus, dest_filename: str = "LICENSE") -> None:
 		"""
 		Write the ``LICENSE`` file.
 
@@ -414,11 +414,11 @@ class AbstractBuilder(ABC):
 		metadata_mapping["Name"] = self.config["name"]
 		metadata_mapping["Version"] = str(self.config["version"])
 
-		def add_not_none(key: str, field: str):
+		def add_not_none(key: str, field: str) -> None:
 			if self.config[key] is not None:
 				metadata_mapping[field] = self.config[key]
 
-		def add_multiple(key: str, field: str):
+		def add_multiple(key: str, field: str) -> None:
 			for value in self.config[key]:
 				metadata_mapping[field] = str(value)  # pylint: disable=loop-invariant-statement
 
@@ -474,7 +474,7 @@ class AbstractBuilder(ABC):
 
 		return metadata_mapping
 
-	def write_metadata(self, metadata_file: PathPlus, metadata_mapping: MetadataMapping):
+	def write_metadata(self, metadata_file: PathPlus, metadata_mapping: MetadataMapping) -> None:
 		"""
 		Write `Core Metadata`_ to the given file.
 
@@ -486,7 +486,7 @@ class AbstractBuilder(ABC):
 		metadata_file.write_text(metadata.dumps(metadata_mapping))
 		self.report_written(metadata_file)
 
-	def call_additional_hooks(self):
+	def call_additional_hooks(self) -> None:
 		"""
 		Subclasses may call this method to give *their* subclasses an opportunity to run custom code.
 
@@ -496,7 +496,7 @@ class AbstractBuilder(ABC):
 		"""
 
 	@abstractmethod
-	def build(self):
+	def build(self) -> str:
 		"""
 		Build the distribution.
 
@@ -553,7 +553,7 @@ class SDistBuilder(AbstractBuilder):
 		self._echo(Fore.GREEN(f"Source distribution created at {sdist_filename.resolve().as_posix()}"))
 		return os.path.basename(sdist_filename)
 
-	def write_pyproject_toml(self):
+	def write_pyproject_toml(self) -> None:
 		"""
 		Write the ``pyproject.toml`` file.
 		"""
@@ -624,7 +624,7 @@ class SDistBuilder(AbstractBuilder):
 
 		return self.create_sdist_archive()
 
-	def write_readme(self):
+	def write_readme(self) -> None:
 		"""
 		Write the ``README.*`` file.
 		"""

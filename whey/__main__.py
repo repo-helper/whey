@@ -105,7 +105,7 @@ def main(
 		colour: "ColourTrilean" = None,
 		show_traceback: bool = False,
 		show_builders: bool = False,
-		):
+		) -> None:
 	"""
 	Build a wheel for the given project.
 	"""

@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture()
-def fixed_whey_version(monkeypatch):
+def fixed_whey_version(monkeypatch) -> None:
 	monkeypatch.setattr(whey, "__version__", "0.0.17")
 
 
@@ -96,7 +96,7 @@ def test_build_success(
 	advanced_data_regression.check(data)
 
 
-def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFileRegressionFixture):
+def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFileRegressionFixture) -> List[str]:
 	assert filename.is_file()
 
 	with handy_archives.ZipFile(filename) as zip_file:

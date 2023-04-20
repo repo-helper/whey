@@ -38,7 +38,7 @@ __email__: str = "dominic@davis-foster.co.uk"
 __all__ = ("build_sdist", "build_wheel")
 
 
-def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
+def build_wheel(wheel_directory, config_settings=None, metadata_directory=None) -> str:  # noqa: MAN001
 	"""
 	:pep:`517` hook to build a wheel binary distribution.
 
@@ -47,6 +47,8 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 	:param wheel_directory:
 	:param config_settings:
 	:param metadata_directory:
+
+	:returns: The filename of the created archive.
 	"""
 
 	# 3rd party
@@ -65,7 +67,7 @@ def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
 		return foreman.build_wheel(build_dir=tmpdir, out_dir=wheel_directory, verbose=verbose)
 
 
-def build_sdist(sdist_directory, config_settings=None):
+def build_sdist(sdist_directory, config_settings=None) -> str:  # noqa: MAN001
 	"""
 	:pep:`517` hook to build a source distribution.
 
@@ -73,6 +75,8 @@ def build_sdist(sdist_directory, config_settings=None):
 
 	:param sdist_directory:
 	:param config_settings:
+
+	:returns: The filename of the created archive.
 	"""
 
 	# 3rd party
@@ -91,15 +95,15 @@ def build_sdist(sdist_directory, config_settings=None):
 		return foreman.build_sdist(build_dir=tmpdir, out_dir=sdist_directory, verbose=verbose)
 
 
-def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover
+def get_requires_for_build_sdist(config_settings=None):  # pragma: no cover  # noqa: MAN001,MAN002
 	return []
 
 
-def get_requires_for_build_editable(config_settings=None):  # pragma: no cover
+def get_requires_for_build_editable(config_settings=None):  # pragma: no cover  # noqa: MAN001,MAN002
 	return ["editables>=0.2"]
 
 
-def build_editable(wheel_directory, config_settings=None, metadata_directory=None):
+def build_editable(wheel_directory, config_settings=None, metadata_directory=None):  # noqa: MAN001,MAN002
 	"""
 	:pep:`517` hook to build an editable wheel.
 

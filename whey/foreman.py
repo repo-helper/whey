@@ -72,7 +72,7 @@ class Foreman:
 			verbose: bool = False,
 			colour: ColourTrilean = None,
 			**kwargs,
-			):
+			) -> str:
 		"""
 		Build a sdist distribution using the ``sdist`` builder configured in ``pyproject.toml``.
 
@@ -99,7 +99,7 @@ class Foreman:
 			verbose: bool = False,
 			colour: ColourTrilean = None,
 			**kwargs,
-			):
+			) -> str:
 		"""
 		Build a binary distribution using the ``binary`` builder configured in ``pyproject.toml``.
 
@@ -126,7 +126,7 @@ class Foreman:
 			verbose: bool = False,
 			colour: ColourTrilean = None,
 			**kwargs,
-			):
+			) -> str:
 		"""
 		Build a wheel distribution using the ``wheel`` builder configured in ``pyproject.toml``.
 

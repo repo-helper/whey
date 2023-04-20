@@ -27,7 +27,7 @@ _C = TypeVar("_C", bound=Callable)
 pytest_plugins = ("coincidence", )
 
 
-def _representer_for(*data_type: Type):
+def _representer_for(*data_type: Type) -> Callable[[_C], _C]:
 
 	def deco(representer_fn: _C) -> _C:
 		for dtype in data_type:
@@ -39,7 +39,7 @@ def _representer_for(*data_type: Type):
 
 
 @_representer_for(str, Version, Requirement, Marker, SpecifierSet)
-def represent_packaging_types(
+def represent_packaging_types(  # noqa: MAN002
 		dumper: RegressionYamlDumper,
 		data: Union[Version, Requirement, Marker, SpecifierSet],
 		):
@@ -47,7 +47,7 @@ def represent_packaging_types(
 
 
 @_representer_for(Readme, License)
-def represent_readme_or_license(
+def represent_readme_or_license(  # noqa: MAN002
 		dumper: RegressionYamlDumper,
 		data: Union[Readme, License],
 		):
@@ -74,5 +74,5 @@ def represent_readme_or_license(
 				pytest.param(UNICODE, id="unicode"),
 				]
 		)
-def good_config(request):
+def good_config(request) -> str:
 	return request.param

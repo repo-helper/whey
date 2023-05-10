@@ -1,4 +1,4 @@
-git+https://github.com/repo-helper/pyproject-examples
+pyproject-examples @ https://github.com/repo-helper/pyproject-examples/archive/refs/heads/master.zip
 coincidence>=0.2.0
 coverage>=5.1
 coverage-pyver-pragma>=0.2.1

@@ -687,7 +687,10 @@ def test_build_wheel_from_sdist(
 	(tmp_pathplus / "sdist_unpacked").mkdir()
 
 	with handy_archives.TarFile.open(tmp_pathplus / sdist) as sdist_tar:
-		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
+		sdist_tar.extractall(
+				path=tmp_pathplus / "sdist_unpacked",
+				filter=handy_archives.fully_trusted_filter,
+				)
 
 	capsys.readouterr()
 	data: Dict[str, Any] = {}
@@ -1127,7 +1130,10 @@ def test_build_wheel_from_sdist_source_dir(
 	(tmp_pathplus / "sdist_unpacked").mkdir()
 
 	with handy_archives.TarFile.open(tmp_pathplus / sdist) as sdist_tar:
-		sdist_tar.extractall(path=tmp_pathplus / "sdist_unpacked")
+		sdist_tar.extractall(
+				path=tmp_pathplus / "sdist_unpacked",
+				filter=handy_archives.fully_trusted_filter,
+				)
 
 	capsys.readouterr()
 	data: Dict[str, Any] = {}

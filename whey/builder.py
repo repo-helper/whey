@@ -27,13 +27,14 @@ The actual wheel builder.
 #
 
 # stdlib
+import datetime
 import os
 import pathlib
 import re
 import shutil
+import sys
 import tarfile
 from abc import ABC, abstractmethod
-from datetime import datetime
 from email.headerregistry import Address
 from functools import partial
 from posixpath import join as posixpath_join
@@ -738,7 +739,7 @@ class WheelBuilder(AbstractBuilder):
 		self.report_written(wheel_file)
 
 	@staticmethod
-	def get_source_epoch() -> Optional[datetime]:
+	def get_source_epoch() -> Optional[datetime.datetime]:
 		"""
 		Returns the parsed value of the :envvar:`SOURCE_DATE_EPOCH` environment variable, or :py:obj:`None` if unset.
 
@@ -751,8 +752,10 @@ class WheelBuilder(AbstractBuilder):
 		epoch: Optional[str] = os.environ.get("SOURCE_DATE_EPOCH")
 		if epoch is None:
 			return None
+		elif epoch.isdigit() and sys.version_info >= (3, 11):
+			return datetime.datetime.fromtimestamp(int(epoch), datetime.UTC)
 		elif epoch.isdigit():
-			return datetime.utcfromtimestamp(int(epoch))
+			return datetime.datetime.utcfromtimestamp(int(epoch))
 		else:
 			raise ValueError(f"'SOURCE_DATE_EPOCH' must be an integer with no fractional component, not {epoch!r}")
 

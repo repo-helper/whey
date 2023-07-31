@@ -753,7 +753,7 @@ class WheelBuilder(AbstractBuilder):
 		if epoch is None:
 			return None
 		elif epoch.isdigit() and sys.version_info >= (3, 11):
-			return datetime.datetime.fromtimestamp(int(epoch), datetime.UTC)
+			return datetime.datetime.fromtimestamp(int(epoch), datetime.UTC)  # type: ignore[attr-defined]
 		elif epoch.isdigit():
 			return datetime.datetime.utcfromtimestamp(int(epoch))
 		else:

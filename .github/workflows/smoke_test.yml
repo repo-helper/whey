@@ -102,7 +102,7 @@ jobs:
         run: |
           python -VV
           python -m site
-          python -m pip install --upgrade "pip>=21.3" setuptools wheel virtualenv
+          python -m pip install --upgrade "pip>=21.3" setuptools wheel virtualenv pyproject-parser[cli]
           python -m pip install "check-wheel-contents>=0.1.0" "twine>=3.2.0"
           python -m pip install .[editable]
 
@@ -113,6 +113,7 @@ jobs:
       - name: Build
         run: |
           python3 -m virtualenv venv
+          python3 -m pip install $(pyproject-parser info build-system.requires | jq 'join(" ")' -r) --prefix venv -I
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
           venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt ${{ matrix.config.extra-install-args }} || exit 1
           venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1

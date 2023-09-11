@@ -1,5 +1,6 @@
 # stdlib
 import re
+import sys
 import textwrap
 from typing import TYPE_CHECKING, Any, Dict, List, Type
 
@@ -10,6 +11,7 @@ from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileR
 from consolekit.testing import CliRunner, Result
 from dom_toml.parser import BadConfigError
 from domdf_python_tools.paths import PathPlus, in_directory
+from domdf_python_tools.words import LF
 from pyproject_examples import bad_pep621_config
 from pyproject_examples.example_configs import (
 		AUTHORS,
@@ -25,6 +27,7 @@ from pyproject_examples.example_configs import (
 from re_assert import Matches  # type: ignore[import]
 
 # this package
+import whey
 from tests.example_configs import COMPLETE_A, COMPLETE_B
 from whey.__main__ import main
 
@@ -621,3 +624,16 @@ def test_show_builders_error(
 
 	result.check_stdout(advanced_file_regression)
 	assert result.exit_code == 2
+
+
+def test_version():
+
+	runner = CliRunner()
+
+	result = runner.invoke(main, catch_exceptions=False, args="--version")
+	assert result.exit_code == 0
+	assert result.stdout == f"whey version {whey.__version__}\n"
+
+	result = runner.invoke(main, catch_exceptions=False, args=["--version", "--version"])
+	assert result.exit_code == 0
+	assert result.stdout == f"whey version {whey.__version__}, Python {sys.version.replace(LF, ' ')}\n"

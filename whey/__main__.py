@@ -37,7 +37,8 @@ from consolekit.options import (
 		auto_default_argument,
 		auto_default_option,
 		colour_option,
-		flag_option
+		flag_option,
+		version_option
 		)
 from consolekit.tracebacks import handle_tracebacks
 
@@ -52,6 +53,27 @@ if False:  # TYPE_CHECKING:  # pylint: disable=using-constant-test
 __all__ = ("main", )
 
 
+def version_callback(ctx: click.Context, param: click.Option, value: int) -> None:
+	"""
+	Callback for displaying the package version (and optionally the Python runtime).
+	"""
+
+	# this package
+	import whey
+
+	if not value or ctx.resilient_parsing:
+		return
+
+	if value > 1:
+		python_version = sys.version.replace('\n', ' ')
+		click.echo(f"whey version {whey.__version__}, Python {python_version}")
+	else:
+		click.echo(f"whey version {whey.__version__}")
+
+	ctx.exit()
+
+
+@version_option(version_callback)
 @flag_option(
 		"-T",
 		"--traceback",

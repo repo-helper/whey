@@ -38,7 +38,7 @@ from abc import ABC, abstractmethod
 from email.headerregistry import Address
 from functools import partial
 from posixpath import join as posixpath_join
-from typing import Any, Dict, Iterator, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Dict, Iterator, Mapping, Optional
 from warnings import warn as warnings_warn
 
 # 3rd party
@@ -54,8 +54,9 @@ from domdf_python_tools.words import word_join
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
-# this package
-from whey.config import additional_files
+if TYPE_CHECKING:
+	# this package
+	from whey.config.additional_files import AdditionalFilesEntry
 
 __all__ = ("AbstractBuilder", "SDistBuilder", "WheelBuilder")
 
@@ -262,7 +263,7 @@ class AbstractBuilder(ABC):
 
 		self.parse_additional_files(*self.config["additional-files"])
 
-	def parse_additional_files(self, *entries: additional_files.AdditionalFilesEntry) -> None:  # pylint: disable=useless-return
+	def parse_additional_files(self, *entries: "AdditionalFilesEntry") -> None:  # pylint: disable=useless-return
 		r"""
 		Copy additional files to the build directory, by parsing `MANIFEST.in`_-style entries.
 
@@ -270,6 +271,9 @@ class AbstractBuilder(ABC):
 
 		:param \*entries:
 		"""
+
+		# this package
+		from whey.config import additional_files
 
 		for entry in entries:
 			if isinstance(entry, (additional_files.Include, additional_files.RecursiveInclude)):

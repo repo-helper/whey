@@ -92,6 +92,7 @@ extensions = [
     "sphinx_toolbox.more_autosummary.column_widths",
     "sphinx_toolbox_experimental.download_icon",
     "sphinx_packaging",
+    "attr_utils.autoattrs",
     "local_extension",
 ]
 sphinxemoji_style = "twemoji"
@@ -188,6 +189,9 @@ include = false
 [tool.dependency-dash."doc-source/requirements.txt"]
 order = 30
 include = false
+
+[tool.dep_checker.name_mapping]
+attrs = "attr"
 
 [tool.snippet-fmt.languages.python]
 reformat = true

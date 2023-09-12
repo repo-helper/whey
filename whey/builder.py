@@ -54,6 +54,9 @@ from domdf_python_tools.words import word_join
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
+# this package
+from whey.config import additional_files
+
 __all__ = ("AbstractBuilder", "SDistBuilder", "WheelBuilder")
 
 archive_name_sub_re = re.compile(
@@ -259,7 +262,7 @@ class AbstractBuilder(ABC):
 
 		self.parse_additional_files(*self.config["additional-files"])
 
-	def parse_additional_files(self, *entries: str) -> None:  # pylint: disable=useless-return
+	def parse_additional_files(self, *entries: additional_files.AdditionalFilesEntry) -> None:  # pylint: disable=useless-return
 		r"""
 		Copy additional files to the build directory, by parsing `MANIFEST.in`_-style entries.
 
@@ -268,43 +271,17 @@ class AbstractBuilder(ABC):
 		:param \*entries:
 		"""
 
-		def copy_file(filename: PathPlus) -> None:
-			target = self.build_dir / filename.relative_to(self.project_dir / self.code_directory)
-			target.parent.maybe_make(parents=True)
-			shutil.copy2(src=filename, dst=target)
-			self.report_copied(filename, target)
-
 		for entry in entries:
-			# pylint: disable=loop-invariant-statement
-			parts = entry.split(' ')
-
-			if parts[0] == "include":
-				for include_pat in parts[1:]:
-					for include_file in sorted(self.project_dir.glob(include_pat)):
-						if include_file.is_file():
-							copy_file(filename=include_file)
-
-			elif parts[0] == "exclude":
-				for exclude_pat in parts[1:]:
-					for exclude_file in sorted(self.build_dir.glob(exclude_pat)):
-						if exclude_file.is_file():
-							exclude_file.unlink()
-							self.report_removed(exclude_file)
-
-			elif parts[0] == "recursive-include":
-				for include_file in sort_paths(*(self.project_dir / parts[1]).rglob(parts[2])):
-					if "__pycache__" in include_file.parts:
-						continue
-
-					if include_file.is_file():
-						copy_file(filename=include_file)
-
-			elif parts[0] == "recursive-exclude":
-				for exclude_file in sort_paths(*(self.build_dir / parts[1]).rglob(parts[2])):
-					if exclude_file.is_file():
-						exclude_file.unlink()
-						self.report_removed(exclude_file)
-
+			if isinstance(entry, (additional_files.Include, additional_files.RecursiveInclude)):
+				for include_file in entry.iter_files(self.project_dir):
+					target = self.build_dir / include_file.relative_to(self.project_dir / self.code_directory)
+					target.parent.maybe_make(parents=True)
+					shutil.copy2(src=include_file, dst=target)
+					self.report_copied(include_file, target)
+			elif isinstance(entry, (additional_files.Exclude, additional_files.RecursiveExclude)):
+				for exclude_file in entry.iter_files(self.build_dir):
+					exclude_file.unlink()
+					self.report_removed(exclude_file)
 			else:  # pragma: no cover
 				warnings_warn(f"Unsupported command in 'additional-files': {entry}")
 

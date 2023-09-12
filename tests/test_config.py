@@ -157,6 +157,22 @@ additional-files = [
 ]
 """
 
+COMPLETE_B_ADDITIONAL_FILES = COMPLETE_B.replace(
+		"""
+additional-files = [
+  "include whey/style.css",
+]
+""",
+		"""
+additional-files = [
+  "include whey/style.css",
+  "recursive-include whey/templates *",
+  "recursive-exclude whey/templates *.css *.js",
+  "exclude whey/_core.pyd",
+]
+""",
+		)
+
 
 def check_config(
 		config: Dict[str, Any],
@@ -197,6 +213,7 @@ def check_config(
 				pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
+				pytest.param(COMPLETE_B_ADDITIONAL_FILES, id="COMPLETE_B_ADDITIONAL_FILES"),
 				]
 		)
 def test_parse_valid_config(
@@ -625,7 +642,6 @@ def test_bad_config_license(
 		license_key: str,
 		expected: str,
 		tmp_pathplus: PathPlus,
-		advanced_data_regression: AdvancedDataRegressionFixture,
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
@@ -882,4 +898,51 @@ def test_bad_config_whey_table(
 	(tmp_pathplus / "pyproject.toml").write_clean(f"{MINIMAL_CONFIG}\n[tool.whey]\n{config}")
 
 	with pytest.raises(exception, match=match):
+		load_toml(tmp_pathplus / "pyproject.toml")
+
+
+@pytest.mark.parametrize(
+		"config, match",
+		[
+				pytest.param(
+						COMPLETE_B.replace('"include whey/style.css",', '"recursive-include whey/*.css",'),
+						r"additional-files: 'recursive-include' must have one path and at least one pattern specified\.",
+						id="recursive-include no space"
+						),
+				pytest.param(
+						COMPLETE_B.replace('"include whey/style.css",', '"recursive-exclude whey/*.css",'),
+						r"additional-files: 'recursive-exclude' must have one path and at least one pattern specified\.",
+						id="recursive-exclude no space"
+						),
+				pytest.param(
+						COMPLETE_B.replace('"include whey/style.css",', '"include",'),
+						r"additional-files: 'include' must have at least one path or pattern specified\.",
+						id="include no parameters"
+						),
+				pytest.param(
+						COMPLETE_B.replace('"include whey/style.css",', '"exclude",'),
+						r"additional-files: 'exclude' must have at least one path or pattern specified\.",
+						id="exclude no parameters"
+						),
+				pytest.param(
+						COMPLETE_B.replace('"include whey/style.css",', '"recursive-include",'),
+						r"additional-files: 'recursive-include' must have one path and at least one pattern specified\.",
+						id="recursive-include no parameters"
+						),
+				pytest.param(
+						COMPLETE_B.replace('"include whey/style.css",', '"recursive-exclude",'),
+						r"additional-files: 'recursive-exclude' must have one path and at least one pattern specified\.",
+						id="recursive-exclude no parameters"
+						),
+				]
+		)
+def test_bad_config_additional_files(
+		config: str,
+		match: str,
+		tmp_pathplus: PathPlus,
+		):
+
+	(tmp_pathplus / "pyproject.toml").write_text(config)
+
+	with pytest.raises(BadConfigError, match=match):
 		load_toml(tmp_pathplus / "pyproject.toml")

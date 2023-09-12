@@ -37,6 +37,7 @@ from shippinglabel.classifiers import validate_classifiers
 
 # this package
 from whey.builder import AbstractBuilder, SDistBuilder, WheelBuilder
+from whey.config import additional_files
 
 __all__ = (
 		"WheyParser",
@@ -160,7 +161,7 @@ class WheyParser(AbstractConfigParser):
 
 		return license_key
 
-	def parse_additional_files(self, config: Dict[str, TOML_TYPES]) -> List[str]:
+	def parse_additional_files(self, config: Dict[str, TOML_TYPES]) -> List[additional_files.AdditionalFilesEntry]:
 		"""
 		Parse the ``additional-files`` key, giving `MANIFEST.in`_-style
 		entries for additional files to include in distributions.
@@ -170,12 +171,19 @@ class WheyParser(AbstractConfigParser):
 		:param config: The unparsed TOML config for the ``[tool.whey]`` table.
 		"""  # noqa: D400
 
-		additional_files = config["additional-files"]
+		entries = config["additional-files"]
 
-		for idx, file in enumerate(additional_files):
+		for idx, file in enumerate(entries):
 			self.assert_indexed_type(file, str, ["tool", "whey", "additional-files"], idx=idx)
 
-		return additional_files
+		parsed_additional_files = []
+
+		for entry in entries:
+			parsed_entry = additional_files.from_entry(entry)
+			if parsed_entry is not None:
+				parsed_additional_files.append(parsed_entry)
+
+		return parsed_additional_files
 
 	def parse_platforms(self, config: Dict[str, TOML_TYPES]) -> List[str]:
 		"""

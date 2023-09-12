@@ -22,6 +22,9 @@ from pyproject_examples.example_configs import (
 from pyproject_parser.classes import License, Readme
 from pytest_regressions.data_regression import RegressionYamlDumper
 
+# this package
+from whey.config.additional_files import AdditionalFilesEntry
+
 _C = TypeVar("_C", bound=Callable)
 
 pytest_plugins = ("coincidence", )
@@ -50,6 +53,14 @@ def represent_packaging_types(  # noqa: MAN002
 def represent_readme_or_license(  # noqa: MAN002
 		dumper: RegressionYamlDumper,
 		data: Union[Readme, License],
+		):
+	return dumper.represent_dict(data.to_dict())
+
+
+@_representer_for(AdditionalFilesEntry)
+def represent_additional_files_entry(  # noqa: MAN002
+		dumper: RegressionYamlDumper,
+		data: AdditionalFilesEntry,
 		):
 	return dumper.represent_dict(data.to_dict())
 

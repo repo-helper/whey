@@ -55,6 +55,7 @@ extra_sphinx_extensions:
  - sphinx_toolbox.more_autosummary.column_widths
  - sphinx_toolbox_experimental.download_icon
  - sphinx_packaging
+ - attr_utils.autoattrs
  - local_extension
 
 classifiers:

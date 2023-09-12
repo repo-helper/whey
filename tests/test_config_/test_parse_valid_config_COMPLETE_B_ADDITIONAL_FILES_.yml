@@ -2,6 +2,18 @@ additional-files:
 - command: include
   patterns:
   - whey/style.css
+- command: recursive-include
+  path: whey/templates
+  patterns:
+  - '*'
+- command: recursive-exclude
+  path: whey/templates
+  patterns:
+  - '*.css'
+  - '*.js'
+- command: exclude
+  patterns:
+  - whey/_core.pyd
 authors:
 - email: dominic@davis-foster.co.uk
   name: Dominic Davis-Foster

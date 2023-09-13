@@ -36,8 +36,8 @@ from natsort import natsorted
 from shippinglabel.classifiers import validate_classifiers
 
 # this package
+from whey import additional_files
 from whey.builder import AbstractBuilder, SDistBuilder, WheelBuilder
-from whey.config import additional_files
 
 __all__ = (
 		"WheyParser",

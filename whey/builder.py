@@ -54,9 +54,8 @@ from domdf_python_tools.words import word_join
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
-if TYPE_CHECKING:
-	# this package
-	from whey.config.additional_files import AdditionalFilesEntry
+# this package
+from whey import additional_files
 
 __all__ = ("AbstractBuilder", "SDistBuilder", "WheelBuilder")
 
@@ -263,7 +262,7 @@ class AbstractBuilder(ABC):
 
 		self.parse_additional_files(*self.config["additional-files"])
 
-	def parse_additional_files(self, *entries: "AdditionalFilesEntry") -> None:  # pylint: disable=useless-return
+	def parse_additional_files(self, *entries: additional_files.AdditionalFilesEntry) -> None:  # pylint: disable=useless-return
 		r"""
 		Copy additional files to the build directory, by parsing `MANIFEST.in`_-style entries.
 
@@ -273,7 +272,7 @@ class AbstractBuilder(ABC):
 		"""
 
 		# this package
-		from whey.config import additional_files
+		from whey import additional_files
 
 		for entry in entries:
 			if isinstance(entry, (additional_files.Include, additional_files.RecursiveInclude)):

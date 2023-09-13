@@ -23,7 +23,7 @@ from pyproject_parser.classes import License, Readme
 from pytest_regressions.data_regression import RegressionYamlDumper
 
 # this package
-from whey.config.additional_files import AdditionalFilesEntry
+from whey.additional_files import AdditionalFilesEntry
 
 _C = TypeVar("_C", bound=Callable)
 

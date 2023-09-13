@@ -8,13 +8,6 @@
 	:members: load_toml
 
 
-:mod:`whey.config.additional_files`
-=======================================
-
-.. automodule:: whey.config.additional_files
-	:no-special-members:
-
-
 :mod:`whey.config.pep621`
 ==========================
 

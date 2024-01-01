@@ -227,10 +227,7 @@ def test_parse_valid_config(
 	if "dependencies" in config:
 		config["dependencies"] = list(map(str, config["dependencies"]))
 	if "optional-dependencies" in config:
-		config["optional-dependencies"] = {
-				k: list(map(str, v))
-				for k, v in config["optional-dependencies"].items()
-				}
+		config["optional-dependencies"] = {k: list(map(str, v)) for k, v in config["optional-dependencies"].items()}
 
 	check_config(config, advanced_data_regression)
 
@@ -300,10 +297,7 @@ def test_pep621_class_valid_config(
 	if "dependencies" in config:
 		config["dependencies"] = list(map(str, config["dependencies"]))
 	if "optional-dependencies" in config:
-		config["optional-dependencies"] = {
-				k: list(map(str, v))
-				for k, v in config["optional-dependencies"].items()
-				}
+		config["optional-dependencies"] = {k: list(map(str, v)) for k, v in config["optional-dependencies"].items()}
 
 	if "requires-python" in config and config["requires-python"] is not None:
 		config["requires-python"] = str(config["requires-python"])

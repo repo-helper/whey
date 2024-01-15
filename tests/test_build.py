@@ -335,7 +335,7 @@ requires = [ "whey",]
 build-backend = "whey"
 
 [project]
-name = "default_values"
+name = "DeFaUlT.values"
 version = "0.5.0"
 description = "Sphinx extension to show default values in documentation."
 readme = "README.rst"
@@ -397,6 +397,7 @@ def test_build_editable_namespace(
 
 		wheel = wheel_builder.build_editable()
 
+	assert wheel == "default_values-0.5.0-py3-none-any.whl"
 	assert (tmp_pathplus / wheel).is_file()
 
 	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:

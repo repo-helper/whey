@@ -88,5 +88,13 @@ extras_require:
  editable:
   - editables>=0.2
 
+github_ci_requirements:
+ Linux:
+  post:
+   - python -m pip wheel git+https://github.com/python-cffi/cffi
+ Windows:
+  post:
+   - python -m pip wheel git+https://github.com/python-cffi/cffi
+
 exclude_files:
  - contributing

@@ -66,6 +66,7 @@ jobs:
       - name: Install dependencies 🔧
         if: steps.setup-python.outcome == 'success'
         run: |
+          pip wheel git+https://github.com/python-cffi/cffi
           python -VV
           python -m site
           python -m pip install --upgrade pip setuptools wheel

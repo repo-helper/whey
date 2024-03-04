@@ -90,3 +90,15 @@ extras_require:
 
 exclude_files:
  - contributing
+
+
+github_ci_requirements:
+ Linux:
+  pre:
+   - pip wheel git+https://github.com/python-cffi/cffi
+ Windows:
+  pre:
+   - pip wheel git+https://github.com/python-cffi/cffi
+ macOS:
+  pre:
+   - pip wheel git+https://github.com/python-cffi/cffi

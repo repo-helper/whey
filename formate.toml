@@ -63,4 +63,4 @@ known_third_party = [
     "whey_conda",
     "whey_pth",
 ]
-known_first_party = "whey"
+known_first_party = [ "whey",]

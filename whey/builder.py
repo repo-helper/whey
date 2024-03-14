@@ -34,6 +34,7 @@ import re
 import shutil
 import sys
 import tarfile
+import zipfile
 from abc import ABC, abstractmethod
 from email.headerregistry import Address
 from functools import partial
@@ -765,7 +766,8 @@ class WheelBuilder(AbstractBuilder):
 
 		record_filenames = sort_paths(*record_filenames, self.dist_info / "RECORD")
 
-		with handy_archives.ZipFile(wheel_filename, mode='w') as wheel_archive:
+		# Perhaps LZMA support in the future
+		with handy_archives.ZipFile(wheel_filename, mode='w', compression=zipfile.ZIP_DEFLATED) as wheel_archive:
 			with (self.dist_info / "RECORD").open('w') as fp:
 				for file in sort_paths(*non_record_filenames):  # pylint: disable=loop-invariant-statement
 

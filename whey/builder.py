@@ -390,9 +390,7 @@ class AbstractBuilder(ABC):
 
 		metadata_mapping = MetadataMapping()
 
-		# TODO: metadata 2.2
-		# Need to translate pep621 dynamic into core metadata field names
-		metadata_mapping["Metadata-Version"] = "2.1"
+		metadata_mapping["Metadata-Version"] = "2.2"
 		metadata_mapping["Name"] = self.config["name"]
 		metadata_mapping["Version"] = str(self.config["version"])
 
@@ -404,6 +402,7 @@ class AbstractBuilder(ABC):
 			for value in self.config[key]:
 				metadata_mapping[field] = str(value)  # pylint: disable=loop-invariant-statement
 
+		add_multiple("dynamic", "Dynamic")
 		metadata_mapping.update(self.parse_authors())
 
 		add_not_none("description", "Summary")
@@ -465,7 +464,7 @@ class AbstractBuilder(ABC):
 		:param metadata_file:
 		"""
 
-		metadata_file.write_text(metadata.dumps(metadata_mapping))
+		metadata_file.write_clean(metadata.dumps(metadata_mapping))
 		self.report_written(metadata_file)
 
 	def call_additional_hooks(self) -> None:

@@ -95,12 +95,23 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 	dynamic_fields = parsed_config.get("dynamic", [])
 
 	if "classifiers" in dynamic_fields:
+		dynamic_fields.remove("classifiers")
 		parsed_config["classifiers"] = backfill_classifiers(parsed_config)
 
-	if "requires-python" in dynamic_fields and parsed_config["python-versions"]:
-		parsed_config["requires-python"] = Specifier(f">={natmin(parsed_config['python-versions'])}")
+	if "requires-python" in dynamic_fields:
+		if parsed_config["python-versions"]:
+			dynamic_fields.remove("requires-python")
+			parsed_config["requires-python"] = Specifier(f">={natmin(parsed_config['python-versions'])}")
+		else:
+			raise BadConfigError(
+					"'requires-python' was listed in 'project.dynamic', "
+					"but whey cannot determine the minimum supported Python version. \n"
+					"Set 'tool.whey.python-versions' to a list of supported Python versions to fix this."
+					)
 
 	if "dependencies" in dynamic_fields:
+		dynamic_fields.remove("dependencies")
+
 		if (project_dir / "requirements.txt").is_file():
 			dependencies, comments, invalid = read_requirements(project_dir / "requirements.txt", include_invalid=True)
 
@@ -113,6 +124,8 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 					"'project.dependencies' was listed as a dynamic field "
 					"but no 'requirements.txt' file was found."
 					)
+
+	parsed_config["dynamic"] = dynamic_fields
 
 	if "base-classifiers" in parsed_config:
 		del parsed_config["base-classifiers"]

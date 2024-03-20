@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: spam
 Version: 2020.0.0
 Requires-Dist: matplotlib>=3.0.0; (platform_machine != "aarch64" or python_version > "3.6") and extra == 'test'

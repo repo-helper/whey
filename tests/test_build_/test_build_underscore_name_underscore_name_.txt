@@ -1,3 +1,3 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: spam-spam
 Version: 2020.0.0

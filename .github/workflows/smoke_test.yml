@@ -114,7 +114,7 @@ jobs:
         run: |
           python3 -m virtualenv venv
           WHEY_TRACEBACK=1
-          python3 -m pip install $(pyproject-parser info build-system.requires -f /tmp/${{ matrix.config.name }}/pyproject.toml | jq 'join(" ")' -r) --prefix venv -I
+          python3 -m pip install $(pyproject-parser info build-system.requires -f /tmp/${{ matrix.config.name }}/pyproject.toml | jq 'join(" ")' -r)
           python3 -m pip install /tmp/${{ matrix.config.name }} --prefix venv -I --no-build-isolation
           venv/bin/python -m pip install -r /tmp/${{ matrix.config.name }}/tests/requirements.txt ${{ matrix.config.extra-install-args }} || exit 1
           venv/bin/python -m pip show ${{ matrix.config.name }} || exit 1

@@ -58,19 +58,14 @@ def version_callback(ctx: click.Context, param: click.Option, value: int) -> Non
 	Callback for displaying the package version (and optionally the Python runtime).
 	"""
 
+	# 3rd party
+	from consolekit.versions import get_version_callback
+
 	# this package
 	import whey
 
-	if not value or ctx.resilient_parsing:
-		return
-
-	if value > 1:
-		python_version = sys.version.replace('\n', ' ')
-		click.echo(f"whey version {whey.__version__}, Python {python_version}")
-	else:
-		click.echo(f"whey version {whey.__version__}")
-
-	ctx.exit()
+	key_dependencies = ["dist-meta", "handy-archives", "packaging", "pyproject-parser", "shippinglabel"]
+	return get_version_callback(whey.__version__, "whey", key_dependencies)(ctx, param, value)
 
 
 @version_option(version_callback)

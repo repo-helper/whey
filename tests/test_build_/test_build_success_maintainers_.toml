@@ -7,7 +7,6 @@ dynamic = []
 name = "Brett Cannon"
 email = "brett@python.org"
 
-
 [build-system]
 requires = [ "whey",]
 build-backend = "whey"

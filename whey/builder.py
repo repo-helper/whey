@@ -52,6 +52,7 @@ from dist_meta.metadata_mapping import MetadataMapping
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.typing import PathLike
 from domdf_python_tools.words import word_join
+from pyproject_parser import PyProjectTomlEncoder
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
 
@@ -570,9 +571,9 @@ class SDistBuilder(AbstractBuilder):
 			pp_toml["project"]["requires-python"] = str(self.config["requires-python"])
 
 		# Set the new value for "dynamic"
-		pp_toml["project"]["dynamic"] = dynamic
+		pp_toml["project"]["dynamic"] = sorted(dynamic)
 
-		dom_toml.dump(pp_toml, self.build_dir / "pyproject.toml", encoder=dom_toml.TomlEncoder)
+		dom_toml.dump(pp_toml, self.build_dir / "pyproject.toml", encoder=PyProjectTomlEncoder)
 		self.report_copied(self.project_dir / "pyproject.toml", self.build_dir / "pyproject.toml")
 
 	def build_sdist(self) -> str:

@@ -22,13 +22,12 @@ classifiers = [
     "Programming Language :: Python",
 ]
 
+[project.license]
+file = "LICENSE"
+
 [[project.authors]]
 email = "dominic@davis-foster.co.uk"
 name = "Dominic Davis-Foster"
-
-
-[project.license]
-file = "LICENSE"
 
 [tool.whey]
 base-classifiers = [ "Development Status :: 4 - Beta",]

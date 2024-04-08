@@ -7,7 +7,6 @@ dynamic = []
 [[project.authors]]
 name = "Łukasz Langa"
 
-
 [build-system]
 requires = [ "whey",]
 build-backend = "whey"

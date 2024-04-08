@@ -26,13 +26,12 @@ classifiers = [
 ]
 requires-python = ">=3.6"
 
+[project.license]
+file = "LICENSE"
+
 [[project.authors]]
 email = "dominic@davis-foster.co.uk"
 name = "Dominic Davis-Foster"
-
-
-[project.license]
-file = "LICENSE"
 
 [project.urls]
 Homepage = "https://whey.readthedocs.io/en/latest"

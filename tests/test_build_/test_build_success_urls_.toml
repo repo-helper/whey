@@ -3,12 +3,12 @@ name = "spam"
 version = "2020.0.0"
 dynamic = []
 
-[build-system]
-requires = [ "whey",]
-build-backend = "whey"
-
 [project.urls]
 homepage = "example.com"
 documentation = "readthedocs.org"
 repository = "github.com"
 changelog = "github.com/me/spam/blob/master/CHANGELOG.md"
+
+[build-system]
+requires = [ "whey",]
+build-backend = "whey"

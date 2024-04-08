@@ -3,7 +3,7 @@
 __all__ = ["extras_require"]
 
 extras_require = {
-		"readme": ["docutils>=0.16", "pyproject-parser[readme]>=0.6.0"],
+		"readme": ["docutils>=0.16", "pyproject-parser[readme]>=0.11.0b1"],
 		"editable": ["editables>=0.2"],
-		"all": ["docutils>=0.16", "editables>=0.2", "pyproject-parser[readme]>=0.6.0"]
+		"all": ["docutils>=0.16", "editables>=0.2", "pyproject-parser[readme]>=0.11.0b1"]
 		}

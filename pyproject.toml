@@ -33,12 +33,12 @@ classifiers = [
 ]
 dynamic = [ "dependencies",]
 
+[project.license]
+file = "LICENSE"
+
 [[project.authors]]
 name = "Dominic Davis-Foster"
 email = "dominic@davis-foster.co.uk"
-
-[project.license]
-file = "LICENSE"
 
 [project.urls]
 Homepage = "https://github.com/repo-helper/whey"
@@ -49,14 +49,14 @@ Documentation = "https://whey.readthedocs.io/en/latest"
 [project.scripts]
 whey = "whey.__main__:main"
 
+[project.entry-points."whey.builder"]
+whey_sdist = "whey.builder:SDistBuilder"
+whey_wheel = "whey.builder:WheelBuilder"
+
 [project.optional-dependencies]
 readme = [ "docutils>=0.16", "pyproject-parser[readme]>=0.11.0b1",]
 editable = [ "editables>=0.2",]
 all = [ "docutils>=0.16", "editables>=0.2", "pyproject-parser[readme]>=0.11.0b1",]
-
-[project.entry-points."whey.builder"]
-whey_sdist = "whey.builder:SDistBuilder"
-whey_wheel = "whey.builder:WheelBuilder"
 
 [tool.mkrecipe]
 conda-channels = [ "conda-forge", "domdfcoding",]

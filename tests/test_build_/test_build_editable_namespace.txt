@@ -4,6 +4,7 @@ Version: 0.5.0
 Summary: Sphinx extension to show default values in documentation.
 Author-email: Dominic Davis-Foster <dominic@davis-foster.co.uk>
 License-Expression: MIT
+License-File: LICENSE
 Keywords: documentation,sphinx
 Home-page: https://whey.readthedocs.io/en/latest
 Project-URL: Documentation, https://whey.readthedocs.io/en/latest

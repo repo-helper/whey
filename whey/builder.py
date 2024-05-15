@@ -430,6 +430,10 @@ class AbstractBuilder(ABC):
 			else:
 				metadata_mapping["License-Expression"] = self.config["license-key"]
 
+		# Set License-File to the path the file was written to.
+		if self.config.get("license", None) is not None:
+			metadata_mapping["License-File"] = "LICENSE"
+
 		add_multiple("classifiers", "Classifier")
 		add_multiple("dependencies", "Requires-Dist")
 
@@ -870,6 +874,7 @@ class WheelBuilder(AbstractBuilder):
 		self.copy_source()
 		self.copy_additional_files()
 		self.write_license(self.dist_info)
+		self.write_license(self.dist_info / "licenses")
 		self.write_entry_points()
 		self.write_metadata(self.dist_info / "METADATA", self.get_metadata_map())
 		self.write_wheel()
@@ -907,6 +912,7 @@ class WheelBuilder(AbstractBuilder):
 
 		extra_deps = self.create_editables_files()
 		self.write_license(self.dist_info)
+		self.write_license(self.dist_info / "licenses")
 		self.write_entry_points()
 
 		metadata = self.get_metadata_map()

@@ -1,12 +1,13 @@
 stdout: "Using the following builder:\n    wheel: whey.builder.WheelBuilder\n\nBuilding\
   \ ...\nCopying .../whey/__init__.py -> whey/__init__.py\nWriting whey-2021.0.0.dist-info/LICENSE\n\
-  Writing whey-2021.0.0.dist-info/entry_points.txt\nWriting whey-2021.0.0.dist-info/METADATA\n\
-  Writing whey-2021.0.0.dist-info/WHEEL\nWriting whey-2021.0.0.dist-info/RECORD\n\
-  Wheel created at .../whey-2021.0.0-py3-none-any.whl"
+  Writing whey-2021.0.0.dist-info/licenses/LICENSE\nWriting whey-2021.0.0.dist-info/entry_points.txt\n\
+  Writing whey-2021.0.0.dist-info/METADATA\nWriting whey-2021.0.0.dist-info/WHEEL\n\
+  Writing whey-2021.0.0.dist-info/RECORD\nWheel created at .../whey-2021.0.0-py3-none-any.whl"
 wheel_content:
 - whey-2021.0.0.dist-info/LICENSE
 - whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/RECORD
 - whey-2021.0.0.dist-info/WHEEL
 - whey-2021.0.0.dist-info/entry_points.txt
+- whey-2021.0.0.dist-info/licenses/LICENSE
 - whey/__init__.py

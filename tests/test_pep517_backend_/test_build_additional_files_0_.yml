@@ -20,6 +20,7 @@ wheel_content:
 - whey-2021.0.0.dist-info/RECORD
 - whey-2021.0.0.dist-info/WHEEL
 - whey-2021.0.0.dist-info/entry_points.txt
+- whey-2021.0.0.dist-info/licenses/LICENSE
 - whey/__init__.py
 - whey/static/foo.c
 - whey/static/foo.py

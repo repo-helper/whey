@@ -1,6 +1,7 @@
 whey/__init__.py,sha256=LVQwFWJ6dxQ2sw6nn9Ds2o34vNd7PVVmHK9aDW6AmIY,21
+whey-2021.0.0.dist-info/licenses/LICENSE,sha256=5wizT6r_v4VTz5CuAQ2HSwrPhYUFwQypVskUSmY1reQ,20
 whey-2021.0.0.dist-info/LICENSE,sha256=5wizT6r_v4VTz5CuAQ2HSwrPhYUFwQypVskUSmY1reQ,20
-whey-2021.0.0.dist-info/METADATA,sha256=wQgDuhUDBI8we_Vo0p9J3qj-8xjj_BPijZxsXPp8D9o,1421
+whey-2021.0.0.dist-info/METADATA,sha256=H39ztVHGqySsXH06SKpO0Z58IPleld5knFgJTO2Pt2E,1443
 whey-2021.0.0.dist-info/WHEEL,sha256=r2SGDgzin6Yt4GzNx_Bg7ya-CuSBkCRIHxIIrSDZ-FM,95
 whey-2021.0.0.dist-info/entry_points.txt,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
 whey-2021.0.0.dist-info/RECORD,,

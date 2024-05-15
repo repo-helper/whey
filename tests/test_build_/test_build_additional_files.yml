@@ -29,6 +29,8 @@ stdout: 'Copying .../whey/__init__.py -> whey/__init__.py
 
   Writing whey-2021.0.0.dist-info/LICENSE
 
+  Writing whey-2021.0.0.dist-info/licenses/LICENSE
+
   Writing whey-2021.0.0.dist-info/entry_points.txt
 
   Writing whey-2021.0.0.dist-info/METADATA
@@ -75,6 +77,7 @@ wheel_content:
 - whey/static/foo.py
 - whey/__init__.py
 - whey/style.css
+- whey-2021.0.0.dist-info/licenses/LICENSE
 - whey-2021.0.0.dist-info/LICENSE
 - whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/WHEEL

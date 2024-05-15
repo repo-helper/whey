@@ -3,6 +3,8 @@ stdout: 'Copying .../sdist_unpacked/whey-2021.0.0/whey/__init__.py -> whey/__ini
 
   Writing whey-2021.0.0.dist-info/LICENSE
 
+  Writing whey-2021.0.0.dist-info/licenses/LICENSE
+
   Writing whey-2021.0.0.dist-info/entry_points.txt
 
   Writing whey-2021.0.0.dist-info/METADATA
@@ -16,6 +18,7 @@ stdout: 'Copying .../sdist_unpacked/whey-2021.0.0/whey/__init__.py -> whey/__ini
   '
 wheel_content:
 - whey/__init__.py
+- whey-2021.0.0.dist-info/licenses/LICENSE
 - whey-2021.0.0.dist-info/LICENSE
 - whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/WHEEL

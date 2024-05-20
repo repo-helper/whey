@@ -203,7 +203,7 @@ jobs:
           python -VV
           python -m site
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install --upgrade "mkrecipe" "setuptools!=61.*,>=40.6.0" "wheel>=0.34.2"
+          python -m pip install --upgrade "mkrecipe" "setuptools!=61.*,<=67.1.0,>=40.6.0" "wheel>=0.34.2"
           # $CONDA is an environment variable pointing to the root of the miniconda directory
           $CONDA/bin/conda config --set always_yes yes --set changeps1 no
           $CONDA/bin/conda update -n base conda

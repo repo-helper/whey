@@ -40,7 +40,7 @@ jobs:
           python -VV
           python -m site
           python -m pip install --upgrade pip setuptools wheel
-          python -m pip install --upgrade "whey-conda" "setuptools!=61.*,<=67.1.0,>=40.6.0" "wheel>=0.34.2"
+          python -m pip install --upgrade "whey-conda" "hatch-requirements-txt"
           # $CONDA is an environment variable pointing to the root of the miniconda directory
           $CONDA/bin/conda update -n base conda
           $CONDA/bin/conda config --add channels conda-forge

@@ -17,6 +17,7 @@ docs_fail_on_warning: true
 sphinx_html_theme: furo
 tox_testenv_extras: all
 on_conda_forge: true
+use_hatch: true
 
 conda_channels:
  - conda-forge

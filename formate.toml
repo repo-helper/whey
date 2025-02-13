@@ -45,6 +45,7 @@ known_third_party = [
     "handy_archives",
     "importlib_metadata",
     "natsort",
+    "nh3",
     "packaging",
     "pyproject_examples",
     "pyproject_parser",

@@ -39,7 +39,7 @@ from abc import ABC, abstractmethod
 from email.headerregistry import Address
 from functools import partial
 from posixpath import join as posixpath_join
-from typing import TYPE_CHECKING, Any, Dict, Iterator, Mapping, Optional
+from typing import Any, Dict, Iterator, Mapping, Optional
 from warnings import warn as warnings_warn
 
 # 3rd party
@@ -52,6 +52,7 @@ from dist_meta.metadata_mapping import MetadataMapping
 from domdf_python_tools.paths import PathPlus, sort_paths, traverse_to_file
 from domdf_python_tools.typing import PathLike
 from domdf_python_tools.words import word_join
+from packaging.markers import Marker
 from pyproject_parser import PyProjectTomlEncoder
 from shippinglabel.checksum import get_record_entry
 from shippinglabel.requirements import ComparableRequirement, combine_requirements
@@ -437,9 +438,9 @@ class AbstractBuilder(ABC):
 				requirement = ComparableRequirement(str(requirement))
 
 				if requirement.marker:
-					requirement.marker = f"({requirement.marker!s}) and extra == {extra!r}"
+					requirement.marker = Marker(f"({requirement.marker!s}) and extra == {extra!r}")
 				else:
-					requirement.marker = f"extra == {extra!r}"
+					requirement.marker = Marker(f"extra == {extra!r}")
 
 				metadata_mapping["Requires-Dist"] = str(requirement)
 

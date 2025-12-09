@@ -24,7 +24,7 @@ from pyproject_examples.example_configs import (
 		OPTIONAL_DEPENDENCIES,
 		URLS
 		)
-from re_assert import Matches  # type: ignore[import]
+from re_assert import Matches  # type: ignore[import-untyped]
 
 # this package
 import whey

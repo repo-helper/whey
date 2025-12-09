@@ -11,7 +11,6 @@ version: '0.1.1'
 license: 'MIT'
 short_desc: 'A simple Python wheel builder for simple projects.'
 
-python_deploy_version: 3.8
 min_coverage: 95
 docs_fail_on_warning: true
 sphinx_html_theme: furo

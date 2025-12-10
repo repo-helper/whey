@@ -58,9 +58,6 @@ def test_create_editables_files(
 		data["listdir"] = [p.relative_to(tmpdir).as_posix() for p in sort_paths(*tmpdir.iterdir())]
 		data["pth"] = (tmpdir / "whey.pth").read_text()
 
-		if sys.version_info >= (3, 7):
-			data["code"] = (tmpdir / "_editable_impl_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
-		else:
-			data["code"] = (tmpdir / "_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
+		data["code"] = (tmpdir / "_editable_impl_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
 
 	advanced_data_regression.check(data)

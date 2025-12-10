@@ -314,10 +314,7 @@ def test_build_editable(
 		data["wheel_content"] = sorted(zip_file.namelist())
 		data["pth"] = zip_file.read_text("whey.pth")
 
-		if sys.version_info >= (3, 7):
-			data["code"] = zip_file.read_text("_editable_impl_whey.py").replace(tmp_pathplus.as_posix(), "...")
-		else:
-			data["code"] = zip_file.read_text("_whey.py").replace(tmp_pathplus.as_posix(), "...")
+		data["code"] = zip_file.read_text("_editable_impl_whey.py").replace(tmp_pathplus.as_posix(), "...")
 
 	outerr = capsys.readouterr()
 	data["stdout"] = outerr.out.replace(tmp_pathplus.as_posix(), "...")

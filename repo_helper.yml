@@ -12,7 +12,7 @@ license: 'MIT'
 short_desc: 'A simple Python wheel builder for simple projects.'
 
 min_coverage: 95
-docs_fail_on_warning: true
+# docs_fail_on_warning: true  # Warning from docutils caused by sphinx<4.3
 sphinx_html_theme: furo
 tox_testenv_extras: all
 on_conda_forge: true

@@ -34,4 +34,4 @@ jobs:
         with:
           pre-build-command: python -m pip install tox
           docs-folder: "doc-source/"
-          build-command: "tox -e docs -- -W "
+          build-command: "tox -e docs -- "

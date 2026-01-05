@@ -72,7 +72,7 @@ def represent_additional_files_entry(  # noqa: MAN002
 				pytest.param(f'{MINIMAL_CONFIG}\nrequires-python = ">=3.8"', id="requires-python"),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = ">=2.7,!=3.0.*,!=3.2.*"',
-						id="requires-python_complex"
+						id="requires-python_complex",
 						),
 				pytest.param(KEYWORDS, id="keywords"),
 				pytest.param(AUTHORS, id="authors"),

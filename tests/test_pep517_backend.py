@@ -1,5 +1,4 @@
 # stdlib
-import sys
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 # 3rd party
@@ -166,7 +165,7 @@ package = "whey"
 				pytest.param(f'{MINIMAL_CONFIG}\nrequires-python = ">=3.8"', id="requires-python"),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = ">=2.7,!=3.0.*,!=3.2.*"',
-						id="requires-python_complex"
+						id="requires-python_complex",
 						),
 				pytest.param(KEYWORDS, id="keywords"),
 				pytest.param(AUTHORS, id="authors"),
@@ -231,7 +230,7 @@ def test_build_complete(
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
 		verbosity: Optional[str],
-		monkeypatch
+		monkeypatch,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -294,7 +293,7 @@ def test_build_editable(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
-		editables_version: str
+		editables_version: str,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -329,7 +328,7 @@ def test_build_additional_files(
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
 		verbosity: Optional[str],
-		monkeypatch
+		monkeypatch,
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([

@@ -211,14 +211,11 @@ class WheyParser(AbstractConfigParser):
 
 		for idx, version in enumerate(python_versions):
 			if not isinstance(version, (str, int, float)):
-				raise TypeError(
-						f"Invalid type for 'tool.whey.python-versions[{idx}]': "
-						f"expected {str!r}, {int!r} or {float!r}, got {type(version)!r}"
-						)
+				msg = f"Invalid type for 'tool.whey.python-versions[{idx}]': expected {str!r}, {int!r} or {float!r}, got {type(version)!r}"
+				raise TypeError(msg)
 			if str(version)[0] in "12":
-				raise BadConfigError(
-						f"Invalid value for 'tool.whey.python-versions[{idx}]': whey only supports Python 3-only projects."
-						)
+				msg = f"Invalid value for 'tool.whey.python-versions[{idx}]': whey only supports Python 3-only projects."
+				raise BadConfigError(msg)
 
 		return list(map(str, python_versions))
 
@@ -279,10 +276,8 @@ class WheyParser(AbstractConfigParser):
 			if builder_type in builders:
 				entry_point_name = builders[builder_type]
 				if entry_point_name not in entry_points:
-					raise BadConfigError(
-							f"Unknown {builder_type} builder {entry_point_name!r}. \n"
-							f"Is it registered as an entry point under 'whey.builder'?"
-							)
+					msg = f"Unknown {builder_type} builder {entry_point_name!r}.\nIs it registered as an entry point under 'whey.builder'?"
+					raise BadConfigError(msg)
 
 				parsed_builders[builder_type] = cast(Type[AbstractBuilder], entry_points[entry_point_name].load())
 

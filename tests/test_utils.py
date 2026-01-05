@@ -68,7 +68,7 @@ def test_print_builder_names(
 	advanced_file_regression.check(capsys.readouterr().out)
 
 
-def test_parse_custom_builders(advanced_data_regression: AdvancedDataRegressionFixture, ):
+def test_parse_custom_builders(advanced_data_regression: AdvancedDataRegressionFixture):
 
 	assert parse_custom_builders(None) == {}
 	assert parse_custom_builders([]) == {}
@@ -86,6 +86,6 @@ def test_parse_custom_builders(advanced_data_regression: AdvancedDataRegressionF
 
 	with pytest.raises(
 			click.BadArgumentUsage,
-			match=f"Unknown builder 'foo'. \nIs it registered as an entry point under 'whey.builder'?"
+			match=f"Unknown builder 'foo'.\nIs it registered as an entry point under 'whey.builder'?",
 			):
 		parse_custom_builders(["foo"])

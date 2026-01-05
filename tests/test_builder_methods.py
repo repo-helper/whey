@@ -1,5 +1,4 @@
 # stdlib
-import sys
 from typing import TYPE_CHECKING, Any, Dict
 
 # 3rd party

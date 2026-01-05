@@ -68,11 +68,12 @@ archive_name_sub_re = re.compile(
 		)
 
 
-class AbstractBuilder(ABC):
+class AbstractBuilder(ABC):  # noqa: PRM002
 	"""
 	Abstract base class for builders of Python distributions using metadata read from ``pyproject.toml``.
 
 	:param project_dir: The project to build the distribution for.
+	:param config: Configuration parsed from ``pyproject.toml``.
 	:param build_dir: The (temporary) build directory.
 	:default build_dir: :file:`{<project_dir>}/build/`
 	:param out_dir: The output directory.
@@ -224,9 +225,8 @@ class AbstractBuilder(ABC):
 		:param target: The file in the build directory.
 		"""
 
-		self._echo_if_v(
-				f"Copying {source.resolve().as_posix()} -> {target.relative_to(self.build_dir).as_posix()}"
-				)
+		msg = f"Copying {source.resolve().as_posix()} -> {target.relative_to(self.build_dir).as_posix()}"
+		self._echo_if_v(msg)
 
 	def report_removed(self, removed_file: pathlib.Path) -> None:
 		"""
@@ -463,7 +463,8 @@ class AbstractBuilder(ABC):
 
 		.. _Core Metadata: https://packaging.python.org/specifications/core-metadata
 
-		:param metadata_file:
+		:param metadata_file: File to write to.
+		:param metadata_mapping: Data to write.
 		"""
 
 		metadata_file.write_clean(metadata.dumps(metadata_mapping))

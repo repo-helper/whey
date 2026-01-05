@@ -120,10 +120,8 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 
 			parsed_config["dependencies"] = sorted(combine_requirements(dependencies))
 		else:
-			raise BadConfigError(
-					"'project.dependencies' was listed as a dynamic field "
-					"but no 'requirements.txt' file was found."
-					)
+			msg = "'project.dependencies' was listed as a dynamic field but no 'requirements.txt' file was found."
+			raise BadConfigError(msg)
 
 	parsed_config["dynamic"] = dynamic_fields
 

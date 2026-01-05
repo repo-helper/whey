@@ -44,6 +44,8 @@ __all__ = ("Foreman", )
 class Foreman:
 	"""
 	Responsible for loading the configuration calling the builders.
+
+	:param project_dir: The project to build the distribution for.
 	"""
 
 	def __init__(self, project_dir: PathLike):
@@ -64,17 +66,24 @@ class Foreman:
 
 		return self.config["builders"][distribution_type]
 
-	def build_sdist(
-			self,
-			build_dir: Optional[PathLike] = None,
-			out_dir: Optional[PathLike] = None,
-			*args,
-			verbose: bool = False,
-			colour: ColourTrilean = None,
-			**kwargs,
-			) -> str:
+	def build_sdist(  # noqa: PRM002
+		self,
+		build_dir: Optional[PathLike] = None,
+		out_dir: Optional[PathLike] = None,
+		*args,
+		verbose: bool = False,
+		colour: ColourTrilean = None,
+		**kwargs,
+		) -> str:
 		"""
 		Build a sdist distribution using the ``sdist`` builder configured in ``pyproject.toml``.
+
+		:param build_dir: The (temporary) build directory.
+		:default build_dir: :file:`{<project_dir>}/build/sdist`
+		:param out_dir: The output directory.
+		:default out_dir: :file:`{<project_dir>}/dist`
+		:param verbose: Enable verbose output.
+		:param colour: Used coloured terminal output.
 
 		:returns: The filename of the created archive.
 		"""
@@ -91,17 +100,24 @@ class Foreman:
 				)
 		return builder.build()
 
-	def build_binary(
-			self,
-			build_dir: Optional[PathLike] = None,
-			out_dir: Optional[PathLike] = None,
-			*args,
-			verbose: bool = False,
-			colour: ColourTrilean = None,
-			**kwargs,
-			) -> str:
+	def build_binary(  # noqa: PRM002
+		self,
+		build_dir: Optional[PathLike] = None,
+		out_dir: Optional[PathLike] = None,
+		*args,
+		verbose: bool = False,
+		colour: ColourTrilean = None,
+		**kwargs,
+		) -> str:
 		"""
 		Build a binary distribution using the ``binary`` builder configured in ``pyproject.toml``.
+
+		:param build_dir: The (temporary) build directory.
+		:default build_dir: :file:`{<project_dir>}/build/sdist`
+		:param out_dir: The output directory.
+		:default out_dir: :file:`{<project_dir>}/dist`
+		:param verbose: Enable verbose output.
+		:param colour: Used coloured terminal output.
 
 		:returns: The filename of the created archive.
 		"""
@@ -118,17 +134,24 @@ class Foreman:
 				)
 		return builder.build()
 
-	def build_wheel(
-			self,
-			build_dir: Optional[PathLike] = None,
-			out_dir: Optional[PathLike] = None,
-			*args,
-			verbose: bool = False,
-			colour: ColourTrilean = None,
-			**kwargs,
-			) -> str:
+	def build_wheel(  # noqa: PRM002
+		self,
+		build_dir: Optional[PathLike] = None,
+		out_dir: Optional[PathLike] = None,
+		*args,
+		verbose: bool = False,
+		colour: ColourTrilean = None,
+		**kwargs,
+		) -> str:
 		"""
 		Build a wheel distribution using the ``wheel`` builder configured in ``pyproject.toml``.
+
+		:param build_dir: The (temporary) build directory.
+		:default build_dir: :file:`{<project_dir>}/build/sdist`
+		:param out_dir: The output directory.
+		:default out_dir: :file:`{<project_dir>}/dist`
+		:param verbose: Enable verbose output.
+		:param colour: Used coloured terminal output.
 
 		:returns: The filename of the created archive.
 		"""

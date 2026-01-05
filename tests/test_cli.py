@@ -44,7 +44,7 @@ if TYPE_CHECKING:
 				pytest.param(f'{MINIMAL_CONFIG}\nrequires-python = ">=3.8"', id="requires-python"),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = ">=2.7,!=3.0.*,!=3.2.*"',
-						id="requires-python_complex"
+						id="requires-python_complex",
 						),
 				pytest.param(KEYWORDS, id="keywords"),
 				pytest.param(AUTHORS, id="authors"),
@@ -178,7 +178,8 @@ def test_build_sdist_complete(
 	with in_directory(tmp_pathplus):
 		runner = CliRunner()
 		result: Result = runner.invoke(
-				main, args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				main,
+				args=["--sdist", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
 				)
 
 	assert result.exit_code == 0
@@ -215,7 +216,8 @@ def test_build_wheel_complete(
 	with in_directory(tmp_pathplus):
 		runner = CliRunner()
 		result: Result = runner.invoke(
-				main, args=["--wheel", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				main,
+				args=["--wheel", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
 				)
 
 	assert result.exit_code == 0
@@ -252,7 +254,8 @@ def test_build_wheel_via_builder_complete(
 	with in_directory(tmp_pathplus):
 		runner = CliRunner()
 		result: Result = runner.invoke(
-				main, args=["--builder", "whey_wheel", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				main,
+				args=["--builder", "whey_wheel", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
 				)
 
 	assert result.exit_code == 0
@@ -292,7 +295,8 @@ def test_build_binary_complete(
 	with in_directory(tmp_pathplus):
 		runner = CliRunner()
 		result: Result = runner.invoke(
-				main, args=["--binary", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)]
+				main,
+				args=["--binary", "--verbose", "--no-colour", "--out-dir", str(tmp_pathplus)],
 				)
 
 	assert result.exit_code == 0
@@ -367,6 +371,10 @@ def test_build_additional_files(
 	advanced_data_regression.check(data)
 
 
+def to_regex(string: str) -> str:
+	return re.escape(textwrap.dedent(string))
+
+
 @pytest.mark.parametrize(
 		"config, match",
 		[
@@ -378,7 +386,7 @@ def test_build_additional_files(
 						    Use '--traceback' to view the full traceback.
 						Aborted!"""
 								),
-						id="no_version"
+						id="no_version",
 						),
 				pytest.param(
 						'[project]\n\nversion = "2020.0.0"',
@@ -388,7 +396,7 @@ def test_build_additional_files(
 						    Use '--traceback' to view the full traceback.
 						Aborted!"""
 								),
-						id="no_name"
+						id="no_name",
 						),
 				pytest.param(
 						'[project]\ndynamic = ["name"]',
@@ -398,73 +406,67 @@ def test_build_additional_files(
 						    Use '--traceback' to view the full traceback.
 						Aborted!"""
 								),
-						id="dynamic_name"
+						id="dynamic_name",
 						),
 				pytest.param(
 						'[project]\nname = "???????12345=============☃"\nversion = "2020.0.0"',
-						re.escape(
-								textwrap.dedent(
-										"""\
+						to_regex(
+								"""\
 						BadConfigError: The value '???????12345=============☃' for 'project.name' is invalid.
 						    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.name
 						    Use '--traceback' to view the full traceback.
 						Aborted!"""
-										)
 								),
-						id="bad_name"
+						id="bad_name",
 						),
 				pytest.param(
 						'[project]\nname = "spam"\nversion = "???????12345=============☃"',
-						re.escape(
-								textwrap.dedent(
-										"""\
+						to_regex(
+								"""\
 						InvalidVersion: '???????12345=============☃'
 						    Note: versions must follow PEP 440
 						    Documentation: https://peps.python.org/pep-0440/
 						    Use '--traceback' to view the full traceback.
 						Aborted!"""
-										)
 								),
-						id="bad_version"
+						id="bad_version",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = "???????12345=============☃"',
-						re.escape(
-								textwrap.dedent(
-										"""\
+						to_regex(
+								"""\
 						InvalidSpecifier: '???????12345=============☃'
 						    Note: specifiers must follow PEP 508
 						    Documentation: https://peps.python.org/pep-0508/
 						    Use '--traceback' to view the full traceback.
 						Aborted!"""
-										)
 								),
-						id="bad_requires_python"
+						id="bad_requires_python",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nauthors = [{{name = "Bob, Alice"}}]',
 						r"BadConfigError: The 'project.authors\[0\].name' key cannot contain commas.\n    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.authors\n    Use '--traceback' to view the full traceback.\nAborted!",
-						id="author_comma"
+						id="author_comma",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nmaintainers = [{{name = "Bob, Alice"}}]',
 						r"BadConfigError: The 'project.maintainers\[0\].name' key cannot contain commas.\n    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.maintainers\n    Use '--traceback' to view the full traceback.\nAborted!",
-						id="maintainer_comma"
+						id="maintainer_comma",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nkeywords = [1, 2, 3, 4, 5]',
 						r"TypeError: Invalid type for 'project.keywords\[0\]': expected <class 'str'>, got <class 'int'>\n    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.keywords\n    Use '--traceback' to view the full traceback.\nAborted!",
-						id="keywords_wrong_type"
+						id="keywords_wrong_type",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nclassifiers = [1, 2, 3, 4, 5]',
 						r"TypeError: Invalid type for 'project.classifiers\[0\]': expected <class 'str'>, got <class 'int'>\n    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.classifiers\n    Use '--traceback' to view the full traceback.\nAborted!",
-						id="classifiers_wrong_type"
+						id="classifiers_wrong_type",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\ndependencies = [1, 2, 3, 4, 5]',
 						r"TypeError: Invalid type for 'project.dependencies\[0\]': expected <class 'str'>, got <class 'int'>\n    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.dependencies\n    Use '--traceback' to view the full traceback.\nAborted!",
-						id="dependencies_wrong_type"
+						id="dependencies_wrong_type",
 						),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nreadme = "README.rst"',
@@ -536,7 +538,7 @@ class _Matches(Matches):
 						'[project]\nname = "spam"',
 						BadConfigError,
 						"The 'project.version' field must be provided.",
-						id="no_version"
+						id="no_version",
 						),
 				*bad_pep621_config,
 				]
@@ -594,7 +596,7 @@ def test_show_builders(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_file_regression: AdvancedFileRegressionFixture,
-		args: List[str]
+		args: List[str],
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 

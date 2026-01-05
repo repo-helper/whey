@@ -115,10 +115,8 @@ class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True)
 			if unsupported_fields:
 				supported = word_join(sorted(supported_dynamic), oxford=True, use_repr=True)
 				unsupported = word_join(sorted(unsupported_fields), oxford=True, use_repr=True)
-				raise BadConfigError(
-						f"Unsupported dynamic {_field(len(unsupported_fields))} {unsupported}.\n"
-						f"note: whey only supports {supported} as dynamic fields."
-						)
+				msg = f"Unsupported dynamic {_field(len(unsupported_fields))} {unsupported}.\nnote: whey only supports {supported} as dynamic fields."
+				raise BadConfigError(msg)
 
 		if "version" not in config:
 			raise BadConfigError("The 'project.version' field must be provided.")

@@ -190,9 +190,8 @@ class RecursiveInclude(AdditionalFilesEntry):
 
 		parts = parameters.split(' ')
 		if len(parts) < 2:
-			raise BadConfigError(
-					f"additional-files: 'recursive-include' must have one path and at least one pattern specified."
-					)
+			msg = "additional-files: 'recursive-include' must have one path and at least one pattern specified."
+			raise BadConfigError(msg)
 
 		return cls(parts[0], parts[1:])
 
@@ -244,9 +243,8 @@ class RecursiveExclude(AdditionalFilesEntry):
 
 		parts = parameters.split(' ')
 		if len(parts) < 2:
-			raise BadConfigError(
-					f"additional-files: 'recursive-exclude' must have one path and at least one pattern specified."
-					)
+			msg = "additional-files: 'recursive-exclude' must have one path and at least one pattern specified."
+			raise BadConfigError(msg)
 
 		return cls(parts[0], parts[1:])
 

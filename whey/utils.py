@@ -71,10 +71,8 @@ def parse_custom_builders(builders: Optional[Iterable[str]]) -> Dict[str, Type[A
 	entry_points = get_entry_points()
 	for builder_name in builders:
 		if builder_name not in entry_points:
-			raise click.BadArgumentUsage(
-					f"Unknown builder {builder_name!r}. \n"
-					f"Is it registered as an entry point under 'whey.builder'?"
-					)
+			msg = f"Unknown builder {builder_name!r}.\nIs it registered as an entry point under 'whey.builder'?"
+			raise click.BadArgumentUsage(msg)
 		else:
 			custom_builders[builder_name] = cast(Type[AbstractBuilder], entry_points[builder_name].load())
 
@@ -86,12 +84,12 @@ def print_builder_names(
 		custom_builders: Dict[str, Type[AbstractBuilder]],
 		**opts: bool,
 		) -> None:
-	"""
+	r"""
 	Prints the name(s) of the builders which will be used.
 
 	:param foreman:
 	:param custom_builders:
-	:param opts: Keyword arguments for builder categories.
+	:param \*\*opts: Keyword arguments for builder categories.
 		Corresponds to the ``--sdist``, ``--wheel`` and ``--binary`` options.
 	"""
 

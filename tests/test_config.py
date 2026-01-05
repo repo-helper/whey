@@ -199,7 +199,7 @@ def check_config(
 				pytest.param(f'{MINIMAL_CONFIG}\nrequires-python = ">=3.8"', id="requires-python"),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = ">=2.7,!=3.0.*,!=3.2.*"',
-						id="requires-python_complex"
+						id="requires-python_complex",
 						),
 				pytest.param(KEYWORDS, id="keywords"),
 				pytest.param(AUTHORS, id="authors"),
@@ -264,7 +264,7 @@ ProjectDictPureClasses = TypedDict(
 				pytest.param(f'{MINIMAL_CONFIG}\nrequires-python = ">=3.8"', id="requires-python"),
 				pytest.param(
 						f'{MINIMAL_CONFIG}\nrequires-python = ">=2.7,!=3.0.*,!=3.2.*"',
-						id="requires-python_complex"
+						id="requires-python_complex",
 						),
 				pytest.param(KEYWORDS, id="keywords"),
 				pytest.param(AUTHORS, id="authors"),
@@ -335,15 +335,15 @@ def test_parse_valid_config_readme(
 				pytest.param('readme = {file = "README.txt"}', id="txt_file"),
 				pytest.param(
 						'readme = {text = "This is the inline README README.", content-type = "text/x-rst"}',
-						id="text_content_type_rst"
+						id="text_content_type_rst",
 						),
 				pytest.param(
 						'readme = {text = "This is the inline markdown README.", content-type = "text/markdown"}',
-						id="text_content_type_md"
+						id="text_content_type_md",
 						),
 				pytest.param(
 						'readme = {text = "This is the inline README.", content-type = "text/plain"}',
-						id="text_content_type_plain"
+						id="text_content_type_plain",
 						),
 				]
 		)
@@ -372,7 +372,10 @@ _bad_readmes = pytest.mark.parametrize(
 		"readme, expected, exception",
 		[
 				pytest.param(
-						"readme = {}", "The 'project.readme' table cannot be empty.", BadConfigError, id="empty"
+						"readme = {}",
+						"The 'project.readme' table cannot be empty.",
+						BadConfigError,
+						id="empty",
 						),
 				pytest.param(
 						"readme = {fil = 'README.md'}",
@@ -384,52 +387,52 @@ _bad_readmes = pytest.mark.parametrize(
 						'readme = {text = "This is the inline README."}',
 						"The 'project.readme.content-type' key must be provided when 'project.readme.text' is given.",
 						BadConfigError,
-						id="text_only"
+						id="text_only",
 						),
 				pytest.param(
 						'readme = {content-type = "text/x-rst"}',
 						"The 'project.readme.content-type' key cannot be provided on its own; "
 						"Please provide the 'project.readme.text' key too.",
 						BadConfigError,
-						id="content_type_only"
+						id="content_type_only",
 						),
 				pytest.param(
 						'readme = {charset = "cp1252"}',
 						"The 'project.readme.charset' key cannot be provided on its own; "
 						"Please provide the 'project.readme.text' key too.",
 						BadConfigError,
-						id="charset_only"
+						id="charset_only",
 						),
 				pytest.param(
 						'readme = {charset = "cp1252", content-type = "text/x-rst"}',
 						"The 'project.readme.content-type' key cannot be provided on its own; "
 						"Please provide the 'project.readme.text' key too.",
 						BadConfigError,
-						id="content_type_charset"
+						id="content_type_charset",
 						),
 				pytest.param(
 						'readme = {text = "This is the inline README", content-type = "application/x-abiword"}',
 						"Unrecognised value for 'project.readme.content-type': 'application/x-abiword'",
 						BadConfigError,
-						id="bad_content_type"
+						id="bad_content_type",
 						),
 				pytest.param(
 						'readme = {file = "README"}',
 						"Unsupported extension for 'README'",
 						ValueError,
-						id="no_extension"
+						id="no_extension",
 						),
 				pytest.param(
 						'readme = {file = "README.doc"}',
 						"Unsupported extension for 'README.doc'",
 						ValueError,
-						id="bad_extension"
+						id="bad_extension",
 						),
 				pytest.param(
 						'readme = {file = "README.doc", text = "This is the README"}',
 						"The 'project.readme.file' and 'project.readme.text' keys are mutually exclusive.",
 						BadConfigError,
-						id="file_and_readme"
+						id="file_and_readme",
 						),
 				]
 		)
@@ -551,7 +554,7 @@ license-key = "MIT"
 	check_config(config, advanced_data_regression)
 
 
-def test_parse_dynamic_requirements_invalid(tmp_pathplus: PathPlus, ):
+def test_parse_dynamic_requirements_invalid(tmp_pathplus: PathPlus):
 	toml_config = dedent(
 			"""
 [project]
@@ -623,12 +626,12 @@ def test_parse_valid_config_license_text(
 				pytest.param(
 						"license = {}",
 						"The 'project.license' table should contain one of 'text' or 'file'.",
-						id="empty"
+						id="empty",
 						),
 				pytest.param(
 						'license = {text = "MIT", file = "LICENSE.txt"}',
 						"The 'project.license.file' and 'project.license.text' keys are mutually exclusive.",
-						id="double_license"
+						id="double_license",
 						),
 				]
 		)
@@ -657,7 +660,7 @@ def test_bad_config_license(
 						'[project]\nname = "spam"',
 						BadConfigError,
 						"The 'project.version' field must be provided.",
-						id="no_version"
+						id="no_version",
 						),
 				*bad_pep621_config,
 				]
@@ -676,7 +679,7 @@ def test_parse_config_errors(config: str, expects: Type[Exception], match: str, 
 						'[project]\nname = "spam"',
 						BadConfigError,
 						"The 'project.version' field must be provided.",
-						id="no_version"
+						id="no_version",
 						),
 				*bad_pep621_config,
 				]
@@ -775,27 +778,27 @@ def test_backfill_classifiers(config: Dict[str, str], advanced_data_regression: 
 				pytest.param(
 						f"{MINIMAL_CONFIG}\ndynamic = ['version']",
 						"Unsupported dynamic field 'version'.\nnote: whey only supports .* as dynamic fields.",
-						id="version"
+						id="version",
 						),
 				pytest.param(
 						f"{MINIMAL_CONFIG}\ndynamic = ['optional-dependencies']",
 						"Unsupported dynamic field 'optional-dependencies'.\nnote: whey only supports .* as dynamic fields.",
-						id="optional-dependencies"
+						id="optional-dependencies",
 						),
 				pytest.param(
 						f"{MINIMAL_CONFIG}\ndynamic = ['authors']",
 						"Unsupported dynamic field 'authors'.\nnote: whey only supports .* as dynamic fields.",
-						id="authors"
+						id="authors",
 						),
 				pytest.param(
 						f"{MINIMAL_CONFIG}\ndynamic = ['keywords']",
 						"Unsupported dynamic field 'keywords'.\nnote: whey only supports .* as dynamic fields.",
-						id="keywords"
+						id="keywords",
 						),
 				pytest.param(
 						f"{MINIMAL_CONFIG}\ndependencies = ['foo']\ndynamic = ['dependencies']",
 						"'dependencies' was listed in 'project.dynamic' but a value was given.",
-						id="dynamic_but_given"
+						id="dynamic_but_given",
 						),
 				]
 		)
@@ -818,67 +821,67 @@ def test_bad_config_dynamic(
 						"package = 1234",
 						TypeError,
 						"Invalid type for 'tool.whey.package': expected <class 'str'>, got <class 'int'>",
-						id="package-int"
+						id="package-int",
 						),
 				pytest.param(
 						"package = ['spam', 'eggs']",
 						TypeError,
 						"Invalid type for 'tool.whey.package': expected <class 'str'>, got <class 'list'>",
-						id="package-list"
+						id="package-list",
 						),
 				pytest.param(
 						"source-dir = 1234",
 						TypeError,
 						"Invalid type for 'tool.whey.source-dir': expected <class 'str'>, got <class 'int'>",
-						id="source-dir-int"
+						id="source-dir-int",
 						),
 				pytest.param(
 						"source-dir = ['spam', 'eggs']",
 						TypeError,
 						"Invalid type for 'tool.whey.source-dir': expected <class 'str'>, got <class 'list'>",
-						id="source-dir-list"
+						id="source-dir-list",
 						),
 				pytest.param(
 						"license-key = 1234",
 						TypeError,
 						"Invalid type for 'tool.whey.license-key': expected <class 'str'>, got <class 'int'>",
-						id="license-key-int"
+						id="license-key-int",
 						),
 				pytest.param(
 						"license-key = ['MIT', 'Apache2']",
 						TypeError,
 						"Invalid type for 'tool.whey.license-key': expected <class 'str'>, got <class 'list'>",
-						id="license-key-list"
+						id="license-key-list",
 						),
 				pytest.param(
 						"license-key = {file = 'LICENSE'}",
 						TypeError,
 						"Invalid type for 'tool.whey.license-key': expected <class 'str'>, got <class 'dict'>",
-						id="license-key-dict"
+						id="license-key-dict",
 						),
 				# pytest.param(
 				# 		"additional-files = 'include foo.bar'",
 				# 		TypeError,
 				# 		"Invalid type for 'tool.whey.additional-files': expected <class 'str'>, got <class 'dict'>",
-				# 		id="additional-files-dict"
+				# 		id="additional-files-dict",
 				# 		),
 				pytest.param(
 						"python-versions = ['2.7']",
 						BadConfigError,
 						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
-						id="python-versions-2.7-string"
+						id="python-versions-2.7-string",
 						),
 				pytest.param(
 						"python-versions = [2.7]",
 						BadConfigError,
 						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
-						id="python-versions-2.7-float"
+						id="python-versions-2.7-float",
 						),
 				pytest.param(
 						"python-versions = ['1.6']",
 						BadConfigError,
 						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
-						id="python-versions-1.6-string"
+						id="python-versions-1.6-string",
 						),
 				]
 		)
@@ -901,32 +904,32 @@ def test_bad_config_whey_table(
 				pytest.param(
 						COMPLETE_B.replace('"include whey/style.css",', '"recursive-include whey/*.css",'),
 						r"additional-files: 'recursive-include' must have one path and at least one pattern specified\.",
-						id="recursive-include no space"
+						id="recursive-include no space",
 						),
 				pytest.param(
 						COMPLETE_B.replace('"include whey/style.css",', '"recursive-exclude whey/*.css",'),
 						r"additional-files: 'recursive-exclude' must have one path and at least one pattern specified\.",
-						id="recursive-exclude no space"
+						id="recursive-exclude no space",
 						),
 				pytest.param(
 						COMPLETE_B.replace('"include whey/style.css",', '"include",'),
 						r"additional-files: 'include' must have at least one path or pattern specified\.",
-						id="include no parameters"
+						id="include no parameters",
 						),
 				pytest.param(
 						COMPLETE_B.replace('"include whey/style.css",', '"exclude",'),
 						r"additional-files: 'exclude' must have at least one path or pattern specified\.",
-						id="exclude no parameters"
+						id="exclude no parameters",
 						),
 				pytest.param(
 						COMPLETE_B.replace('"include whey/style.css",', '"recursive-include",'),
 						r"additional-files: 'recursive-include' must have one path and at least one pattern specified\.",
-						id="recursive-include no parameters"
+						id="recursive-include no parameters",
 						),
 				pytest.param(
 						COMPLETE_B.replace('"include whey/style.css",', '"recursive-exclude",'),
 						r"additional-files: 'recursive-exclude' must have one path and at least one pattern specified\.",
-						id="recursive-exclude no parameters"
+						id="recursive-exclude no parameters",
 						),
 				]
 		)

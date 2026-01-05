@@ -1,7 +1,6 @@
 # stdlib
 import os
 import shutil
-import sys
 import tempfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
@@ -269,7 +268,7 @@ def test_build_editable(
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys: "CaptureFixture[str]",
-		editables_version: str
+		editables_version: str,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -664,7 +663,10 @@ def test_build_wheel_from_sdist(
 	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_lines([
-			"httpx", "gidgethub[httpx]>4.0.0", "django>2.1; os_name != 'nt'", "django>2.0; os_name == 'nt'"
+			"httpx",
+			"gidgethub[httpx]>4.0.0",
+			"django>2.1; os_name != 'nt'",
+			"django>2.0; os_name == 'nt'",
 			])
 
 	# Build the sdist
@@ -787,14 +789,16 @@ def test_build_wheel_reproducible(
 						["[project]", 'name = "spam-spam"', 'version = "2020.0.0"'],
 						id="hyphen_name_underscore_package_implicit",
 						),
-				pytest.param([
-						"[project]",
-						'name = "spam-spam"',
-						'version = "2020.0.0"',
-						"[tool.whey]",
-						"package = 'spam_spam'"
-						],
-								id="hyphen_name_underscore_package_explicit"),
+				pytest.param(
+						[
+								"[project]",
+								'name = "spam-spam"',
+								'version = "2020.0.0"',
+								"[tool.whey]",
+								"package = 'spam_spam'",
+								],
+						id="hyphen_name_underscore_package_explicit",
+						),
 				]
 		)
 def test_build_underscore_name(
@@ -802,7 +806,7 @@ def test_build_underscore_name(
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys: "CaptureFixture[str]",
-		config: List[str]
+		config: List[str],
 		):
 	(tmp_pathplus / "pyproject.toml").write_lines(config)
 	(tmp_pathplus / "spam_spam").mkdir()
@@ -1107,7 +1111,10 @@ def test_build_wheel_from_sdist_source_dir(
 	(tmp_pathplus / "README.rst").write_clean("Spam Spam Spam Spam")
 	(tmp_pathplus / "LICENSE").write_clean("This is the license")
 	(tmp_pathplus / "requirements.txt").write_lines([
-			"httpx", "gidgethub[httpx]>4.0.0", "django>2.1; os_name != 'nt'", "django>2.0; os_name == 'nt'"
+			"httpx",
+			"gidgethub[httpx]>4.0.0",
+			"django>2.1; os_name != 'nt'",
+			"django>2.0; os_name == 'nt'",
 			])
 
 	# Build the sdist

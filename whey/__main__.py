@@ -53,7 +53,7 @@ if False:  # TYPE_CHECKING:  # pylint: disable=using-constant-test
 __all__ = ("main", )
 
 
-def version_callback(ctx: click.Context, param: click.Option, value: int) -> None:
+def version_callback(ctx: click.Context, param: click.Option, value: int) -> None:  # noqa: PRM002
 	"""
 	Callback for displaying the package version (and optionally the Python runtime).
 	"""

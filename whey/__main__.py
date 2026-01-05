@@ -110,7 +110,7 @@ def version_callback(ctx: click.Context, param: click.Option, value: int) -> Non
 		description="The path to the project to build.",
 		)
 @click_command()
-def main(
+def main(  # noqa: PRM002
 		project: "PathLike" = '.',
 		build_dir: "Optional[str]" = None,
 		out_dir: "Optional[str]" = None,

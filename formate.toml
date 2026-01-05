@@ -27,39 +27,6 @@ lines_between_types = 0
 use_parentheses = true
 remove_redundant_aliases = true
 default_section = "THIRDPARTY"
-known_third_party = [
-    "apeye",
-    "attrs",
-    "backports_entry_points_selectable",
-    "click",
-    "coincidence",
-    "consolekit",
-    "coverage",
-    "coverage_pyver_pragma",
-    "dist_meta",
-    "dom_toml",
-    "domdf_python_tools",
-    "editables",
-    "email_validator",
-    "first",
-    "handy_archives",
-    "importlib_metadata",
-    "natsort",
-    "nh3",
-    "packaging",
-    "pyproject_examples",
-    "pyproject_parser",
-    "pytest",
-    "pytest_cov",
-    "pytest_randomly",
-    "pytest_timeout",
-    "re_assert",
-    "readme_renderer",
-    "shippinglabel",
-    "toml",
-    "whey_conda",
-    "whey_pth",
-]
 known_first_party = [ "whey",]
 
 [config]

@@ -716,7 +716,7 @@ class WheelBuilder(AbstractBuilder):
 						"Generator": self.generator,
 						"Root-Is-Purelib": True,
 						"Tag": [self.tag],
-						})
+						}),
 				)
 
 		self.report_written(wheel_file)

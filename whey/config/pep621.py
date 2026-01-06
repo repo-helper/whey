@@ -87,7 +87,7 @@ class PEP621Parser(pyproject_parser.parsers.PEP621Parser, inherit_defaults=True)
 		self,
 		config: Dict[str, TOML_TYPES],
 		set_defaults: bool = False,
-		) -> ProjectDict:
+	) -> ProjectDict:
 		"""
 		Parse the TOML configuration.
 

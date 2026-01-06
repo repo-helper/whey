@@ -106,7 +106,7 @@ def load_toml(filename: PathLike) -> Dict[str, Any]:  # TODO: TypedDict
 			raise BadConfigError(
 					"'requires-python' was listed in 'project.dynamic', "
 					"but whey cannot determine the minimum supported Python version. \n"
-					"Set 'tool.whey.python-versions' to a list of supported Python versions to fix this."
+					"Set 'tool.whey.python-versions' to a list of supported Python versions to fix this.",
 					)
 
 	if "dependencies" in dynamic_fields:

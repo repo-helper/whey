@@ -175,7 +175,7 @@ package = "whey"
 				pytest.param(OPTIONAL_DEPENDENCIES, id="optional-dependencies"),
 				pytest.param(URLS, id="urls"),
 				pytest.param(ENTRY_POINTS, id="entry_points"),
-				]
+				],
 		)
 def test_cli_build_success(
 		config: str,
@@ -222,7 +222,7 @@ def test_cli_build_success(
 				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				]
+				],
 		)
 def test_build_complete(
 		config: str,
@@ -280,13 +280,14 @@ def test_build_complete(
 				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				]
+				],
 		)
 @pytest.mark.parametrize(
-		"editables_version", [
+		"editables_version",
+		[
 				pytest.param("0.2", marks=only_version("3.6")),
 				pytest.param("0.3", marks=min_version("3.7")),
-				]
+				],
 		)
 def test_build_editable(
 		config: str,

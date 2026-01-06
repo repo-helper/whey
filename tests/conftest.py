@@ -83,7 +83,7 @@ def represent_additional_files_entry(  # noqa: MAN002
 				pytest.param(URLS, id="urls"),
 				pytest.param(ENTRY_POINTS, id="entry_points"),
 				pytest.param(UNICODE, id="unicode"),
-				],
+				]
 		)
 def good_config(request) -> str:
 	return request.param

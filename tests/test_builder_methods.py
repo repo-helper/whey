@@ -18,11 +18,10 @@ if TYPE_CHECKING:
 
 
 @pytest.mark.parametrize(
-		"editables_version",
-		[
+		"editables_version", [
 				pytest.param("0.2", marks=only_version("3.6")),
 				pytest.param("0.3", marks=min_version("3.7")),
-				],
+				]
 		)
 def test_create_editables_files(
 		tmp_pathplus: PathPlus,

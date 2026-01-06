@@ -132,7 +132,7 @@ def check_built_wheel(filename: PathPlus, advanced_file_regression: AdvancedFile
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_build_complete(
 		config: str,
@@ -202,7 +202,7 @@ def test_build_complete(
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_build_complete_epoch(
 		config: str,
@@ -254,14 +254,13 @@ def test_build_complete_epoch(
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 @pytest.mark.parametrize(
-		"editables_version",
-		[
+		"editables_version", [
 				pytest.param("0.2", marks=only_version("3.6")),
 				pytest.param("0.3", marks=min_version("3.7")),
-				],
+				]
 		)
 def test_build_editable(
 		config: str,
@@ -649,7 +648,7 @@ def test_build_editable_missing_dir(tmp_pathplus: PathPlus):
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(DYNAMIC_REQUIREMENTS, id="DYNAMIC_REQUIREMENTS"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_build_wheel_from_sdist(
 		config: str,
@@ -716,11 +715,10 @@ def test_build_wheel_from_sdist(
 
 
 @pytest.mark.parametrize(
-		"config",
-		[
+		"config", [
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_build_wheel_reproducible(
 		config: str,
@@ -801,7 +799,7 @@ def test_build_wheel_reproducible(
 								],
 						id="hyphen_name_underscore_package_explicit",
 						),
-				],
+				]
 		)
 def test_build_underscore_name(
 		tmp_pathplus: PathPlus,
@@ -914,7 +912,7 @@ def test_build_stubs_name(
 			data["sdist_content"] = sorted(tar.getnames())
 
 			assert tar.read_text(
-					"spam_spam_stubs-2020.0.0/spam_spam-stubs/__init__.pyi",
+					"spam_spam_stubs-2020.0.0/spam_spam-stubs/__init__.pyi"
 					) == "print('hello world')\n"
 
 			advanced_file_regression.check(tar.read_text("spam_spam_stubs-2020.0.0/PKG-INFO"))
@@ -937,7 +935,7 @@ def test_build_stubs_name(
 				pytest.param(f"{COMPLETE_A}\nsource-dir = 'src'", id="COMPLETE_A"),
 				pytest.param(f"{COMPLETE_B}\nsource-dir = 'src'", id="COMPLETE_B"),
 				# pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_build_source_dir_complete(
 		config: str,
@@ -1098,7 +1096,7 @@ def test_build_source_dir_different_package(
 				pytest.param(f"{COMPLETE_B}\nsource-dir = 'src'", id="COMPLETE_B"),
 				# pytest.param(DYNAMIC_REQUIREMENTS, id="DYNAMIC_REQUIREMENTS"),
 				# pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_build_wheel_from_sdist_source_dir(
 		config: str,
@@ -1251,7 +1249,7 @@ def test_build_additional_files_source_dir(
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_custom_wheel_builder(
 		config: str,

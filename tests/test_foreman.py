@@ -76,7 +76,7 @@ def test_build_success(
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
-				],
+				]
 		)
 def test_build_complete(
 		config: str,

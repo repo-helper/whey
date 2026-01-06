@@ -710,13 +710,14 @@ class WheelBuilder(AbstractBuilder):
 
 		wheel_file = self.dist_info / "WHEEL"
 
-		wheel_file_content = wheel.dumps({
-				"Wheel-Version": "1.0",
-				"Generator": self.generator,
-				"Root-Is-Purelib": True,
-				"Tag": [self.tag],
-				})
-		wheel_file.write_clean(wheel_file_content)
+		wheel_file.write_clean(
+				wheel.dumps({
+						"Wheel-Version": "1.0",
+						"Generator": self.generator,
+						"Root-Is-Purelib": True,
+						"Tag": [self.tag],
+						})
+				)
 
 		self.report_written(wheel_file)
 

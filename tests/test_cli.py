@@ -54,7 +54,7 @@ if TYPE_CHECKING:
 				pytest.param(OPTIONAL_DEPENDENCIES, id="optional-dependencies"),
 				pytest.param(URLS, id="urls"),
 				pytest.param(ENTRY_POINTS, id="entry_points"),
-				],
+				]
 		)
 def test_cli_build_success(
 		config: str,
@@ -120,7 +120,7 @@ def check_built_sdist(filename: PathPlus) -> List[str]:
 				# pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_build_complete(
 		config: str,
@@ -155,11 +155,10 @@ def test_build_complete(
 
 
 @pytest.mark.parametrize(
-		"config",
-		[
+		"config", [
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_build_sdist_complete(
 		config: str,
@@ -194,11 +193,10 @@ def test_build_sdist_complete(
 
 
 @pytest.mark.parametrize(
-		"config",
-		[
+		"config", [
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_build_wheel_complete(
 		config: str,
@@ -233,11 +231,10 @@ def test_build_wheel_complete(
 
 
 @pytest.mark.parametrize(
-		"config",
-		[
+		"config", [
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_build_wheel_via_builder_complete(
 		config: str,
@@ -272,11 +269,10 @@ def test_build_wheel_via_builder_complete(
 
 
 @pytest.mark.parametrize(
-		"config",
-		[
+		"config", [
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_build_binary_complete(
 		config: str,
@@ -388,7 +384,7 @@ def to_regex(string: str) -> str:
 								"""\
 						BadConfigError: The 'project.version' field must be provided.
 						    Use '--traceback' to view the full traceback.
-						Aborted!""",
+						Aborted!"""
 								),
 						id="no_version",
 						),
@@ -398,7 +394,7 @@ def to_regex(string: str) -> str:
 								"""\
 						BadConfigError: The 'project.name' field must be provided.
 						    Use '--traceback' to view the full traceback.
-						Aborted!""",
+						Aborted!"""
 								),
 						id="no_name",
 						),
@@ -408,7 +404,7 @@ def to_regex(string: str) -> str:
 								"""\
 						BadConfigError: The 'project.name' field may not be dynamic.
 						    Use '--traceback' to view the full traceback.
-						Aborted!""",
+						Aborted!"""
 								),
 						id="dynamic_name",
 						),
@@ -419,7 +415,7 @@ def to_regex(string: str) -> str:
 						BadConfigError: The value '???????12345=============☃' for 'project.name' is invalid.
 						    Documentation: https://whey.readthedocs.io/en/latest/configuration.html#tconf-project.name
 						    Use '--traceback' to view the full traceback.
-						Aborted!""",
+						Aborted!"""
 								),
 						id="bad_name",
 						),
@@ -431,7 +427,7 @@ def to_regex(string: str) -> str:
 						    Note: versions must follow PEP 440
 						    Documentation: https://peps.python.org/pep-0440/
 						    Use '--traceback' to view the full traceback.
-						Aborted!""",
+						Aborted!"""
 								),
 						id="bad_version",
 						),
@@ -443,7 +439,7 @@ def to_regex(string: str) -> str:
 						    Note: specifiers must follow PEP 508
 						    Documentation: https://peps.python.org/pep-0508/
 						    Use '--traceback' to view the full traceback.
-						Aborted!""",
+						Aborted!"""
 								),
 						id="bad_requires_python",
 						),
@@ -482,7 +478,7 @@ def to_regex(string: str) -> str:
 						"No such file or directory: 'LICENSE.txt'\nAborted!",
 						id="missing_license_file",
 						),
-				],
+				]
 		)
 def test_bad_config(
 		config: str,
@@ -545,7 +541,7 @@ class _Matches(Matches):
 						id="no_version",
 						),
 				*bad_pep621_config,
-				],
+				]
 		)
 def test_bad_config_show_traceback(
 		config: str,
@@ -578,7 +574,7 @@ def test_bad_config_show_traceback(
 						f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nsdist = "whey_sdist"\nwheel = "whey_wheel"',
 						id="sdist_and_wheel",
 						),
-				],
+				]
 		)
 @pytest.mark.parametrize(
 		"args",
@@ -594,7 +590,7 @@ def test_bad_config_show_traceback(
 						["--builder", "whey_pth_wheel", "--builder", "whey_conda"],
 						id="whey_conda_and_whey_pth",
 						),
-				],
+				]
 		)
 def test_show_builders(
 		config: str,

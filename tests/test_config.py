@@ -214,7 +214,7 @@ def check_config(
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				pytest.param(COMPLETE_B_ADDITIONAL_FILES, id="COMPLETE_B_ADDITIONAL_FILES"),
-				],
+				]
 		)
 def test_parse_valid_config(
 		toml_config: str,
@@ -252,7 +252,7 @@ ProjectDictPureClasses = TypedDict(
 				"dependencies": Union[List[ComparableRequirement], List[str]],
 				"optional-dependencies": Union[Dict[str, List[ComparableRequirement]], Dict[str, List[str]]],
 				"dynamic": List[Dynamic],
-				},
+				}
 		)
 
 
@@ -278,7 +278,7 @@ ProjectDictPureClasses = TypedDict(
 				pytest.param(COMPLETE_PROJECT_A, id="COMPLETE_PROJECT_A"),
 				pytest.param(COMPLETE_A, id="COMPLETE_A"),
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
-				],
+				]
 		)
 def test_pep621_class_valid_config(
 		toml_config: str,
@@ -345,7 +345,7 @@ def test_parse_valid_config_readme(
 						'readme = {text = "This is the inline README.", content-type = "text/plain"}',
 						id="text_content_type_plain",
 						),
-				],
+				]
 		)
 def test_parse_valid_config_readme_dict(
 		readme: str,
@@ -434,7 +434,7 @@ _bad_readmes = pytest.mark.parametrize(
 						BadConfigError,
 						id="file_and_readme",
 						),
-				],
+				]
 		)
 
 
@@ -502,7 +502,7 @@ license-key = "MIT"
 sdist = "whey_sdist"
 wheel = "whey_wheel"
 
-""",
+"""
 			)
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	config = load_toml(tmp_pathplus / "pyproject.toml")
@@ -529,7 +529,7 @@ python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
 python-implementations = [ "CPython", "PyPy",]
 platforms = [ "Windows", "macOS", "Linux",]
 license-key = "MIT"
-""",
+"""
 			)
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	(tmp_pathplus / "requirements.txt").write_lines([
@@ -570,7 +570,7 @@ python-versions = [ "3.6", "3.7", "3.8", "3.9", "3.10",]
 python-implementations = [ "CPython", "PyPy",]
 platforms = [ "Windows", "macOS", "Linux",]
 license-key = "MIT"
-""",
+"""
 			)
 	(tmp_pathplus / "pyproject.toml").write_clean(toml_config)
 	(tmp_pathplus / "requirements.txt").write_lines([
@@ -633,7 +633,7 @@ def test_parse_valid_config_license_text(
 						"The 'project.license.file' and 'project.license.text' keys are mutually exclusive.",
 						id="double_license",
 						),
-				],
+				]
 		)
 def test_bad_config_license(
 		license_key: str,
@@ -663,7 +663,7 @@ def test_bad_config_license(
 						id="no_version",
 						),
 				*bad_pep621_config,
-				],
+				]
 		)
 def test_parse_config_errors(config: str, expects: Type[Exception], match: str, tmp_pathplus: PathPlus):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -682,7 +682,7 @@ def test_parse_config_errors(config: str, expects: Type[Exception], match: str, 
 						id="no_version",
 						),
 				*bad_pep621_config,
-				],
+				]
 		)
 def test_pep621parser_class_errors(config: str, expects: Type[Exception], match: str, tmp_pathplus: PathPlus):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
@@ -766,7 +766,7 @@ _backfill_base_dict: Dict[str, Any] = {
 						{**_backfill_base_dict, "license-key": "LGPL-3.0-or-later"},
 						id="LGPL-3.0-or-later",
 						),
-				],
+				]
 		)
 def test_backfill_classifiers(config: Dict[str, str], advanced_data_regression: AdvancedDataRegressionFixture):
 	advanced_data_regression.check(backfill_classifiers(config))
@@ -800,7 +800,7 @@ def test_backfill_classifiers(config: Dict[str, str], advanced_data_regression: 
 						"'dependencies' was listed in 'project.dynamic' but a value was given.",
 						id="dynamic_but_given",
 						),
-				],
+				]
 		)
 def test_bad_config_dynamic(
 		config: str,
@@ -883,7 +883,7 @@ def test_bad_config_dynamic(
 						r"Invalid value for 'tool.whey.python-versions\[0\]': whey only supports Python 3-only projects.",
 						id="python-versions-1.6-string",
 						),
-				],
+				]
 		)
 def test_bad_config_whey_table(
 		config: str,
@@ -931,7 +931,7 @@ def test_bad_config_whey_table(
 						r"additional-files: 'recursive-exclude' must have one path and at least one pattern specified\.",
 						id="recursive-exclude no parameters",
 						),
-				],
+				]
 		)
 def test_bad_config_additional_files(
 		config: str,

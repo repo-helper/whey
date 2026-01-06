@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 						f'{MINIMAL_CONFIG}\n[tool.whey.builders]\nsdist = "whey_sdist"\nwheel = "whey_wheel"',
 						id="sdist_and_wheel",
 						),
-				]
+				],
 		)
 @pytest.mark.parametrize(
 		"builders",
@@ -43,7 +43,7 @@ if TYPE_CHECKING:
 				pytest.param({"binary": True}, id="binary_true"),
 				pytest.param({"sdist": True, "wheel": True}, id="sdist_and_wheel"),
 				pytest.param({"binary": False, "wheel": True}, id="true_and_false"),
-				]
+				],
 		)
 @pytest.mark.parametrize(
 		"custom_builders",
@@ -51,7 +51,7 @@ if TYPE_CHECKING:
 				pytest.param({}, id="none"),
 				pytest.param({"whey_conda": CondaBuilder}, id="whey_conda"),
 				pytest.param({"whey_pth": PthWheelBuilder}, id="whey_pth"),
-				]
+				],
 		)
 def test_print_builder_names(
 		tmp_pathplus: PathPlus,

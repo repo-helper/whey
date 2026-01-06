@@ -185,5 +185,5 @@ def setup(app: Sphinx) -> None:
 	app.add_node(
 			sphinx_click.OptionDesc,
 			latex=(LaTeXTranslator.visit_desc, LaTeXTranslator.depart_desc),
-			override=True
+			override=True,
 			)

@@ -96,7 +96,7 @@ class Include(AdditionalFilesEntry):
 		"""
 
 		if not parameters:
-			raise BadConfigError(f"additional-files: 'include' must have at least one path or pattern specified.")
+			raise BadConfigError("additional-files: 'include' must have at least one path or pattern specified.")
 
 		return cls(parameters.split(' '))
 
@@ -141,7 +141,7 @@ class Exclude(AdditionalFilesEntry):
 		"""
 
 		if not parameters:
-			raise BadConfigError(f"additional-files: 'exclude' must have at least one path or pattern specified.")
+			raise BadConfigError("additional-files: 'exclude' must have at least one path or pattern specified.")
 
 		return cls(parameters.split(' '))
 

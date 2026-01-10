@@ -593,9 +593,9 @@ def test_parse_valid_config_license(
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
-			f'[project]',
-			f'name = "spam"',
-			f'version = "2020.0.0"',
+			"[project]",
+			'name = "spam"',
+			'version = "2020.0.0"',
 			f'license = {{file = "{filename}"}}',
 			])
 	(tmp_pathplus / filename).write_text("This is the license.")
@@ -610,10 +610,10 @@ def test_parse_valid_config_license_text(
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
-			f'[project]',
-			f'name = "spam"',
-			f'version = "2020.0.0"',
-			f'license = {{text = "This is the MIT License"}}',
+			"[project]",
+			'name = "spam"',
+			'version = "2020.0.0"',
+			'license = {text = "This is the MIT License"}',
 			])
 
 	config = load_toml(tmp_pathplus / "pyproject.toml")
@@ -642,9 +642,9 @@ def test_bad_config_license(
 		):
 
 	(tmp_pathplus / "pyproject.toml").write_lines([
-			f'[project]',
-			f'name = "spam"',
-			f'version = "2020.0.0"',
+			"[project]",
+			'name = "spam"',
+			'version = "2020.0.0"',
 			license_key,
 			])
 

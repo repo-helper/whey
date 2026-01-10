@@ -131,7 +131,7 @@ See `the documentation`_ for configuration_ and usage_ information.
 	:alt: Maintenance
 
 .. |pypi-downloads| image:: https://img.shields.io/pypi/dm/whey
-	:target: https://pypi.org/project/whey/
+	:target: https://pypistats.org/packages/whey
 	:alt: PyPI - Downloads
 
 .. end shields

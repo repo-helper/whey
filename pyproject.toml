@@ -67,11 +67,6 @@ all = [
     "pyproject-parser[readme]>=0.11.0b1",
 ]
 
-[tool.mkrecipe]
-conda-channels = [ "conda-forge", "domdfcoding",]
-extras = []
-license-key = "MIT"
-
 [tool.sphinx-pyproject]
 github_username = "repo-helper"
 github_repository = "whey"

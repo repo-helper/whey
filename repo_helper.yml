@@ -6,7 +6,6 @@ author: 'Dominic Davis-Foster'
 email: 'dominic@davis-foster.co.uk'
 username: 'repo-helper'
 assignee: 'domdfcoding'
-primary_conda_channel: "domdfcoding"
 version: '0.1.1'
 license: 'MIT'
 short_desc: 'A simple Python wheel builder for simple projects.'
@@ -16,13 +15,8 @@ min_coverage: 95
 sphinx_html_theme: furo
 tox_testenv_extras: all
 on_conda_forge: true
+enable_conda: false
 use_hatch: true
-
-conda_channels:
- - conda-forge
-
-conda_extras:
- - none
 
  # Versions to run tests for
 python_versions:

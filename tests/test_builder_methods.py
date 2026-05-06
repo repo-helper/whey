@@ -17,18 +17,10 @@ if TYPE_CHECKING:
 	from _pytest.capture import CaptureFixture
 
 
-@pytest.mark.parametrize(
-		"editables_version",
-		[
-				pytest.param("0.2", marks=only_version("3.6")),
-				pytest.param("0.3", marks=min_version("3.7")),
-				],
-		)
 def test_create_editables_files(
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
-		editables_version: str,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(COMPLETE_A)
 	(tmp_pathplus / "whey").mkdir()
@@ -56,7 +48,7 @@ def test_create_editables_files(
 		data["stderr"] = outerr.err
 
 		data["listdir"] = [p.relative_to(tmpdir).as_posix() for p in sort_paths(*tmpdir.iterdir())]
-		data["pth"] = (tmpdir / "whey.pth").read_text()
+		data["pth"] = (tmpdir / "_editable_impl_whey.pth").read_text()
 
 		data["code"] = (tmpdir / "_editable_impl_whey.py").read_text().replace(tmp_pathplus.as_posix(), "...")
 

@@ -282,19 +282,11 @@ def test_build_complete(
 				pytest.param(COMPLETE_B, id="COMPLETE_B"),
 				],
 		)
-@pytest.mark.parametrize(
-		"editables_version",
-		[
-				pytest.param("0.2", marks=only_version("3.6")),
-				pytest.param("0.3", marks=min_version("3.7")),
-				],
-		)
 def test_build_editable(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		capsys: "CaptureFixture[str]",
-		editables_version: str,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -312,7 +304,7 @@ def test_build_editable(
 
 	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
 		data["wheel_content"] = sorted(zip_file.namelist())
-		data["pth"] = zip_file.read_text("whey.pth")
+		data["pth"] = zip_file.read_text("_editable_impl_whey.pth")
 
 		data["code"] = zip_file.read_text("_editable_impl_whey.py").replace(tmp_pathplus.as_posix(), "...")
 

@@ -256,20 +256,12 @@ def test_build_complete_epoch(
 				pytest.param(LONG_REQUIREMENTS, id="LONG_REQUIREMENTS"),
 				],
 		)
-@pytest.mark.parametrize(
-		"editables_version",
-		[
-				pytest.param("0.2", marks=only_version("3.6")),
-				pytest.param("0.3", marks=min_version("3.7")),
-				],
-		)
 def test_build_editable(
 		config: str,
 		tmp_pathplus: PathPlus,
 		advanced_data_regression: AdvancedDataRegressionFixture,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		capsys: "CaptureFixture[str]",
-		editables_version: str,
 		):
 	(tmp_pathplus / "pyproject.toml").write_clean(config)
 	(tmp_pathplus / "whey").mkdir()
@@ -296,7 +288,7 @@ def test_build_editable(
 
 	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
 		data["wheel_content"] = zip_file.namelist()
-		data["pth"] = zip_file.read_text("whey.pth")
+		data["pth"] = zip_file.read_text("_editable_impl_whey.pth")
 
 		data["code"] = zip_file.read_text("_editable_impl_whey.py").replace(tmp_pathplus.as_posix(), "...")
 
@@ -399,7 +391,7 @@ def test_build_editable_namespace(
 
 	with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
 		data["wheel_content"] = zip_file.namelist()
-		assert zip_file.read_text("default_values.pth") == str(tmp_pathplus) + '\n'
+		assert zip_file.read_text("_editable_impl_default_values.pth") == str(tmp_pathplus) + '\n'
 
 		advanced_file_regression.check(zip_file.read_text("default_values-0.5.0.dist-info/METADATA"))
 

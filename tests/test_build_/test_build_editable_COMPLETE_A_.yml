@@ -5,7 +5,7 @@ code: 'from editables.redirector import RedirectingFinder as F
   F.map_module(''whey'', ''.../whey/__init__.py'')
 
   '
-pth: 'import _whey
+pth: 'import _editable_impl_whey
 
   '
 stderr: ''
@@ -13,9 +13,9 @@ stdout: 'Writing whey-2021.0.0.dist-info/LICENSE
 
   Writing whey-2021.0.0.dist-info/entry_points.txt
 
-  Writing whey.pth
+  Writing _editable_impl_whey.pth
 
-  Writing _whey.py
+  Writing _editable_impl_whey.py
 
   Writing whey-2021.0.0.dist-info/METADATA
 
@@ -31,6 +31,6 @@ wheel_content:
 - whey-2021.0.0.dist-info/METADATA
 - whey-2021.0.0.dist-info/WHEEL
 - whey-2021.0.0.dist-info/entry_points.txt
-- _whey.py
-- whey.pth
+- _editable_impl_whey.pth
+- _editable_impl_whey.py
 - whey-2021.0.0.dist-info/RECORD

@@ -79,7 +79,7 @@ extras_require:
   - docutils>=0.16,<0.22
   - nh3<0.3.2; platform_python_implementation == "PyPy" and python_version < "3.11"
  editable:
-  - editables>=0.2
+  - editables>=0.6
 
 exclude_files:
  - contributing

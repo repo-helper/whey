@@ -19,11 +19,11 @@ whey
 ..
 
 	| Little Miss Muffet
-	| She sat on a tuffet,
-	| Eating of curds and whey;
-	| There came a little spider,
+	| Sat on a tuffet,
+	| Eating her curds and whey;
+	| Along came a spider,
 	| Who sat down beside her,
-	| And frighten'd Miss Muffet away.
+	| And frightened Miss Muffet away.
 
 
 ``whey``:

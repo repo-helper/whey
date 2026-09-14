@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, Dict, List, Type
 import handy_archives
 import pytest
 from coincidence.regressions import AdvancedDataRegressionFixture, AdvancedFileRegressionFixture
-from consolekit.testing import CliRunner, Result
+from consolekit.testing import CliRunner, Result, click_version
 from dom_toml.parser import BadConfigError
 from domdf_python_tools.paths import PathPlus, in_directory
 from domdf_python_tools.words import LF
@@ -615,7 +615,21 @@ def test_show_builders(
 	assert result.exit_code == 0
 
 
+@pytest.mark.parametrize(
+		"click_version",
+		[
+				pytest.param(
+						"pre_84",
+						marks=pytest.mark.skipif(click_version >= (8, 4), reason="Output differs on click 8.4"),
+						),
+				pytest.param(
+						"84",
+						marks=pytest.mark.skipif(click_version < (8, 4), reason="Output differs on click 8.4"),
+						),
+				],
+		)
 def test_show_builders_error(
+		click_version: str,
 		tmp_pathplus: PathPlus,
 		advanced_file_regression: AdvancedFileRegressionFixture,
 		):

@@ -102,6 +102,7 @@ extensions = [
     "attr_utils.autoattrs",
     "local_extension",
 ]
+sphinxemoji_source = "https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js"
 gitstamp_fmt = "%d %b %Y"
 templates_path = [ "_templates",]
 html_static_path = [ "_static",]

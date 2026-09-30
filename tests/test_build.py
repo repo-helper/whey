@@ -2,6 +2,7 @@
 import os
 import shutil
 import tempfile
+import zipfile
 from base64 import urlsafe_b64encode
 from datetime import datetime
 from typing import TYPE_CHECKING, Any, Dict, List
@@ -59,7 +60,8 @@ def test_build_success(
 		wheel = wheel_builder.build_wheel()
 		assert (tmp_pathplus / wheel).is_file()
 
-		with handy_archives.ZipFile(tmp_pathplus / wheel) as zip_file:
+		# Perhaps LZMA support in the future
+		with handy_archives.ZipFile(tmp_pathplus / wheel, compression=zipfile.ZIP_DEFLATED) as zip_file:
 			data["wheel_content"] = zip_file.namelist()
 
 			assert zip_file.read_text("spam/__init__.py") == "print('hello world')\n"
